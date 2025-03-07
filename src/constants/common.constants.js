@@ -1,11 +1,14 @@
 export const APP_INFO = {
+  LOGO: "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741185494/dreamy-mart/logo_dreamysmart.png",
   NAME: "DreamyMart",
   TITLE: "DreamyMart - Cửa hàng trực tuyến",
   DESCRIPTION: "Mua sắm trực tuyến với giá tốt nhất",
   KEYWORDS: "ecommerce, online shopping, fashion, electronics",
 };
 
-export const BANNER_PROMOTIONS = {
+export const BANNER = {
+  SALE_BANNER:
+    "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741184004/dreamy-mart/banner_sales.png",
   MAIN_BANNER: [
     {
       id: 1,
@@ -110,4 +113,59 @@ export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_LIMIT: 12,
   PAGE_SIZE_OPTIONS: [12, 24, 36, 48],
+};
+
+// Các class Tailwind thường dùng
+export const TAILWIND_CLASSES = {
+  // Layout
+  CONTAINER: "container mx-auto px-4",
+  FLEX_CENTER: "flex items-center justify-center",
+  FLEX_BETWEEN: "flex items-center justify-between",
+  GRID: "grid grid-cols-1 gap-4",
+
+  // Spacing
+  PADDING: {
+    SMALL: "p-2",
+    MEDIUM: "p-4",
+    LARGE: "p-6",
+  },
+  MARGIN: {
+    SMALL: "m-2",
+    MEDIUM: "m-4",
+    LARGE: "m-6",
+  },
+
+  // Typography
+  TEXT: {
+    SMALL: "text-sm",
+    MEDIUM: "text-base",
+    LARGE: "text-lg",
+    XLARGE: "text-xl",
+    BOLD: "font-bold",
+    SEMIBOLD: "font-semibold",
+  },
+
+  // Borders
+  BORDER: {
+    DEFAULT: "border border-gray-300",
+    ROUNDED: "rounded-md",
+    ROUNDED_FULL: "rounded-full",
+  },
+
+  // Shadows
+  SHADOW: {
+    SMALL: "shadow-sm",
+    MEDIUM: "shadow-md",
+    LARGE: "shadow-lg",
+  },
+
+  // Transitions
+  TRANSITION: "transition-all duration-200",
+
+  // Hover effects
+  HOVER: {
+    OPACITY: "hover:opacity-80",
+    SCALE: "hover:scale-105",
+    SHADOW: "hover:shadow-md",
+  },
 };
