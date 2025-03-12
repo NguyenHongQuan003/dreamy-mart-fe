@@ -1,17 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  FaSearch,
-  FaShoppingBag,
-  FaUser,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+import { FaSearch, FaShoppingBag, FaUser } from "react-icons/fa";
 import { APP_INFO, BANNER } from "../../constants/common.constants";
 import Navbar from "./Navbar";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
@@ -29,18 +22,6 @@ const Header = () => {
       <div className="w-full bg-[#0078E8] shadow-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2 text-white"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <FaTimes className="h-6 w-6" />
-              ) : (
-                <FaBars className="h-6 w-6" />
-              )}
-            </button>
-
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <img
@@ -121,34 +102,6 @@ const Header = () => {
           )}
 
           {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="lg:hidden mt-4 bg-white rounded-lg p-4 space-y-4">
-              <Link
-                to="/categories"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-              >
-                Danh mục
-              </Link>
-              <Link
-                to="/promotions"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-              >
-                Khuyến mãi
-              </Link>
-              <Link
-                to="/new-products"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-              >
-                Sản phẩm mới
-              </Link>
-              <Link
-                to="/best-sellers"
-                className="block px-4 py-2 text-gray-800 hover:bg-gray-100 rounded-md"
-              >
-                Bán chạy
-              </Link>
-            </div>
-          )}
         </div>
       </div>
       <Navbar />
