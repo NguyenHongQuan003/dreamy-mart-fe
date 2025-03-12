@@ -6,8 +6,26 @@ import Button from "../components/common/Button";
 import { FaEnvelope, FaFacebook, FaGoogle, FaLock } from "react-icons/fa";
 import { APP_INFO } from "../constants/common.constants";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Login = () => {
+  const [formData, setFormData] = useState({
+    email_phone: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+  };
   return (
     <>
       <Header />
@@ -22,15 +40,17 @@ const Login = () => {
           <div className="text-2xl sm:text-3xl font-bold mb-5 text-center lg:text-left">
             Đăng nhập
           </div>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <Input
               type="text"
-              name="email-phone"
+              name="email_phone"
               placeholder="Email/Số điện thoại"
               icon={FaEnvelope}
               required
               autoComplete="email"
+              onChange={handleChange}
+              value={formData.email_phone}
             />
             {/* Password */}
             <Input
@@ -39,16 +59,19 @@ const Login = () => {
               placeholder="Mật khẩu"
               icon={FaLock}
               required
+              onChange={handleChange}
+              value={formData.password}
             />
             {/* Remember & Forgot */}
             <div className="flex items-center justify-between">
-              <label className="flex items-center">
+              <div></div>
+              {/* <label className="flex items-center">
                 <input
                   type="checkbox"
                   className="rounded border-gray-300 text-[#0078E8] focus:ring-[#0078E8]"
                 />
                 <span className="ml-2 text-sm text-gray-600">Ghi nhớ tôi</span>
-              </label>
+              </label> */}
               <Link
                 to="/forgot-password"
                 className="text-sm text-[#0078E8] hover:underline"

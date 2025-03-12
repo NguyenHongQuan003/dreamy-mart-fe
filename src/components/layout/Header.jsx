@@ -55,9 +55,14 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder="Tìm kiếm sản phẩm..."
-                  className="w-full pr-15 border-2 border-gray-500 rounded-full py-3 px-4 bg-white focus:outline-none"
+                  className="
+                    w-full rounded-full shadow-sm bg-white
+                    pl-4 pr-15 py-3
+                    border-2 border-gray-100
+                    focus:border-[#0078E8] focus:border-2 focus:outline-none
+                  "
                 />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#0078E8] rounded-full p-3 hover:cursor-pointer">
+                <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#0078E8] rounded-full p-3 hover:cursor-pointer hover:bg-[#0066CC]">
                   <FaSearch className="text-white" />
                 </button>
               </div>
