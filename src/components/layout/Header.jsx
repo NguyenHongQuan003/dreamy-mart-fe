@@ -43,7 +43,7 @@ const Header = () => {
             {/* Logo */}
             <Link to="/" className="flex items-center">
               <img
-                src={APP_INFO.LOGO}
+                src={APP_INFO.LOGO_MINI}
                 alt={APP_INFO.NAME}
                 className="h-8 md:h-12 w-auto"
               />

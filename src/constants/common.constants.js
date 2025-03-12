@@ -1,5 +1,7 @@
 export const APP_INFO = {
-  LOGO: "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741185494/dreamy-mart/logo_dreamysmart.png",
+  LOGO_MINI:
+    "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741185494/dreamy-mart/logo_dreamysmart.png",
+  LOGO: "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741756264/dreamy-mart/Logo_component_njsvlu.png",
   NAME: "DreamyMart",
   TITLE: "DreamyMart - Cửa hàng trực tuyến",
   DESCRIPTION: "Mua sắm trực tuyến với giá tốt nhất",

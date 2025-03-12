@@ -6,6 +6,7 @@ const Home = () => {
       <Header />
       <main className="container mx-auto px-4 py-8">
         {/* Content sẽ được thêm sau */}
+        Trang chủ
       </main>
     </div>
   );
