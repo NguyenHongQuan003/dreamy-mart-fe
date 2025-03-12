@@ -8,6 +8,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { APP_INFO, BANNER } from "../../constants/common.constants";
+import Navbar from "./Navbar";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -150,6 +151,7 @@ const Header = () => {
           )}
         </div>
       </div>
+      <Navbar />
     </header>
   );
 };
