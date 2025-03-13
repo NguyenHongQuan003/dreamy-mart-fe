@@ -5,9 +5,9 @@ import {
   FaFacebook,
   FaGoogle,
   FaLock,
-  FaPhone,
   FaUser,
   FaArrowLeft,
+  FaPhone,
 } from "react-icons/fa";
 import Header from "../components/layout/Header";
 import Input from "../components/common/Input";
@@ -17,12 +17,12 @@ import { APP_INFO } from "../constants/common.constants";
 const Register = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    contact: "", // email hoặc số điện thoại
+    email: "",
     fullname: "",
+    phone: "",
     password: "",
     confirm_password: "",
   });
-  const [contactType, setContactType] = useState("phone"); // "phone" hoặc "email"
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,39 +32,35 @@ const Register = () => {
     }));
   };
 
-  const handleContactTypeChange = (type) => {
-    setContactType(type);
-    setFormData((prev) => ({ ...prev, contact: "" }));
-  };
-
-  const validateContact = () => {
-    if (!formData.contact) {
-      alert("Vui lòng nhập thông tin liên hệ!");
+  const validateEmail = () => {
+    if (!formData.email) {
+      alert("Vui lòng nhập email!");
       return false;
     }
 
-    if (contactType === "phone") {
-      const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
-      if (!phoneRegex.test(formData.contact)) {
-        alert("Số điện thoại không hợp lệ!");
-        return false;
-      }
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.contact)) {
-        alert("Email không hợp lệ!");
-        return false;
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Email không hợp lệ!");
+      return false;
     }
 
     return true;
   };
 
+  const validatePhone = () => {
+    const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
+    if (!phoneRegex.test(formData.phone)) {
+      alert("Số điện thoại không hợp lệ!");
+      return false;
+    }
+    return true;
+  };
+
   const handleVerifyContact = (e) => {
     e.preventDefault();
-    if (validateContact()) {
-      // TODO: Gọi API để xác minh email/số điện thoại
-      console.log("Verifying contact:", formData.contact);
+    if (validateEmail()) {
+      // TODO: Gọi API để xác minh email
+      console.log("Verifying email:", formData.email);
       // Giả lập API call thành công
       setStep(2);
     }
@@ -72,6 +68,9 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validatePhone()) {
+      return;
+    }
     if (formData.password !== formData.confirm_password) {
       alert("Mật khẩu không khớp!");
       return;
@@ -85,34 +84,15 @@ const Register = () => {
 
   const renderStep1 = () => (
     <form className="space-y-4" onSubmit={handleVerifyContact}>
-      <div className="flex gap-3 mb-6">
-        <Button
-          type="button"
-          variant={contactType === "phone" ? "primary" : "outline"}
-          onClick={() => handleContactTypeChange("phone")}
-        >
-          Số điện thoại
-        </Button>
-        <Button
-          type="button"
-          variant={contactType === "email" ? "primary" : "outline"}
-          onClick={() => handleContactTypeChange("email")}
-        >
-          Email
-        </Button>
-      </div>
-
       <Input
-        type={contactType === "phone" ? "tel" : "email"}
-        name="contact"
-        placeholder={
-          contactType === "phone" ? "Nhập số điện thoại" : "Nhập email"
-        }
-        icon={contactType === "phone" ? FaPhone : FaEnvelope}
+        type="email"
+        name="email"
+        placeholder="Nhập email"
+        icon={FaEnvelope}
         required
-        autoComplete={contactType === "phone" ? "tel" : "email"}
+        autoComplete="email"
         onChange={handleChange}
-        value={formData.contact}
+        value={formData.email}
       />
 
       <Button type="submit" fullWidth>
@@ -160,8 +140,7 @@ const Register = () => {
           onClick={handleBack}
         />
         <span className="text-gray-600">
-          {contactType === "phone" ? "Số điện thoại: " : "Email: "}
-          <strong>{formData.contact}</strong>
+          Email: <strong>{formData.email}</strong>
         </span>
       </div>
 
@@ -175,6 +154,18 @@ const Register = () => {
         autoComplete="name"
         onChange={handleChange}
         value={formData.fullname}
+      />
+
+      {/* Số điện thoại */}
+      <Input
+        type="tel"
+        name="phone"
+        placeholder="Số điện thoại"
+        icon={FaPhone}
+        required
+        autoComplete="tel"
+        onChange={handleChange}
+        value={formData.phone}
       />
 
       {/* Mật khẩu */}

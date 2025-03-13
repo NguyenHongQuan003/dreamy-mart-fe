@@ -60,7 +60,7 @@ const Navbar = () => {
                       {category.subcategories.map((sub) => (
                         <Link
                           key={sub}
-                          to={`/category/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
+                          to={`/products/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
                           className="block px-4 py-2 text-sm hover:bg-gray-200"
                         >
                           {sub}
@@ -103,7 +103,7 @@ const Navbar = () => {
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
-                        to={`/category/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
+                        to={`/products/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
                         className="block px-3 py-2 text-sm hover:bg-gray-200"
                       >
                         {sub}
