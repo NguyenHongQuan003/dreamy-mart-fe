@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaTimes, FaChevronDown } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 
 const categories = [
   {
@@ -27,12 +27,7 @@ const categories = [
 ];
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   const toggleSubcategories = (index) => {
     setOpenCategory(openCategory === index ? null : index);
@@ -42,13 +37,13 @@ const Navbar = () => {
     <nav className="bg-[#F5F5F5] text-[#0078E8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-0.5">
-          <div className="hidden md:block">
+          <div className="md:block hidden">
             <div className="flex items-baseline space-x-4">
               {categories.map((category, index) => (
                 <div key={category.name} className="relative group">
                   <button
                     onClick={() => toggleSubcategories(index)}
-                    className="focus:shadow-[0_3px_0_0_#0078E8] focus:text-[#0078E8] px-3 py-2 text-sm font-medium flex items-center"
+                    className="focus:shadow-[0_3px_0_0_#0078E8] px-3 py-2 text-sm font-medium flex items-center"
                   >
                     {category.name}
                     {category.subcategories && (
@@ -72,26 +67,16 @@ const Navbar = () => {
               ))}
             </div>
           </div>
-          <div className="-mr-2 flex md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-            >
-              {isOpen ? <FaTimes /> : <FaBars />}
-            </button>
-          </div>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {isOpen && (
+        {/* Mobile Menu */}
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {categories.map((category, index) => (
               <div key={category.name}>
                 <button
                   onClick={() => toggleSubcategories(index)}
-                  className="block px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 w-full text-left"
+                  className="block px-3 py-2 text-base font-medium focus:shadow-[0_3px_0_0_#0078E8] w-full text-left"
                 >
                   {category.name}
                   {category.subcategories && (
@@ -103,7 +88,7 @@ const Navbar = () => {
                     {category.subcategories.map((sub) => (
                       <Link
                         key={sub}
-                        to={`/products/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
+                        to={`/category/${category.name.toLowerCase()}/${sub.toLowerCase()}`}
                         className="block px-3 py-2 text-sm hover:bg-gray-200"
                       >
                         {sub}
@@ -115,7 +100,7 @@ const Navbar = () => {
             ))}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

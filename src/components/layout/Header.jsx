@@ -1,11 +1,22 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaShoppingBag, FaUser } from "react-icons/fa";
+import {
+  FaSearch,
+  FaShoppingBag,
+  FaUser,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
 import { APP_INFO, BANNER } from "../../constants/common.constants";
 import Navbar from "./Navbar";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+
+  const toggleNavbar = () => {
+    setIsNavbarOpen(!isNavbarOpen);
+  };
 
   return (
     <header className="w-full">
@@ -22,14 +33,27 @@ const Header = () => {
       <div className="w-full bg-[#0078E8] shadow-md">
         <div className="container mx-auto px-4 py-1">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link to="/" className="flex items-center">
-              <img
-                src={APP_INFO.LOGO_MINI}
-                alt={APP_INFO.NAME}
-                className="h-8 md:h-12 w-auto"
-              />
-            </Link>
+            <div className="flex items-center">
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden p-2 text-white"
+                onClick={toggleNavbar}
+              >
+                {isNavbarOpen ? (
+                  <FaTimes className="h-6 w-6" />
+                ) : (
+                  <FaBars className="h-6 w-6" />
+                )}
+              </button>
+              {/* Logo */}
+              <Link to="/" className="flex items-center">
+                <img
+                  src={APP_INFO.LOGO_MINI}
+                  alt={APP_INFO.NAME}
+                  className="h-8 md:h-12 w-auto"
+                />
+              </Link>
+            </div>
 
             {/* Search Bar - Desktop */}
             <div className="hidden md:flex flex-1 max-w-2xl mx-8">
@@ -39,9 +63,9 @@ const Header = () => {
                   placeholder="Tìm kiếm sản phẩm..."
                   className="
                     w-full rounded-full shadow-sm bg-white
-                    pl-4 pr-15 py-1
-                    border-2 border-gray-100
-                    focus:border-[#0078E8] focus:border-2 focus:outline-none
+                    pl-4 pr-15 py-1.25
+                    border-1 border-white
+                    focus:outline-none
                   "
                 />
                 <button className="absolute right-0.75 top-1/2 -translate-y-1/2 bg-[#0078E8] rounded-full p-2 hover:cursor-pointer hover:bg-[#0066CC]">
@@ -92,7 +116,11 @@ const Header = () => {
                 <input
                   type="text"
                   placeholder="Tìm kiếm sản phẩm..."
-                  className="w-full pr-15 border-2 border-gray-500 rounded-full py-1 px-4 bg-white focus:outline-none"
+                  className="
+                    w-full rounded-full shadow-sm bg-white
+                    pl-4 pr-15 py-1.25
+                    border-1 border-white
+                    focus:outline-none"
                 />
                 <button className="absolute right-0.75 top-1/2 -translate-y-1/2 bg-[#0078E8] rounded-full p-2 hover:cursor-pointer">
                   <FaSearch className="text-white" />
@@ -100,11 +128,12 @@ const Header = () => {
               </div>
             </div>
           )}
-
-          {/* Mobile Menu */}
         </div>
       </div>
-      <Navbar />
+      {/* Mobile Menu */}
+      <div className={`md:block ${isNavbarOpen ? "block" : "hidden"}`}>
+        <Navbar />
+      </div>
     </header>
   );
 };
