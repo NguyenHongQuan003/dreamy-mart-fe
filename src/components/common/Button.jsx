@@ -21,6 +21,10 @@ const Button = ({
       "border-2 border-[#0078E8] text-[#0078E8] hover:bg-[#0078E8]/10 focus:ring-[#0078E8]",
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
     success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
+    google:
+      "border-2 border-[#eb4536] text-[#eb4536] hover:bg-[#eb4536]/10 focus:ring-[#eb4536]",
+    facebook:
+      "border-2 border-[#0078E8] text-[#0078E8] hover:bg-[#0078E8]/10 focus:ring-[#0078E8]",
   };
 
   const sizes = {

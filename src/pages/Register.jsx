@@ -107,10 +107,10 @@ const Register = () => {
 
       {/* Social Register */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Button variant="outline" fullWidth icon={FaFacebook}>
+        <Button variant="facebook" fullWidth icon={FaFacebook}>
           Facebook
         </Button>
-        <Button variant="outline" fullWidth icon={FaGoogle}>
+        <Button variant="google" fullWidth icon={FaGoogle}>
           Google
         </Button>
       </div>
