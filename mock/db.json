@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "iPhone 14 Pro Max",
       "price": 999.99,
       "description": "Latest iPhone model with advanced features",
@@ -10,7 +10,7 @@
       "stock": 10
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Samsung Galaxy S23",
       "price": 799.99,
       "description": "Powerful Android smartphone",
@@ -21,27 +21,46 @@
   ],
   "categories": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Electronics",
       "description": "Electronic devices and accessories"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Fashion",
       "description": "Clothing and accessories"
     }
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "username": "admin",
       "email": "admin@example.com",
-      "password": "admin123"
+      "phone": "0909090909",
+      "password": "admin",
+      "role": "admin"
+    }
+  ],
+  "tokens": [
+    {
+      "id": "1305",
+      "token": "jwt_1_1741880191637",
+      "userId": "1"
+    },
+    {
+      "id": "45f2",
+      "token": "jwt_1_1741880230945",
+      "userId": "1"
+    },
+    {
+      "id": "9f4c",
+      "token": "jwt_1_1741880262800",
+      "userId": "1"
     }
   ],
   "orders": [
     {
-      "id": 1,
+      "id": "1",
       "userId": 1,
       "products": [
         {
@@ -54,4 +73,4 @@
       "createdAt": "2024-03-05T10:00:00Z"
     }
   ]
-} 
+}

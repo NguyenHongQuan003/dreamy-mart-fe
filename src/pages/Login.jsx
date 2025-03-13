@@ -8,8 +8,10 @@ import { APP_INFO } from "../constants/common.constants";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Footer from "../components/layout/Footer";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
+  const { signIn } = useAuth();
   const [formData, setFormData] = useState({
     email_phone: "",
     password: "",
@@ -23,9 +25,16 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
+    try {
+      await signIn(formData.email_phone, formData.password);
+      alert("Đăng nhập thành công!");
+      window.location.href = "/";
+    } catch (error) {
+      alert("Đăng nhập thất bại!", error);
+    }
   };
   return (
     <>
