@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 
 const ProductList = () => {
   const { category, subcategory } = useParams();
@@ -27,6 +28,7 @@ const ProductList = () => {
           ))}
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

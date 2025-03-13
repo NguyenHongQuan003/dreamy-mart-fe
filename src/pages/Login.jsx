@@ -7,6 +7,7 @@ import { FaEnvelope, FaFacebook, FaGoogle, FaLock } from "react-icons/fa";
 import { APP_INFO } from "../constants/common.constants";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Footer from "../components/layout/Footer";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -113,6 +114,7 @@ const Login = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

@@ -1,3 +1,4 @@
+import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 
 const Home = () => {
@@ -8,6 +9,7 @@ const Home = () => {
         {/* Content sẽ được thêm sau */}
         Trang chủ
       </main>
+      <Footer />
     </div>
   );
 };

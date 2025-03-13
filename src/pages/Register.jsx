@@ -13,6 +13,7 @@ import Header from "../components/layout/Header";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { APP_INFO } from "../constants/common.constants";
+import Footer from "../components/layout/Footer";
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -226,6 +227,7 @@ const Register = () => {
           {step === 1 ? renderStep1() : renderStep2()}
         </div>
       </div>
+      <Footer />
     </>
   );
 };
