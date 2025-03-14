@@ -8,7 +8,8 @@ import { APP_INFO } from "../constants/common.constants";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Footer from "../components/layout/Footer";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../utils/authUtils";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -25,11 +26,13 @@ const Login = () => {
     }));
   };
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     try {
       await signIn(formData.email_phone, formData.password);
+      navigate("/");
       alert("Đăng nhập thành công!");
       window.location.href = "/";
     } catch (error) {

@@ -1,6 +1,6 @@
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../utils/authUtils";
 
 const Home = () => {
   const { user, signOut } = useAuth();

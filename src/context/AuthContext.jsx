@@ -1,18 +1,19 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUser, login } from "../services/authService";
 import PropTypes from "prop-types";
+import { AuthContext } from "../utils/authUtils";
 
-const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(
     localStorage.getItem("auth_token") || null
   );
+  const [loading, setLoading] = useState(true);
 
+  // Định nghĩa PropTypes
   AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
   };
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -54,5 +55,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

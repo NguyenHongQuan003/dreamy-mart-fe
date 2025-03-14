@@ -9,10 +9,13 @@ import {
 } from "react-icons/fa";
 import { APP_INFO, BANNER } from "../../constants/common.constants";
 import Navbar from "./Navbar";
+import { useAuth } from "../../utils/authUtils";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
@@ -31,7 +34,7 @@ const Header = () => {
 
       {/* Main Header */}
       <div className="w-full bg-[#0078E8] shadow-md">
-        <div className="container mx-auto px-4 py-1">
+        <div className="mx-auto px-4 py-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               {/* Mobile Menu Button */}
@@ -98,14 +101,45 @@ const Header = () => {
               </Link>
 
               {/* Login/Register */}
-              <Link to="/login" className="flex items-center">
-                <div className="p-2 hover:cursor-pointer rounded-full bg-white">
-                  <FaUser className="text-[#0078E8] h-5 w-5" />
+              {user ? (
+                <div className="relative">
+                  <button
+                    className="flex items-center p-2 hover:cursor-pointer rounded-full bg-white"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    <FaUser className="text-[#0078E8] h-5 w-5" />
+                    <span className="hidden md:block text-[#0078E8] ml-1 text-xs truncate max-w-30">
+                      {`Xin chào, `}
+                      <strong>{user.username}</strong>
+                    </span>
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-10">
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm hover:bg-gray-200"
+                      >
+                        Hồ sơ
+                      </Link>
+                      <button
+                        onClick={signOut}
+                        className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
+                      >
+                        Đăng xuất
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <span className="hidden md:block text-white ml-1">
-                  Đăng nhập
-                </span>
-              </Link>
+              ) : (
+                <Link to="/login" className="flex items-center">
+                  <div className="p-2 hover:cursor-pointer rounded-full bg-white">
+                    <FaUser className="text-[#0078E8] h-5 w-5" />
+                  </div>
+                  <span className="hidden md:block text-white ml-1">
+                    Đăng nhập
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
 
