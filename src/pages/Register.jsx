@@ -19,6 +19,7 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: "",
+    gender: "",
     fullname: "",
     phone: "",
     password: "",
@@ -144,6 +145,47 @@ const Register = () => {
           Email: <strong>{formData.email}</strong>
         </span>
       </div>
+
+      {/* Giới tính */}
+      {/* <fieldset> */}
+      <legend className="text-gray-600">Giới tính</legend>
+
+      <div className="flex flex-row gap-x-3">
+        <div className="flex items-center gap-x-3">
+          <input
+            defaultChecked
+            id="gender-male"
+            name="gender"
+            type="radio"
+            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
+            onChange={handleChange}
+            value="male"
+          />
+          <label
+            htmlFor="gender-male"
+            className="block font-medium text-gray-600"
+          >
+            Nam
+          </label>
+        </div>
+        <div className="flex items-center gap-x-3">
+          <input
+            id="gender-female"
+            name="gender"
+            type="radio"
+            className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
+            onChange={handleChange}
+            value="female"
+          />
+          <label
+            htmlFor="gender-female"
+            className="block font-medium text-gray-600"
+          >
+            Nữ
+          </label>
+        </div>
+      </div>
+      {/* </fieldset> */}
 
       {/* Họ tên */}
       <Input
