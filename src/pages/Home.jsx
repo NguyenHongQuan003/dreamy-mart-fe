@@ -13,7 +13,7 @@ const Home = () => {
         <div>
           {user ? (
             <>
-              <h2>Xin chào, {user.username}</h2>
+              <h2>Xin chào, {user.fullname}</h2>
               <button onClick={signOut}>Đăng xuất</button>
             </>
           ) : (
