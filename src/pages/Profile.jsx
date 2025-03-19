@@ -5,10 +5,12 @@ import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import {
   FaUser,
-  // FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  // FaEdit,
+  FaEdit,
+  FaEnvelope,
+  FaPlus,
+  FaTrash,
   // FaPlus,
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
@@ -63,7 +65,7 @@ const Profile = () => {
               <Button
                 variant="outline"
                 onClick={() => setIsEditing(!isEditing)}
-                // icon={<FaEdit />}
+                icon={FaEdit}
               >
                 {isEditing ? "Hủy" : "Chỉnh sửa"}
               </Button>
@@ -80,7 +82,7 @@ const Profile = () => {
                   value={formData.fullname}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  //   icon={<FaUser />}
+                  icon={FaUser}
                 />
                 <Input
                   label="Email"
@@ -89,7 +91,7 @@ const Profile = () => {
                   value={formData.email}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  //   icon={<FaEnvelope />}
+                  icon={FaEnvelope}
                 />
                 <Input
                   label="Số điện thoại"
@@ -97,40 +99,39 @@ const Profile = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  //   icon={<FaPhone />}
+                  icon={FaPhone}
                 />
-              </div>
-
-              {/* Gender Selection */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Giới tính
-                </label>
-                <div className="flex space-x-4">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      checked={formData.gender === "male"}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="form-radio text-blue-600"
-                    />
-                    <span className="ml-2">Nam</span>
+                {/* Gender Selection */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Giới tính
                   </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      checked={formData.gender === "female"}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                      className="form-radio text-blue-600"
-                    />
-                    <span className="ml-2">Nữ</span>
-                  </label>
+                  <div className="flex space-x-4">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                        checked={formData.gender === "male"}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-radio text-blue-600"
+                      />
+                      <span className="ml-2">Nam</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="female"
+                        checked={formData.gender === "female"}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                        className="form-radio text-blue-600"
+                      />
+                      <span className="ml-2">Nữ</span>
+                    </label>
+                  </div>
                 </div>
               </div>
 
@@ -150,10 +151,7 @@ const Profile = () => {
               <h2 className="text-xl font-semibold text-gray-800">
                 Địa chỉ nhận hàng
               </h2>
-              <Button
-                variant="outline"
-                //   icon={<FaPlus />}
-              >
+              <Button variant="outline" icon={FaPlus}>
                 Thêm địa chỉ mới
               </Button>
             </div>
@@ -161,7 +159,7 @@ const Profile = () => {
             {/* Address List */}
             <div className="space-y-4">
               {/* Default Address */}
-              <div className="border rounded-lg p-4 bg-gray-50">
+              <div className="border border-[#0078E8] rounded-lg p-4 bg-gray-50">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center space-x-2">
@@ -178,14 +176,10 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="small" icon={FaEdit}>
                       Sửa
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-red-600"
-                    >
+                    <Button variant="danger" size="small" icon={FaTrash}>
                       Xóa
                     </Button>
                   </div>
@@ -198,7 +192,7 @@ const Profile = () => {
               </div>
 
               {/* Other Address */}
-              <div className="border rounded-lg p-4">
+              <div className="border border-[#0078E8] rounded-lg p-4">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center space-x-2">
@@ -215,14 +209,10 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="small" icon={FaEdit}>
                       Sửa
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-red-600"
-                    >
+                    <Button variant="danger" size="small" icon={FaTrash}>
                       Xóa
                     </Button>
                   </div>
