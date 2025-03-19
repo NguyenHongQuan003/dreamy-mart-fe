@@ -1,6 +1,9 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
+import ProductCard from "../components/product/ProductCard";
+import SortComboBox from "../components/common/SortComboBox";
+import Button from "../components/common/Button";
 
 const ProductList = () => {
   const { category, subcategory } = useParams();
@@ -9,23 +12,34 @@ const ProductList = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-[#0078E8] mb-4">
-          Danh sách sản phẩm cho {subcategory} trong {category}
-        </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {/* Giả lập danh sách sản phẩm */}
-          {[...Array(12)].map((_, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-md">
-              <div className="h-40 bg-gray-200 rounded-md mb-4"></div>
-              <h2 className="text-lg font-semibold mb-2">
-                Sản phẩm {index + 1}
-              </h2>
-              <p className="text-gray-600">Mô tả ngắn gọn về sản phẩm.</p>
-              <button className="mt-4 bg-[#0078E8] text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                Xem chi tiết
-              </button>
+        <div className="flex space-x-2">
+          <div className=" bg-gray-200 w-75"></div>
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-xl font-bold text-[#0078E8]">
+                  {/* Danh sách sản phẩm cho {subcategory} trong {category} */}
+                  {subcategory.toLocaleUpperCase()}
+                </h1>
+                <div className="text-sm text-gray-600">
+                  {/* Hiển thị số lượng sản phẩm tìm thấy */}
+                  <strong>12</strong> sản phẩm
+                </div>
+              </div>
+              <SortComboBox />
             </div>
-          ))}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 ">
+              {[...Array(12)].map((_, index) => (
+                <ProductCard key={index} id={index} />
+              ))}
+            </div>
+
+            <div className="flex justify-center items-center mt-4  ">
+              <Button variant="outline" size="small">
+                Xem thêm sản phẩm
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
       <Footer />
