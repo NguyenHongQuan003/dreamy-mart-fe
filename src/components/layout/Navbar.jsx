@@ -39,6 +39,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between py-0.5">
           <div className="md:block hidden">
             <div className="flex items-baseline space-x-4">
+              <Link to={`/products/all/Tất cả sản phẩm`}>Tất cả</Link>
               {categories.map((category, index) => (
                 <div key={category.name} className="relative group">
                   <button

@@ -28,6 +28,7 @@ const Button = ({
   };
 
   const sizes = {
+    mini: "px-2 py-1 text-xs",
     small: "px-3 py-1.5 text-sm",
     medium: "px-4 py-2 text-base",
     large: "px-6 py-3 text-lg",
@@ -55,7 +56,15 @@ const Button = ({
       `}
     >
       {Icon && (
-        <Icon className={`${size === "small" ? "h-4 w-4" : "h-5 w-5"} mr-2`} />
+        <Icon
+          className={`${
+            size === "small"
+              ? "h-4 w-4"
+              : size === "mini"
+              ? "h-3 w-3"
+              : "h-5 w-5"
+          }`}
+        />
       )}
       {children}
     </button>

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getProducts } from "../services/apiFunctions";
 
 const ProductList = () => {
-  const { category, subcategory } = useParams();
+  const { subcategory } = useParams();
 
   const [products, setProducts] = useState([]);
 

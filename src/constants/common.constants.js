@@ -6,6 +6,8 @@ export const APP_INFO = {
   TITLE: "DreamyMart - Cửa hàng trực tuyến",
   DESCRIPTION: "Mua sắm trực tuyến với giá tốt nhất",
   KEYWORDS: "ecommerce, online shopping, fashion, electronics",
+  NO_IAMGE_AVAILABLE:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/624px-No-Image-Placeholder.svg.png",
 };
 
 export const BANNER = {

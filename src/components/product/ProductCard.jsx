@@ -3,6 +3,7 @@ import { FaStar } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { getImageByProductId } from "../../services/apiFunctions";
+import { APP_INFO } from "../../constants/common.constants";
 
 const ProductCard = ({ product }) => {
   const [imagePreview, setImagePreview] = useState();
@@ -11,7 +12,7 @@ const ProductCard = ({ product }) => {
     const fetchImage = async () => {
       try {
         const response = await getImageByProductId(product.id);
-        setImagePreview(response);
+        setImagePreview(response[0]?.downloadUrl);
       } catch (error) {
         console.error("Failed to fetch image", error);
       }
@@ -25,7 +26,7 @@ const ProductCard = ({ product }) => {
         <div className="bg-white rounded-xs shadow-2xl group">
           <div className="h-48 rounded-t-xs mb-2 p-0.5">
             <img
-              src={imagePreview}
+              src={imagePreview || APP_INFO.NO_IAMGE_AVAILABLE}
               alt={product.productName}
               className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
             />

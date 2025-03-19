@@ -25,15 +25,15 @@ export const getCurrentUser = async (token) => {
     const tokenData = response.data[0];
     try {
       const userResponse = await axios.get(
-        `${API_URL}/users/${tokenData.userId}` // cách dùng path params
-      );
-      return userResponse.data;
-    } catch (pathError) {
-      pathError;
-      const userResponse = await axios.get(
         `${API_URL}/users?id=${tokenData.userId}` // cách dùng query params
       );
       return userResponse.data[0];
+    } catch (pathError) {
+      pathError;
+      const userResponse = await axios.get(
+        `${API_URL}/users/${tokenData.userId}` // cách dùng path params
+      );
+      return userResponse.data;
     }
   }
   throw new Error("Invalid token");
