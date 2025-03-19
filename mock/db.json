@@ -162,6 +162,83 @@
       "create_at": "2024-01-02T10:00:00Z",
       "update_at": "2024-01-02T10:00:00Z",
       "category_id": 2
+    },
+    {
+      "id": 3,
+      "productName": "Tablet",
+      "description": "Portable tablet",
+      "cost_price": "30.00",
+      "price": "39.99",
+      "inventory": 75,
+      "create_at": "2024-01-03T10:00:00Z",
+      "update_at": "2024-01-03T10:00:00Z",
+      "category_id": 2
+    },
+    {
+      "id": 4,
+      "productName": "Smartwatch",
+      "description": "Smartwatch with fitness tracker",
+      "cost_price": "20.00",
+      "price": "29.99",
+      "inventory": 125,
+      "create_at": "2024-01-04T10:00:00Z",
+      "update_at": "2024-01-04T10:00:00Z",
+      "category_id": 1
+    },
+    {
+      "id": 5,
+      "productName": "Headphones",
+      "description": "Wireless headphones",
+      "cost_price": "10.00",
+      "price": "19.99",
+      "inventory": 200,
+      "create_at": "2024-01-05T10:00:00Z",
+      "update_at": "2024-01-05T10:00:00Z",
+      "category_id": 1
+    },
+    {
+      "id": 6,
+      "productName": "Speaker",
+      "description": "Portable speaker",
+      "cost_price": "15.00",
+      "price": "24.99",
+      "inventory": 150,
+      "create_at": "2024-01-06T10:00:00Z",
+      "update_at": "2024-01-06T10:00:00Z",
+      "category_id": 1
+    },
+    {
+      "id": 7,
+      "productName": "Camera",
+      "description": "Digital camera",
+      "cost_price": "50.00",
+      "price": "59.99",
+      "inventory": 100,
+      "create_at": "2024-01-07T10:00:00Z",
+      "update_at": "2024-01-07T10:00:00Z",
+      "category_id": 1
+    },
+    {
+      "id": 8,
+      "productName": "Printer",
+      "description": "Wireless printer",
+      "cost_price": "60.00",
+      "price": "69.99",
+      "inventory": 75,
+      "create_at": "2024-01-08T10:00:00Z",
+      "update_at": "2024-01-08T10:00:00Z",
+      "category_id": 1
+    },
+    {
+      "id": 9,
+      "productName": "Monitor",
+      "description": "High-resolution monitor",
+      "cost_price": "70.00",
+      "price": "79.99",
+      "inventory": 50,
+      "create_at": "2024-01-09T10:00:00Z",
+      "update_at": "2024-01-09T10:00:00Z",
+      "category_id": 1
     }
   ],
   "productReviews": [
@@ -235,5 +312,87 @@
       "product_id": 1,
       "cart_id": 1
     }
-  ]
+  ],
+  "images": [{
+    "id": 1,
+    "fileName": "image1.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1567521463850-4939134bcd4a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 1
+  },
+  {
+    "id": 10,
+    "fileName": "image10.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1567521463850-4939134bcd4a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 1
+  },
+  {
+    "id": 2,
+    "fileName": "image2.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=2118&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 2
+  },
+  {
+    "id": 3,
+    "fileName": "image3.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1984&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 3
+  },
+  {
+    "id": 4,
+    "fileName": "image4.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 4
+  },
+  {
+    "id": 5,
+    "fileName": "image5.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 5
+  },
+  {
+    "id": 6,
+    "fileName": "image6.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1545454675-3531b543be5d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 6
+  },
+  {
+    "id": 7,
+    "fileName": "image7.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1638&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 7
+  },
+  {
+    "id": 8,
+    "fileName": "image8.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 8
+  }
+  ,
+  {
+    "id": 9,
+    "fileName": "image9.jpg",
+    "fileType": "image/jpeg",
+    "image": "",
+    "downloadUrl": "https://images.unsplash.com/photo-1598986646512-9330bcc4c0dc?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "product_id": 9
+  }
+]
 }
