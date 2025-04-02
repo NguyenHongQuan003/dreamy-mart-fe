@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCartTotalQuantity } from "../../redux/slices/cartSlice";
 import {
   FaSearch,
   FaShoppingBag,
@@ -16,6 +18,7 @@ const Header = () => {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const cartQuantity = useSelector(selectCartTotalQuantity);
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
@@ -92,7 +95,7 @@ const Header = () => {
                 <div className="relative p-2 hover:cursor-pointer rounded-full bg-white">
                   <FaShoppingBag className="text-[#0078E8] h-5 w-5" />
                   <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    0
+                    {cartQuantity}
                   </span>
                 </div>
                 <span className="hidden md:block text-white ml-1">

@@ -32,7 +32,7 @@ const Login = () => {
     console.log("Form submitted:", formData);
     try {
       await signIn(formData.email_phone, formData.password);
-      // alert("Đăng nhập thành công!");
+      alert("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
       alert("Đăng nhập thất bại!", error);

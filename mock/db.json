@@ -94,21 +94,51 @@
       "id": "c95f",
       "token": "jwt_1_1742402722984",
       "userId": 1
+    },
+    {
+      "id": "05f5",
+      "token": "jwt_1_1742427707342",
+      "userId": "1"
+    },
+    {
+      "id": "03e9",
+      "token": "jwt_1_1742427795576",
+      "userId": "1"
+    },
+    {
+      "id": "8b83",
+      "token": "jwt_1_1742455536450",
+      "userId": "1"
+    },
+    {
+      "id": "06e0",
+      "token": "jwt_1_1743258164601",
+      "userId": "1"
+    },
+    {
+      "id": "7b64",
+      "token": "jwt_1_1743607293700",
+      "userId": "1"
+    },
+    {
+      "id": "bb4c",
+      "token": "jwt_1_1743610507917",
+      "userId": "1"
     }
   ],
   "roles": [
     {
-      "id": 1,
+      "id": "1",
       "name": "ADMIN"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "USER"
     }
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "fullname": "John Doe",
       "username": "johndoe",
       "email": "john@example.com",
@@ -121,7 +151,7 @@
       "role_id": 2
     },
     {
-      "id": 2,
+      "id": "2",
       "fullname": "Jane Smith",
       "username": "janesmith",
       "email": "jane@example.com",
@@ -136,14 +166,14 @@
   ],
   "addresses": [
     {
-      "id": 1,
+      "id": "1",
       "street": "123 Main St",
       "district": "Downtown",
       "city": "New York",
       "user_id": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "street": "456 Oak Ave",
       "district": "Uptown",
       "city": "Los Angeles",
@@ -152,7 +182,7 @@
   ],
   "notifications": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Welcome Notification",
       "content": "Welcome to our platform!",
       "type": "INFO",
@@ -164,7 +194,7 @@
   ],
   "orders": [
     {
-      "id": 1,
+      "id": "1",
       "orderDate": "2024-01-05T10:00:00Z",
       "totalAmount": "99.99",
       "orderStatus": "PENDING",
@@ -174,7 +204,7 @@
       "promotion_id": null
     },
     {
-      "id": 2,
+      "id": "2",
       "orderDate": "2024-01-06T10:00:00Z",
       "totalAmount": "149.99",
       "orderStatus": "SHIPPED",
@@ -186,14 +216,14 @@
   ],
   "orderItems": [
     {
-      "id": 1,
+      "id": "1",
       "quantity": 2,
       "price": "49.99",
       "order_id": 1,
       "product_id": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "quantity": 1,
       "price": "99.99",
       "order_id": 2,
@@ -202,7 +232,7 @@
   ],
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "productName": "Laptop",
       "description": "High-performance laptop",
       "cost_price": "40.00",
@@ -213,7 +243,7 @@
       "category_id": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "productName": "Smartphone 16 Pro Max",
       "description": "Màn hình Super Retina XDR 6,9 inch lớn hơn có viền mỏng hơn, đem đến cảm giác tuyệt vời khi cầm trên tay.Điều khiển Camera - Chỉ cần trượt ngón tay để điều chỉnh camera giúp chụp ảnh hoặc quay video đẹp hoàn hảo và siêu nhanh.iPhone 16 Pro Max có thiết kế titan cấp 5 với lớp hoàn thiện mới, tinh tế được xử lý bề mặt vi điểm.iPhone 16 Pro Max được cài đặt sẵn hệ điều hành iOS 18, cho giao diện trực quan, dễ sử dụng và nhiều tính năng hữu ích.",
       "cost_price": "80.00",
@@ -224,7 +254,7 @@
       "category_id": 2
     },
     {
-      "id": 3,
+      "id": "3",
       "productName": "Tablet",
       "description": "Portable tablet",
       "cost_price": "30.00",
@@ -235,7 +265,7 @@
       "category_id": 2
     },
     {
-      "id": 4,
+      "id": "4",
       "productName": "Smartwatch",
       "description": "Smartwatch with fitness tracker",
       "cost_price": "20.00",
@@ -246,7 +276,7 @@
       "category_id": 1
     },
     {
-      "id": 5,
+      "id": "5",
       "productName": "Headphones",
       "description": "Wireless headphones",
       "cost_price": "10.00",
@@ -257,7 +287,7 @@
       "category_id": 1
     },
     {
-      "id": 6,
+      "id": "6",
       "productName": "Speaker",
       "description": "Portable speaker",
       "cost_price": "15.00",
@@ -268,7 +298,7 @@
       "category_id": 1
     },
     {
-      "id": 7,
+      "id": "7",
       "productName": "Camera",
       "description": "Digital camera",
       "cost_price": "50.00",
@@ -279,7 +309,7 @@
       "category_id": 1
     },
     {
-      "id": 8,
+      "id": "8",
       "productName": "Printer",
       "description": "Wireless printer",
       "cost_price": "60.00",
@@ -290,7 +320,7 @@
       "category_id": 1
     },
     {
-      "id": 9,
+      "id": "9",
       "productName": "Monitor",
       "description": "High-resolution monitor",
       "cost_price": "70.00",
@@ -303,7 +333,7 @@
   ],
   "productReviews": [
     {
-      "id": 1,
+      "id": "1",
       "rating": 4,
       "comment": "Great product!",
       "create_at": "2024-01-06T10:00:00Z",
@@ -314,7 +344,7 @@
   ],
   "productFavourites": [
     {
-      "id": 1,
+      "id": "1",
       "create_at": "2024-01-07T10:00:00Z",
       "update_at": "2024-01-07T10:00:00Z",
       "user_id": 1,
@@ -323,13 +353,13 @@
   ],
   "categories": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Electronics",
       "create_at": "2024-01-01T10:00:00Z",
       "update_at": "2024-01-01T10:00:00Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Mobile",
       "create_at": "2024-01-02T10:00:00Z",
       "update_at": "2024-01-02T10:00:00Z"
@@ -337,7 +367,7 @@
   ],
   "payments": [
     {
-      "id": 1,
+      "id": "1",
       "paymentMethod": "CREDIT_CARD",
       "paymentStatus": "COMPLETED",
       "paymentDate": "2024-01-05T10:00:00Z",
@@ -346,7 +376,7 @@
   ],
   "promotions": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Winter Sale",
       "discountPercentage": "10.00",
       "startDate": "2024-01-01T00:00:00Z",
@@ -356,7 +386,7 @@
   ],
   "carts": [
     {
-      "id": 1,
+      "id": "1",
       "totalAmount": "49.99",
       "create_at": "2024-01-08T10:00:00Z",
       "update_at": "2024-01-08T10:00:00Z",
@@ -365,7 +395,7 @@
   ],
   "cartItems": [
     {
-      "id": 1,
+      "id": "1",
       "quantity": 1,
       "unitPrice": "49.99",
       "totalPrice": "49.99",
@@ -375,7 +405,7 @@
   ],
   "images": [
     {
-      "id": 1,
+      "id": "1",
       "fileName": "image1.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -383,7 +413,7 @@
       "product_id": 1
     },
     {
-      "id": 10,
+      "id": "10",
       "fileName": "image10.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -391,7 +421,7 @@
       "product_id": 1
     },
     {
-      "id": 2,
+      "id": "2",
       "fileName": "image2.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -399,7 +429,7 @@
       "product_id": 2
     },
     {
-      "id": 3,
+      "id": "3",
       "fileName": "image3.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -407,7 +437,7 @@
       "product_id": 3
     },
     {
-      "id": 4,
+      "id": "4",
       "fileName": "image4.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -415,7 +445,7 @@
       "product_id": 4
     },
     {
-      "id": 5,
+      "id": "5",
       "fileName": "image5.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -423,7 +453,7 @@
       "product_id": 5
     },
     {
-      "id": 6,
+      "id": "6",
       "fileName": "image6.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -431,7 +461,7 @@
       "product_id": 6
     },
     {
-      "id": 7,
+      "id": "7",
       "fileName": "image7.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -439,7 +469,7 @@
       "product_id": 7
     },
     {
-      "id": 8,
+      "id": "8",
       "fileName": "image8.jpg",
       "fileType": "image/jpeg",
       "image": "",
@@ -447,7 +477,7 @@
       "product_id": 8
     },
     {
-      "id": 9,
+      "id": "9",
       "fileName": "image9.jpg",
       "fileType": "image/jpeg",
       "image": "",

@@ -45,7 +45,7 @@ function SortComboBox() {
 
         {/* Icon mũi tên */}
         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <FaChevronDown />
+          <FaChevronDown color="#bdbdbd" />
         </div>
       </div>
     </div>
