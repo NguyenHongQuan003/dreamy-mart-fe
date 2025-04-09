@@ -9,14 +9,15 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Footer from "../components/layout/Footer";
 import { useAuth } from "../utils/authUtils";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { signIn } = useAuth();
   const [formData, setFormData] = useState({
-    email_phone: "",
+    email: "",
     password: "",
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,16 +27,16 @@ const Login = () => {
     }));
   };
 
-  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     try {
-      await signIn(formData.email_phone, formData.password);
-      alert("Đăng nhập thành công!");
-      navigate("/");
+      await signIn(formData.email, formData.password);
+      toast.success("Đăng nhập thành công!");
+      // alert("Đăng nhập thành công!");
     } catch (error) {
-      alert("Đăng nhập thất bại!", error);
+      toast.error("Email hoặc password không chính xác!", error);
+      // alert("Đăng nhập thất bại!", error);
     }
   };
   return (
@@ -56,13 +57,13 @@ const Login = () => {
             {/* Email */}
             <Input
               type="text"
-              name="email_phone"
-              placeholder="Email/Số điện thoại"
+              name="email"
+              placeholder="Email"
               icon={FaEnvelope}
               required
               autoComplete="email"
               onChange={handleChange}
-              value={formData.email_phone}
+              value={formData.email}
             />
             {/* Password */}
             <Input

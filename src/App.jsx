@@ -21,8 +21,9 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <Provider store={store}>
-      <AuthProvider>
-        <Router>
+
+      <Router>
+        <AuthProvider>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
@@ -54,8 +55,9 @@ function App() {
             pauseOnHover
             theme="light"
           />
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </Router>
+
     </Provider>
   );
 }
