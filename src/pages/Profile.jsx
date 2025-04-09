@@ -19,17 +19,22 @@ import {
   FaTruck,
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
+import { isValidImageUrl } from "../utils/validate";
+import { APP_INFO } from "../constants/common.constants";
 
 const Profile = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [orders, setOrders] = useState([]);
+
   const [formData, setFormData] = useState({
-    fullname: user?.fullname || "",
+    avatar: user?.avatar || "",
+    fullName: user?.fullName || "",
     email: user?.email || "",
     phone: user?.phone || "",
-    gender: user?.gender || "",
+    gender: user?.gender.toString() || "",
+    dateOfBirth: user?.dateOfBirth || "",
   });
 
   useEffect(() => {
@@ -289,12 +294,18 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center">
-                  <FaUser className="text-white text-3xl" />
+                <div className="flex items-center justify-center rounded-ful">
+                  {/* <FaUser className="text-white text-3xl" /> */}
+                  <img
+                    // src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src={isValidImageUrl(user.avatar) ? user.avatar : APP_INFO.NO_IAMGE_AVAILABLE}
+                    alt="Avatar"
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800">
-                    {user?.fullname || "Chưa cập nhật"}
+                    {user?.fullName || "Chưa cập nhật"}
                   </h1>
                   <p className="text-gray-600">{user?.email}</p>
                 </div>
@@ -313,35 +324,32 @@ const Profile = () => {
 
           {/* Navigation Tabs */}
           <div className="bg-white rounded-lg shadow-md p-2 mb-6">
-            <div className="flex border-b overflow-x-auto">
+            <div className="flex overflow-x-auto">
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "profile"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "profile"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("profile")}
               >
                 <FaUser className="inline mr-2" />
                 Thông tin cá nhân
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "orders"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "orders"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("orders")}
               >
                 <FaShoppingBag className="inline mr-2" />
                 Đơn hàng của tôi
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "addresses"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "addresses"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("addresses")}
               >
                 <FaMapMarkerAlt className="inline mr-2" />
@@ -357,8 +365,8 @@ const Profile = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     label="Họ và tên"
-                    name="fullname"
-                    value={formData.fullname}
+                    name="fullName"
+                    value={formData.fullName}
                     onChange={handleChange}
                     disabled={!isEditing}
                     icon={FaUser}
@@ -390,8 +398,8 @@ const Profile = () => {
                         <input
                           type="radio"
                           name="gender"
-                          value="male"
-                          checked={formData.gender === "male"}
+                          value="true"
+                          checked={formData.gender === "true"}
                           onChange={handleChange}
                           disabled={!isEditing}
                           className="form-radio text-blue-600"
@@ -402,8 +410,8 @@ const Profile = () => {
                         <input
                           type="radio"
                           name="gender"
-                          value="female"
-                          checked={formData.gender === "female"}
+                          value="false"
+                          checked={formData.gender === "false"}
                           onChange={handleChange}
                           disabled={!isEditing}
                           className="form-radio text-blue-600"

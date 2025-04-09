@@ -8,6 +8,11 @@ export const login = async (username, password) => {
   return response.data;
 }
 
+export const logout = async (refreshToken) => {
+  const response = await axiosInstance.post(`/auth/logout`, { refreshToken });
+  return response.data;
+}
+
 export const getCurrentUser = async () => {
   const response = await axiosInstance.get("/user-profile/user/profile");
   return response.data.result;

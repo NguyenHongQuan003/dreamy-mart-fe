@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaEnvelope,
@@ -14,78 +14,121 @@ import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { APP_INFO } from "../constants/common.constants";
 import Footer from "../components/layout/Footer";
+import OTPInput from "../components/common/OTPInput";
+import { toast } from "react-toastify";
+import { generateOTP, register, verifyOTP } from "../services/userService";
 
 const Register = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
+  const [errors, setErrors] = useState({});
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [formData, setFormData] = useState({
     email: "",
-    gender: "",
+    otp: "",
+    avatar: null,
+    gender: "true",
     fullname: "",
     phone: "",
     password: "",
     confirm_password: "",
+    dayOfBirth: "",
   });
+
+  useEffect(() => {
+    console.log("Form data:", formData);
+  }, [formData])
+
+  // Validation functions
+  const validatePhone = (phoneNumber) => {
+    const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
+    return phoneRegex.test(phoneNumber) ? "" : "Số điện thoại không hợp lệ";
+  };
+
+  const validateOTP = (otp) => {
+    return otp.length === 6 ? "" : "Mã OTP phải có 6 chữ số";
+  };
+
+  const validatePassword = (passWord) => {
+    return passWord.length >= 8 ? "" : "Mật khẩu phải có ít nhất 8 ký tự";
+  };
+
+  const validateConfirmPassword = (confirm_password) => {
+    return confirm_password === formData.password ? "" : "Mật khẩu không khớp";
+  };
+
+  const validateDayOfBirth = (dayOfBirth) => {
+    const today = new Date();
+    const birthDate = new Date(dayOfBirth);
+    return birthDate < today ? "" : "Ngày sinh không hợp lệ";
+  };
+
+  const handleAvatarChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFormData((prev) => ({ ...prev, avatar: selectedFile }));
+    setAvatarPreview(URL.createObjectURL(selectedFile));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
 
-  const validateEmail = () => {
-    if (!formData.email) {
-      alert("Vui lòng nhập email!");
-      return false;
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      alert("Email không hợp lệ!");
-      return false;
-    }
-
-    return true;
-  };
-
-  const validatePhone = () => {
-    const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
-    if (!phoneRegex.test(formData.phone)) {
-      alert("Số điện thoại không hợp lệ!");
-      return false;
-    }
-    return true;
-  };
-
-  const handleVerifyContact = (e) => {
-    e.preventDefault();
-    if (validateEmail()) {
-      // TODO: Gọi API để xác minh email
-      console.log("Verifying email:", formData.email);
-      // Giả lập API call thành công
-      setStep(2);
+    switch (name) {
+      case "phone":
+        setErrors((prev) => ({ ...prev, phone: validatePhone(value) }));
+        break;
+      case "otp":
+        setErrors((prev) => ({ ...prev, otp: validateOTP(value) }));
+        break;
+      case "password":
+        setErrors((prev) => ({
+          ...prev,
+          confirm_password: validateConfirmPassword(value),
+        }));
+        setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
+        break;
+      case "confirm_password":
+        setErrors((prev) => ({
+          ...prev,
+          confirm_password: validateConfirmPassword(value),
+        }));
+        break;
+      case "dayOfBirth":
+        setErrors((prev) => ({
+          ...prev,
+          dayOfBirth: validateDayOfBirth(value),
+        }));
+        break;
+      default:
+        break;
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!validatePhone()) {
-      return;
-    }
-    if (formData.password !== formData.confirm_password) {
-      alert("Mật khẩu không khớp!");
-      return;
-    }
-    console.log("Form submitted:", formData);
-  };
 
   const handleBack = () => {
-    setStep(1);
+    if (step > 1) {
+      setStep(step - 1);
+    }
   };
 
+  const handleStep1Submit = async (e) => {
+    e.preventDefault();
+    try {
+      const result = await generateOTP(formData.email);
+      console.log("Kết quả gửi OTP:", result);
+      if (result) {
+        toast.success("Mã OTP đã được gửi đến email của bạn");
+        setFormData((prev) => ({ ...prev, otp: "" })); // Reset OTP input
+      }
+      setStep(2);
+    } catch (error) {
+      console.error("Lỗi gửi OTP:", error);
+      toast.error("Gửi mã OTP không thành công");
+    }
+  }
+
   const renderStep1 = () => (
-    <form className="space-y-4" onSubmit={handleVerifyContact}>
+    <form className="space-y-4" onSubmit={handleStep1Submit}>
       <Input
         type="email"
         name="email"
@@ -131,8 +174,96 @@ const Register = () => {
     </form>
   );
 
+
+  const handleVerifyOTP = async () => {
+    try {
+      const result = await verifyOTP(formData.email, formData.otp);
+      console.log("Kết quả xác minh OTP:", result);
+      if (result) {
+        console.log("Xác minh OTP thành công");
+        toast.success("Xác minh OTP thành công");
+        setStep(3);
+        setFormData((prev) => ({ ...prev, otp: "" }));
+      } else {
+        console.log("OTP không hợp lệ");
+        toast.error("OTP không hợp lệ hoặc hết hạn");
+      }
+    } catch (error) {
+      console.error("Lỗi xác minh OTP:", error);
+    }
+  };
+
+  const handleStep2Submit = async (e) => {
+    e.preventDefault();
+    console.log("formData OTP", formData);
+    const otpError = validateOTP(formData.otp);
+    if (!otpError) {
+      await handleVerifyOTP();
+    } else {
+      setErrors((prev) => ({ ...prev, otp: otpError }));
+    }
+  };
+
   const renderStep2 = () => (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="mt-8 space-y-6" onSubmit={handleStep2Submit}>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Nhập mã OTP đã gửi đến email của bạn
+        </label>
+      </div>
+      <OTPInput
+        length={6}
+        onChangeOTP={(otp) => {
+          setFormData({ ...formData, otp });
+          handleChange({ target: { name: "otp", value: otp } });
+        }}
+        error={errors.otp}
+      />
+      <Button
+        type="submit"
+        fullWidth
+        disabled={errors.otp !== "" || formData.otp === "" ? true : false}
+      >
+        Xác nhận
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        fullWidth
+        onClick={() => setStep(1)}
+      >
+        Quay lại
+      </Button>
+    </form >
+  )
+  const handleFinalSubmit = async (e) => {
+    e.preventDefault();
+    const passwordError = validatePassword(formData.password);
+    const confirmPasswordError = validateConfirmPassword(
+      formData.confirm_password
+    );
+    const dayOfBirthError = validateDayOfBirth(formData.dayOfBirth);
+
+    if (!passwordError && !confirmPasswordError && !dayOfBirthError) {
+      console.log("Registration completed:", formData);
+      try {
+        const response = await register(formData);
+        console.log("Du lieu tra ve tu server khi dang ky", response);
+        toast.success("Đăng ký thành công!");
+        // navigate("/login");
+      } catch (error) {
+        console.log("Loi khi dang ky", error);
+      }
+    } else {
+      setErrors({
+        passWord: passwordError,
+        confirm_password: confirmPasswordError,
+        dayOfBirth: dayOfBirthError,
+      });
+    }
+  };
+  const renderStep3 = () => (
+    <form className="space-y-4" onSubmit={handleFinalSubmit}>
       <div className="flex items-center mb-4">
         <Button
           type="button"
@@ -142,9 +273,35 @@ const Register = () => {
           onClick={handleBack}
         />
         <span className="text-gray-600">
-          Email: <strong>{formData.email}</strong>
+          Quay lại
         </span>
       </div>
+
+      {/* Avatar Upload */}
+      <div className="flex flex-col items-center">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Ảnh đại diện
+        </label>
+        {avatarPreview ? (
+          <img
+            src={avatarPreview}
+            alt="Avatar Preview"
+            className="w-24 h-24 rounded-full object-cover mb-4 border border-gray-300"
+          />
+        ) : (
+          <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-4">
+            <span className="text-gray-500">No Image</span>
+          </div>
+        )}
+        <input
+          type="file"
+          name="avatar"
+          required
+          onChange={handleAvatarChange}
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+        />
+      </div>
+
 
       {/* Giới tính */}
       {/* <fieldset> */}
@@ -159,7 +316,7 @@ const Register = () => {
             type="radio"
             className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
             onChange={handleChange}
-            value="male"
+            value={true}
           />
           <label
             htmlFor="gender-male"
@@ -175,7 +332,7 @@ const Register = () => {
             type="radio"
             className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden"
             onChange={handleChange}
-            value="female"
+            value={false}
           />
           <label
             htmlFor="gender-female"
@@ -197,6 +354,7 @@ const Register = () => {
         autoComplete="name"
         onChange={handleChange}
         value={formData.fullname}
+        error={errors.fullname}
       />
 
       {/* Số điện thoại */}
@@ -209,6 +367,18 @@ const Register = () => {
         autoComplete="tel"
         onChange={handleChange}
         value={formData.phone}
+        error={errors.phone}
+      />
+
+      <Input
+        label="Ngày sinh"
+        type="date"
+        name="dayOfBirth"
+        placeholder="Ngày sinh"
+        required
+        onChange={handleChange}
+        value={formData.dayOfBirth}
+        error={errors.dayOfBirth}
       />
 
       {/* Mật khẩu */}
@@ -221,6 +391,7 @@ const Register = () => {
         autoComplete="new-password"
         onChange={handleChange}
         value={formData.password}
+        error={errors.password}
       />
 
       {/* Xác nhận mật khẩu */}
@@ -233,6 +404,7 @@ const Register = () => {
         autoComplete="new-password"
         onChange={handleChange}
         value={formData.confirm_password}
+        error={errors.confirm_password}
       />
 
       <div className="text-sm text-gray-600">
@@ -252,11 +424,23 @@ const Register = () => {
     </form>
   );
 
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return renderStep1();
+      case 2:
+        return renderStep2();
+      case 3:
+        return renderStep3();
+      default:
+        return renderStep1();
+    }
+  }
+
   return (
     <>
       <Header />
       <div className="flex flex-col lg:flex-row justify-around items-center bg-[#67B0F4] min-h-[calc(90vh-80px)] px-4 py-8">
-        {/* Logo - Ẩn trên mobile, hiện trên desktop */}
         <div className="hidden lg:block lg:w-1/3">
           <img src={APP_INFO.LOGO} alt="logo" className="max-w-full h-auto" />
         </div>
@@ -265,8 +449,11 @@ const Register = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 sm:p-8">
           <div className="text-2xl sm:text-3xl font-bold mb-5 text-center lg:text-left">
             Đăng ký
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Bước {step} / 3
+            </p>
           </div>
-          {step === 1 ? renderStep1() : renderStep2()}
+          {renderStep()}
         </div>
       </div>
       <Footer />

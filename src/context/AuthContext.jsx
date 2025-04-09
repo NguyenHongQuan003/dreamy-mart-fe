@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCurrentUser, login } from "../services/authService";
+import { getCurrentUser, login, logout } from "../services/authService";
 import PropTypes from "prop-types";
 import { AuthContext } from "../utils/authUtils";
 import { useNavigate } from "react-router-dom";
@@ -67,12 +67,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signOut = () => {
-    setUser(null);
-    setAccessToken(null);
-    setRefreshToken(null);
-    navigate("/login");
-    toast.success("Đăng xuất thành công!");
+  const signOut = async () => {
+    try {
+      await logout(localStorage.getItem("refresh_token"));
+      setUser(null);
+      setAccessToken(null);
+      setRefreshToken(null);
+      navigate("/login");
+      toast.success("Đăng xuất thành công!");
+    } catch (error) {
+      console.error("Sign out failed:", error);
+      toast.error("Đăng xuất không thành công!");
+    }
   };
 
   if (loading) {
