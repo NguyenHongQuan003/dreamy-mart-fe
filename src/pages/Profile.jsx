@@ -9,7 +9,6 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaEdit,
-  FaEnvelope,
   FaPlus,
   FaTrash,
   FaShoppingBag,
@@ -22,10 +21,13 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
 import { APP_INFO } from "../constants/app.constants";
+import { validateDayOfBirth, validatePhone } from "../utils/validate";
+import { updateProfile } from "../services/userService";
 
 const Profile = () => {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("profile");
   const [orders, setOrders] = useState([]);
 
@@ -37,6 +39,7 @@ const Profile = () => {
     gender: user?.gender.toString() || "",
     dateOfBirth: user?.dateOfBirth || "",
   });
+
   const [avatarPreview, setAvatarPreview] = useState(formData.avatar);
 
   useEffect(() => {
@@ -60,10 +63,22 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    switch (name) {
+      case "phone":
+        setErrors((prev) => ({ ...prev, phone: validatePhone(value) }));
+        break;
+      case "dateOfBirth":
+        setErrors((prev) => ({
+          ...prev,
+          dateOfBirth: validateDayOfBirth(value),
+        }));
+        break;
+      default:
+        break;
+    }
   };
 
   const handleAvatarChange = (e) => {
@@ -72,10 +87,11 @@ const Profile = () => {
     setAvatarPreview(URL.createObjectURL(selectedFile));
   };
 
-  const handleSubmit = async (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
     try {
-      // TODO: Implement update profile logic
+      await updateProfile(formData);
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -382,7 +398,7 @@ const Profile = () => {
           {/* Profile Content */}
           {activeTab === "profile" && (
             <div className="bg-white rounded-lg shadow-md p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleProfileSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input
                     label="Họ và tên"
@@ -433,16 +449,9 @@ const Profile = () => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     icon={FaCalendar}
+                    error={errors.dateOfBirth}
                   />
-                  <Input
-                    label="Email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    icon={FaEnvelope}
-                  />
+
                   <Input
                     label="Số điện thoại"
                     name="phone"
@@ -450,6 +459,7 @@ const Profile = () => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     icon={FaPhone}
+                    error={errors.phone}
                   />
                 </div>
 
