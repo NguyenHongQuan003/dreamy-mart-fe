@@ -299,8 +299,8 @@ const Profile = () => {
                   {/* <FaUser className="text-white text-3xl" /> */}
                   <img
                     src={
-                      isValidImageUrl(user.avatar)
-                        ? user.avatar
+                      isValidImageUrl(user?.avatar)
+                        ? user?.avatar
                         : APP_INFO.DEFAULT_AVATAR
                     }
                     alt="Avatar"

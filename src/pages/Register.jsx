@@ -18,10 +18,17 @@ import OTPInput from "../components/common/OTPInput";
 import { toast } from "react-toastify";
 import { generateOTP, register, verifyOTP } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import {
+  validateConfirmPassword,
+  validateDayOfBirth,
+  validateOTP,
+  validatePassword,
+  validatePhone,
+} from "../utils/validate";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
@@ -33,30 +40,6 @@ const Register = () => {
     confirm_password: "",
     dayOfBirth: "",
   });
-
-  // Validation functions
-  const validatePhone = (phoneNumber) => {
-    const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
-    return phoneRegex.test(phoneNumber) ? "" : "Bắt đầu bằng 0 và có 10 số";
-  };
-
-  const validateOTP = (otp) => {
-    return otp.length === 6 ? "" : "Mã OTP phải có 6 chữ số";
-  };
-
-  const validatePassword = (passWord) => {
-    return passWord.length >= 8 ? "" : "Mật khẩu phải có ít nhất 8 ký tự";
-  };
-
-  const validateConfirmPassword = (confirm_password) => {
-    return confirm_password === formData.password ? "" : "Mật khẩu không khớp";
-  };
-
-  const validateDayOfBirth = (dayOfBirth) => {
-    const today = new Date();
-    const birthDate = new Date(dayOfBirth);
-    return birthDate < today ? "" : "Ngày sinh phải nhỏ hơn ngày hiện tại";
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,14 +56,14 @@ const Register = () => {
       case "password":
         setErrors((prev) => ({
           ...prev,
-          confirm_password: validateConfirmPassword(value),
+          confirm_password: validateConfirmPassword(value, formData.password),
         }));
         setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
         break;
       case "confirm_password":
         setErrors((prev) => ({
           ...prev,
-          confirm_password: validateConfirmPassword(value),
+          confirm_password: validateConfirmPassword(value, formData.password),
         }));
         break;
       case "dayOfBirth":
@@ -245,8 +228,45 @@ const Register = () => {
   };
   const renderStep3 = () => (
     <form className="space-y-4" onSubmit={handleFinalSubmit}>
+      {/* Họ tên */}
+      <Input
+        type="text"
+        name="fullname"
+        placeholder="Họ và tên"
+        icon={FaUser}
+        required
+        autoComplete="name"
+        onChange={handleChange}
+        value={formData.fullname}
+        error={errors.fullname}
+      />
+
+      {/* Số điện thoại */}
+      <Input
+        type="tel"
+        name="phone"
+        placeholder="Số điện thoại"
+        icon={FaPhone}
+        required
+        autoComplete="tel"
+        onChange={handleChange}
+        value={formData.phone}
+        error={errors.phone}
+      />
+
+      <label className="text-sm font-medium text-gray-700">Ngày sinh</label>
+      <Input
+        type="date"
+        name="dayOfBirth"
+        placeholder="Ngày sinh"
+        required
+        onChange={handleChange}
+        value={formData.dayOfBirth}
+        error={errors.dayOfBirth}
+      />
+
       {/* Giới tính */}
-      <legend className="text-gray-600">Giới tính</legend>
+      <label className="text-sm font-medium text-gray-700">Giới tính</label>
       <div className="flex flex-row gap-x-3">
         <div className="flex items-center gap-x-3">
           <input
@@ -282,44 +302,6 @@ const Register = () => {
           </label>
         </div>
       </div>
-      {/* </fieldset> */}
-
-      {/* Họ tên */}
-      <Input
-        type="text"
-        name="fullname"
-        placeholder="Họ và tên"
-        icon={FaUser}
-        required
-        autoComplete="name"
-        onChange={handleChange}
-        value={formData.fullname}
-        error={errors.fullname}
-      />
-
-      {/* Số điện thoại */}
-      <Input
-        type="tel"
-        name="phone"
-        placeholder="Số điện thoại"
-        icon={FaPhone}
-        required
-        autoComplete="tel"
-        onChange={handleChange}
-        value={formData.phone}
-        error={errors.phone}
-      />
-
-      <Input
-        label="Ngày sinh"
-        type="date"
-        name="dayOfBirth"
-        placeholder="Ngày sinh"
-        required
-        onChange={handleChange}
-        value={formData.dayOfBirth}
-        error={errors.dayOfBirth}
-      />
 
       {/* Mật khẩu */}
       <Input
@@ -387,12 +369,15 @@ const Register = () => {
 
         {/* Form */}
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 sm:p-8">
-          <div className="text-2xl sm:text-3xl font-bold mb-5 text-center lg:text-left">
-            Đăng ký
+          <div className="flex mb-5 justify-between items-center">
+            <div className="text-2xl sm:text-3xl font-bold text-center lg:text-left">
+              Đăng ký
+            </div>
             <div className="flex items-center">
               {step > 1 && (
                 <Button
                   type="button"
+                  size="small"
                   variant="outline"
                   icon={FaArrowLeft}
                   onClick={handleBack}
