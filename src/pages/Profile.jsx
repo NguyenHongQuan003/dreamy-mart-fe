@@ -4,6 +4,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
+import { useSelector } from "react-redux";
 import {
   FaUser,
   FaPhone,
@@ -19,13 +20,11 @@ import {
   FaCalendar,
   FaCamera,
 } from "react-icons/fa";
-import { useAuth } from "../utils/authUtils";
 import { APP_INFO } from "../constants/app.constants";
 import { validateDayOfBirth, validatePhone } from "../utils/validate";
-import { updateProfile } from "../services/userService";
 
 const Profile = () => {
-  const { user } = useAuth();
+  const user = useSelector((state) => state.auth.user);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("profile");
@@ -39,8 +38,20 @@ const Profile = () => {
     gender: user?.gender.toString() || "",
     dateOfBirth: user?.dateOfBirth || "",
   });
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
-  const [avatarPreview, setAvatarPreview] = useState(formData.avatar);
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      avatar: user?.avatar || null,
+      fullName: user?.fullName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+      gender: user?.gender.toString() || "",
+      dateOfBirth: user?.dateOfBirth || "",
+    }));
+    setAvatarPreview(user?.avatar);
+  }, [user]);
 
   useEffect(() => {
     // Lấy danh sách đơn hàng từ localStorage
@@ -89,13 +100,19 @@ const Profile = () => {
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    try {
-      await updateProfile(formData);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+    // try {
+    //   const response = await updateProfile(formData);
+    //   if (response.success) {
+    //     dispatch(updateUser(response.result));
+    //     toast.success("Cập nhật thông tin thành công!");
+    //     setIsEditing(false);
+    //   } else {
+    //     toast.error(response.message || "Cập nhật thông tin thất bại!");
+    //   }
+    // } catch (error) {
+    //   console.error("Error updating profile:", error);
+    //   toast.error("Có lỗi xảy ra khi cập nhật thông tin!");
+    // }
   };
 
   // Hàm định dạng ngày tháng

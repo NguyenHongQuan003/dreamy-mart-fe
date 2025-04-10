@@ -5,14 +5,15 @@ import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { FaEnvelope, FaFacebook, FaGoogle, FaLock } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Footer from "../components/layout/Footer";
-import { useAuth } from "../utils/authUtils";
 import { toast } from "react-toastify";
+import { login } from "../services/authService";
 
 const Login = () => {
-  const { signIn } = useAuth();
+  const navigate = useNavigate();
+  // const { signIn } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,14 +29,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    try {
-      await signIn(formData.email, formData.password);
+    const response = await login(formData.email, formData.password);
+    console.log("response", response);
+    if (response) {
       toast.success("Đăng nhập thành công!");
-      // alert("Đăng nhập thành công!");
-    } catch (error) {
-      toast.error("Email hoặc password không chính xác!", error);
-      // alert("Đăng nhập thất bại!", error);
+      navigate("/");
+    } else {
+      toast.error("Email hoặc password không chính xác!");
     }
   };
   return (

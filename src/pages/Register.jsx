@@ -201,7 +201,8 @@ const Register = () => {
     e.preventDefault();
     const passwordError = validatePassword(formData.password);
     const confirmPasswordError = validateConfirmPassword(
-      formData.confirm_password
+      formData.confirm_password,
+      formData.password
     );
     const dayOfBirthError = validateDayOfBirth(formData.dayOfBirth);
 

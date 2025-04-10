@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProductList from "./pages/ProductList";
-import { AuthProvider } from "./context/AuthContext";
 import Profile from "./pages/Profile";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
@@ -18,45 +17,59 @@ import OrderManagement from "./pages/admin/OrderManagement";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ForgotPassword from "./pages/ForgotPassword";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { setupInterceptors } from "./utils/axiosConfig";
+import { loadUserFromToken } from "./services/authService";
+
+const AxiosInterceptorSetup = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setupInterceptors(navigate);
+    loadUserFromToken();
+  }, [navigate]);
+
+  return null;
+};
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <AuthProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders/:orderId" element={<OrderDetail />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route
-              path="/products/:category/:subcategory"
-              element={<ProductList />}
-            />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<Dashboard />} />
-            <Route path="/admin/products" element={<ProductManagement />} />
-            <Route path="/admin/orders" element={<OrderManagement />} />
-            <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
-          </Routes>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
+        <AxiosInterceptorSetup />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders/:orderId" element={<OrderDetail />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route
+            path="/products/:category/:subcategory"
+            element={<ProductList />}
           />
-        </AuthProvider>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/products" element={<ProductManagement />} />
+          <Route path="/admin/orders" element={<OrderManagement />} />
+          <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
+        </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </Router>
     </Provider>
   );

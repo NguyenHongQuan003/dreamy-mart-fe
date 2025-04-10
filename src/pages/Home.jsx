@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
-import { useAuth } from "../utils/authUtils";
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -11,11 +10,12 @@ import {
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
 // import { getLatestProducts } from "../services/apiFunctions";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const user = useSelector((state) => state.auth.user);
 
   const sliderItems = [
     {

@@ -11,13 +11,14 @@ import {
 } from "react-icons/fa";
 import { APP_INFO, BANNER } from "../../constants/app.constants";
 import Navbar from "./Navbar";
-import { useAuth } from "../../utils/authUtils";
+import { logout } from "../../services/authService";
 
 const Header = () => {
+  const user = useSelector((state) => state.auth.user);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { user, signOut } = useAuth();
+
   const cartQuantity = useSelector(selectCartTotalQuantity);
 
   const toggleNavbar = () => {
@@ -128,7 +129,7 @@ const Header = () => {
                         Hồ sơ
                       </Link>
                       <button
-                        onClick={signOut}
+                        onClick={() => logout()}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                       >
                         Đăng xuất
