@@ -5,7 +5,6 @@ import Footer from "../components/layout/Footer";
 import ProductCard from "../components/product/ProductCard";
 import SortComboBox from "../components/common/SortComboBox";
 import Button from "../components/common/Button";
-import Input from "../components/common/Input";
 import { getProducts } from "../services/apiFunctions";
 import {
   FaHome,

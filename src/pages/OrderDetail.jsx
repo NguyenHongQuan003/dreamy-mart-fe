@@ -10,7 +10,7 @@ import {
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Button from "../components/common/Button";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 
 const OrderDetail = () => {
   const { orderId } = useParams();

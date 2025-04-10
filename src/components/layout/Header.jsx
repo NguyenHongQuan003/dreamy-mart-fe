@@ -9,7 +9,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-import { APP_INFO, BANNER } from "../../constants/common.constants";
+import { APP_INFO, BANNER } from "../../constants/app.constants";
 import Navbar from "./Navbar";
 import { useAuth } from "../../utils/authUtils";
 import { isValidImageUrl } from "../../utils/validate";

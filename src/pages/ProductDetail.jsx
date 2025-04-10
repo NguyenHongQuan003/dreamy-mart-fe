@@ -6,7 +6,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import { getImageByProductId, getProductById } from "../services/apiFunctions";
 import Button from "../components/common/Button";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 import {
   FaMinus,
   FaPlus,

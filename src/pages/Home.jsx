@@ -9,7 +9,7 @@ import {
   FaStar,
   FaArrowRight,
 } from "react-icons/fa";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 // import { getLatestProducts } from "../services/apiFunctions";
 
 const Home = () => {

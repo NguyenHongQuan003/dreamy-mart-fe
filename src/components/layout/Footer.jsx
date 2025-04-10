@@ -9,7 +9,7 @@ import {
   FaPhone,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { APP_INFO } from "../../constants/common.constants";
+import { APP_INFO } from "../../constants/app.constants";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();

@@ -21,7 +21,7 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
 import { isValidImageUrl } from "../utils/validate";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 
 const Profile = () => {
   const { user } = useAuth();

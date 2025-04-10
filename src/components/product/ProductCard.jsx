@@ -3,7 +3,7 @@ import { FaStar, FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { getImageByProductId } from "../../services/apiFunctions";
-import { APP_INFO } from "../../constants/common.constants";
+import { APP_INFO } from "../../constants/app.constants";
 import Button from "../common/Button";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";

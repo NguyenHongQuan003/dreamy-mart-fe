@@ -12,7 +12,7 @@ import {
 import Header from "../components/layout/Header";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 import Footer from "../components/layout/Footer";
 import OTPInput from "../components/common/OTPInput";
 import { toast } from "react-toastify";

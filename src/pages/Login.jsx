@@ -4,7 +4,7 @@ import Header from "../components/layout/Header";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { FaEnvelope, FaFacebook, FaGoogle, FaLock } from "react-icons/fa";
-import { APP_INFO } from "../constants/common.constants";
+import { APP_INFO } from "../constants/app.constants";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import Footer from "../components/layout/Footer";
@@ -17,7 +17,6 @@ const Login = () => {
     email: "",
     password: "",
   });
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
