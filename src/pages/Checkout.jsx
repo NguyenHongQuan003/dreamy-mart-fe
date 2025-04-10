@@ -184,14 +184,12 @@ const Checkout = () => {
     return (
       <div className="flex items-center justify-center mb-8">
         <div
-          className={`flex flex-col items-center ${
-            currentStep >= 1 ? "text-blue-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center ${currentStep >= 1 ? "text-blue-600" : "text-gray-400"
+            }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              currentStep >= 1 ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep >= 1 ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
           >
             <FaShoppingBag />
           </div>
@@ -199,20 +197,17 @@ const Checkout = () => {
         </div>
 
         <div
-          className={`w-20 h-1 mx-2 ${
-            currentStep >= 2 ? "bg-blue-600" : "bg-gray-200"
-          }`}
+          className={`w-20 h-1 mx-2 ${currentStep >= 2 ? "bg-blue-600" : "bg-gray-200"
+            }`}
         ></div>
 
         <div
-          className={`flex flex-col items-center ${
-            currentStep >= 2 ? "text-blue-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center ${currentStep >= 2 ? "text-blue-600" : "text-gray-400"
+            }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              currentStep >= 2 ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep >= 2 ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
           >
             <FaCreditCard />
           </div>
@@ -220,20 +215,17 @@ const Checkout = () => {
         </div>
 
         <div
-          className={`w-20 h-1 mx-2 ${
-            currentStep >= 3 ? "bg-blue-600" : "bg-gray-200"
-          }`}
+          className={`w-20 h-1 mx-2 ${currentStep >= 3 ? "bg-blue-600" : "bg-gray-200"
+            }`}
         ></div>
 
         <div
-          className={`flex flex-col items-center ${
-            currentStep >= 3 ? "text-blue-600" : "text-gray-400"
-          }`}
+          className={`flex flex-col items-center ${currentStep >= 3 ? "text-blue-600" : "text-gray-400"
+            }`}
         >
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              currentStep >= 3 ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${currentStep >= 3 ? "bg-blue-600 text-white" : "bg-gray-200"
+              }`}
           >
             <FaCheckCircle />
           </div>
@@ -312,9 +304,8 @@ const Checkout = () => {
               name="city"
               value={shippingInfo.city}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${
-                errors.city ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
+              className={`w-full px-3 py-2 border ${errors.city ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
             >
               <option value="">Chọn Tỉnh/Thành phố</option>
               <option value="Hồ Chí Minh">Hồ Chí Minh</option>
@@ -335,9 +326,8 @@ const Checkout = () => {
               name="district"
               value={shippingInfo.district}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${
-                errors.district ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
+              className={`w-full px-3 py-2 border ${errors.district ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
             >
               <option value="">Chọn Quận/Huyện</option>
               <option value="Quận Gò Vấp">Quận Gò Vấp</option>
@@ -357,9 +347,8 @@ const Checkout = () => {
               name="ward"
               value={shippingInfo.ward}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${
-                errors.ward ? "border-red-500" : "border-gray-300"
-              } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
+              className={`w-full px-3 py-2 border ${errors.ward ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
             >
               <option value="">Chọn Phường/Xã</option>
               <option value="Phường 5">Phường 5</option>
@@ -396,20 +385,18 @@ const Checkout = () => {
 
         <div className="space-y-4">
           <div
-            className={`border ${
-              paymentMethod === "cod"
+            className={`border ${paymentMethod === "cod"
                 ? "border-blue-500 bg-blue-50"
                 : "border-gray-200"
-            } rounded-lg p-4 cursor-pointer transition-colors`}
+              } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("cod")}
           >
             <div className="flex items-center">
               <div
-                className={`w-5 h-5 rounded-full border-2 ${
-                  paymentMethod === "cod"
+                className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "cod"
                     ? "border-blue-500"
                     : "border-gray-300"
-                } flex items-center justify-center mr-3`}
+                  } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "cod" && (
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
@@ -430,20 +417,18 @@ const Checkout = () => {
           </div>
 
           <div
-            className={`border ${
-              paymentMethod === "bank"
+            className={`border ${paymentMethod === "bank"
                 ? "border-blue-500 bg-blue-50"
                 : "border-gray-200"
-            } rounded-lg p-4 cursor-pointer transition-colors`}
+              } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("bank")}
           >
             <div className="flex items-center">
               <div
-                className={`w-5 h-5 rounded-full border-2 ${
-                  paymentMethod === "bank"
+                className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "bank"
                     ? "border-blue-500"
                     : "border-gray-300"
-                } flex items-center justify-center mr-3`}
+                  } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "bank" && (
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
@@ -466,20 +451,18 @@ const Checkout = () => {
           </div>
 
           <div
-            className={`border ${
-              paymentMethod === "card"
+            className={`border ${paymentMethod === "card"
                 ? "border-blue-500 bg-blue-50"
                 : "border-gray-200"
-            } rounded-lg p-4 cursor-pointer transition-colors`}
+              } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("card")}
           >
             <div className="flex items-center">
               <div
-                className={`w-5 h-5 rounded-full border-2 ${
-                  paymentMethod === "card"
+                className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "card"
                     ? "border-blue-500"
                     : "border-gray-300"
-                } flex items-center justify-center mr-3`}
+                  } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "card" && (
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
@@ -634,7 +617,7 @@ const Checkout = () => {
             <span className="text-gray-600">Giảm giá:</span>
             <span>0 đ</span>
           </div>
-          <div className="flex justify-between font-bold text-lg pt-2 border-t">
+          <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-300">
             <span>Tổng cộng:</span>
             <span className="text-red-600">{cartTotal.toLocaleString()} đ</span>
           </div>

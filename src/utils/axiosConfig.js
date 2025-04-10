@@ -3,9 +3,9 @@ import { API_AUTH } from "../constants/api.constants";
 
 const axiosInstance = axios.create({
     baseURL: `${API_AUTH}`,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
 });
 
 // Interceptor để thêm token vào header
@@ -14,6 +14,15 @@ axiosInstance.interceptors.request.use(
         const token = localStorage.getItem('access_token');
         if (token) {
             config.headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        // Tự động set Content-Type nếu chưa đặt
+        if (!config.headers["Content-Type"]) {
+            if (config.data instanceof FormData) {
+                config.headers["Content-Type"] = "multipart/form-data";
+            } else {
+                config.headers["Content-Type"] = "application/json";
+            }
         }
         return config;
     },

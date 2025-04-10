@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FaEnvelope,
@@ -17,15 +17,15 @@ import Footer from "../components/layout/Footer";
 import OTPInput from "../components/common/OTPInput";
 import { toast } from "react-toastify";
 import { generateOTP, register, verifyOTP } from "../services/userService";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [step, setStep] = useState(2);
+  const navigate = useNavigate();
+  const [step, setStep] = useState(3);
   const [errors, setErrors] = useState({});
-  const [avatarPreview, setAvatarPreview] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
-    avatar: null,
     gender: "true",
     fullname: "",
     phone: "",
@@ -34,14 +34,10 @@ const Register = () => {
     dayOfBirth: "",
   });
 
-  useEffect(() => {
-    console.log("Form data:", formData);
-  }, [formData])
-
   // Validation functions
   const validatePhone = (phoneNumber) => {
     const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
-    return phoneRegex.test(phoneNumber) ? "" : "Số điện thoại không hợp lệ";
+    return phoneRegex.test(phoneNumber) ? "" : "Bắt đầu bằng 0 và có 10 số";
   };
 
   const validateOTP = (otp) => {
@@ -59,13 +55,7 @@ const Register = () => {
   const validateDayOfBirth = (dayOfBirth) => {
     const today = new Date();
     const birthDate = new Date(dayOfBirth);
-    return birthDate < today ? "" : "Ngày sinh không hợp lệ";
-  };
-
-  const handleAvatarChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFormData((prev) => ({ ...prev, avatar: selectedFile }));
-    setAvatarPreview(URL.createObjectURL(selectedFile));
+    return birthDate < today ? "" : "Ngày sinh phải nhỏ hơn ngày hiện tại";
   };
 
   const handleChange = (e) => {
@@ -104,7 +94,6 @@ const Register = () => {
     }
   };
 
-
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -115,17 +104,16 @@ const Register = () => {
     e.preventDefault();
     try {
       const result = await generateOTP(formData.email);
-      console.log("Kết quả gửi OTP:", result);
       if (result) {
         toast.success("Mã OTP đã được gửi đến email của bạn");
-        setFormData((prev) => ({ ...prev, otp: "" })); // Reset OTP input
+        setFormData((prev) => ({ ...prev, otp: "" }));
       }
       setStep(2);
     } catch (error) {
       console.error("Lỗi gửi OTP:", error);
       toast.error("Gửi mã OTP không thành công");
     }
-  }
+  };
 
   const renderStep1 = () => (
     <form className="space-y-4" onSubmit={handleStep1Submit}>
@@ -174,7 +162,6 @@ const Register = () => {
     </form>
   );
 
-
   const handleVerifyOTP = async () => {
     try {
       const result = await verifyOTP(formData.email, formData.otp);
@@ -206,11 +193,10 @@ const Register = () => {
 
   const renderStep2 = () => (
     <form className="mt-8 space-y-6" onSubmit={handleStep2Submit}>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Nhập mã OTP đã gửi đến email của bạn
-        </label>
-      </div>
+      <label className="block text-center font-medium text-gray-700 mb-2">
+        Nhập mã OTP đã gửi đến email của bạn
+      </label>
+
       <OTPInput
         length={6}
         onChangeOTP={(otp) => {
@@ -226,16 +212,8 @@ const Register = () => {
       >
         Xác nhận
       </Button>
-      <Button
-        type="button"
-        variant="outline"
-        fullWidth
-        onClick={() => setStep(1)}
-      >
-        Quay lại
-      </Button>
-    </form >
-  )
+    </form>
+  );
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
     const passwordError = validatePassword(formData.password);
@@ -248,11 +226,14 @@ const Register = () => {
       console.log("Registration completed:", formData);
       try {
         const response = await register(formData);
-        console.log("Du lieu tra ve tu server khi dang ky", response);
-        toast.success("Đăng ký thành công!");
-        // navigate("/login");
+        if (response.message === "User created successfully") {
+          toast.success("Đăng ký thành công!");
+          navigate("/login");
+        } else {
+          toast.error("Đăng ký thất bại!");
+        }
       } catch (error) {
-        console.log("Loi khi dang ky", error);
+        console.log("Error when register:", error);
       }
     } else {
       setErrors({
@@ -264,49 +245,8 @@ const Register = () => {
   };
   const renderStep3 = () => (
     <form className="space-y-4" onSubmit={handleFinalSubmit}>
-      <div className="flex items-center mb-4">
-        <Button
-          type="button"
-          variant="outline"
-          icon={FaArrowLeft}
-          className="mr-4"
-          onClick={handleBack}
-        />
-        <span className="text-gray-600">
-          Quay lại
-        </span>
-      </div>
-
-      {/* Avatar Upload */}
-      <div className="flex flex-col items-center">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Ảnh đại diện
-        </label>
-        {avatarPreview ? (
-          <img
-            src={avatarPreview}
-            alt="Avatar Preview"
-            className="w-24 h-24 rounded-full object-cover mb-4 border border-gray-300"
-          />
-        ) : (
-          <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center mb-4">
-            <span className="text-gray-500">No Image</span>
-          </div>
-        )}
-        <input
-          type="file"
-          name="avatar"
-          required
-          onChange={handleAvatarChange}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
-      </div>
-
-
       {/* Giới tính */}
-      {/* <fieldset> */}
       <legend className="text-gray-600">Giới tính</legend>
-
       <div className="flex flex-row gap-x-3">
         <div className="flex items-center gap-x-3">
           <input
@@ -435,7 +375,7 @@ const Register = () => {
       default:
         return renderStep1();
     }
-  }
+  };
 
   return (
     <>
@@ -449,9 +389,17 @@ const Register = () => {
         <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 sm:p-8">
           <div className="text-2xl sm:text-3xl font-bold mb-5 text-center lg:text-left">
             Đăng ký
-            <p className="mt-2 text-center text-sm text-gray-600">
-              Bước {step} / 3
-            </p>
+            <div className="flex items-center">
+              {step > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  icon={FaArrowLeft}
+                  onClick={handleBack}
+                />
+              )}
+              <p className="ml-4 text-sm text-gray-600">Bước {step} / 3</p>
+            </div>
           </div>
           {renderStep()}
         </div>

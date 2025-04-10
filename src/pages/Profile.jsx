@@ -17,6 +17,7 @@ import {
   FaRegClock,
   FaCheckCircle,
   FaTruck,
+  FaCalendar,
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
 import { isValidImageUrl } from "../utils/validate";
@@ -297,8 +298,11 @@ const Profile = () => {
                 <div className="flex items-center justify-center rounded-ful">
                   {/* <FaUser className="text-white text-3xl" /> */}
                   <img
-                    // src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    src={isValidImageUrl(user.avatar) ? user.avatar : APP_INFO.NO_IAMGE_AVAILABLE}
+                    src={
+                      isValidImageUrl(user.avatar)
+                        ? user.avatar
+                        : APP_INFO.DEFAULT_AVATAR
+                    }
                     alt="Avatar"
                     className="w-20 h-20 rounded-full object-cover"
                   />
@@ -326,30 +330,33 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow-md p-2 mb-6">
             <div className="flex overflow-x-auto">
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "profile"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
+                  activeTab === "profile"
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 onClick={() => setActiveTab("profile")}
               >
                 <FaUser className="inline mr-2" />
                 Thông tin cá nhân
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "orders"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
+                  activeTab === "orders"
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 onClick={() => setActiveTab("orders")}
               >
                 <FaShoppingBag className="inline mr-2" />
                 Đơn hàng của tôi
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "addresses"
-                  ? "text-blue-600 border-b-2 border-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
+                  activeTab === "addresses"
+                    ? "text-blue-600 border-b-2 border-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 onClick={() => setActiveTab("addresses")}
               >
                 <FaMapMarkerAlt className="inline mr-2" />
@@ -371,23 +378,7 @@ const Profile = () => {
                     disabled={!isEditing}
                     icon={FaUser}
                   />
-                  <Input
-                    label="Email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    icon={FaEnvelope}
-                  />
-                  <Input
-                    label="Số điện thoại"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                    icon={FaPhone}
-                  />
+
                   {/* Gender Selection */}
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
@@ -420,6 +411,32 @@ const Profile = () => {
                       </label>
                     </div>
                   </div>
+                  <Input
+                    label="Ngày sinh"
+                    type="date"
+                    name="dateOfBirth"
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    icon={FaCalendar}
+                  />
+                  <Input
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    icon={FaEnvelope}
+                  />
+                  <Input
+                    label="Số điện thoại"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    disabled={!isEditing}
+                    icon={FaPhone}
+                  />
                 </div>
 
                 {isEditing && (

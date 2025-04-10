@@ -113,9 +113,12 @@ const Header = () => {
                   >
                     {/* <FaUser className="text-[#0078E8] h-5 w-5" /> */}
                     <img
-                      // src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      src={isValidImageUrl(user.avatar) ? user.avatar : APP_INFO.NO_IAMGE_AVAILABLE}
-                      className="h-11 w-11 rounded-full border-1 border-white"
+                      src={
+                        isValidImageUrl(user.avatar)
+                          ? user.avatar
+                          : APP_INFO.DEFAULT_AVATAR
+                      }
+                      className="h-11 w-11 rounded-full border-1 border-white object-cover"
                     />
                     <span className="hidden md:block text-[#0078E8] ml-1 pr-1 text-xs truncate max-w-30">
                       <strong>{user.fullName}</strong>

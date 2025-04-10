@@ -1,3 +1,5 @@
+import defaultAvatar from "../assets/default-avatar.jpg";
+
 export const APP_INFO = {
   LOGO_MINI:
     "https://res.cloudinary.com/dclf0ngcu/image/upload/v1741185494/dreamy-mart/logo_dreamysmart_mini.png",
@@ -8,6 +10,7 @@ export const APP_INFO = {
   KEYWORDS: "ecommerce, online shopping, fashion, electronics",
   NO_IAMGE_AVAILABLE:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/624px-No-Image-Placeholder.svg.png",
+  DEFAULT_AVATAR: defaultAvatar,
 };
 
 export const BANNER = {

@@ -97,7 +97,7 @@ const Cart = () => {
             {/* Cart Items */}
             <div className="lg:w-2/3">
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-4 border-b bg-gray-50">
+                <div className="p-4 border-b border-gray-300 bg-gray-50">
                   <div className="grid grid-cols-12 gap-4 font-medium text-gray-700">
                     <div className="col-span-6">Sản phẩm</div>
                     <div className="col-span-2 text-center">Đơn giá</div>
@@ -187,7 +187,7 @@ const Cart = () => {
                   ))}
                 </div>
 
-                <div className="p-4 border-t flex flex-wrap justify-between items-center gap-4 bg-gray-50">
+                <div className="p-4 border-t border-gray-300 flex flex-wrap justify-between items-center gap-4 bg-gray-50">
                   <Link
                     to="/"
                     className="flex items-center text-blue-600 hover:underline"
@@ -209,7 +209,7 @@ const Cart = () => {
             {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 sticky top-4">
-                <h2 className="text-xl font-bold mb-4 pb-3 border-b text-gray-800">
+                <h2 className="text-xl font-bold mb-4 pb-3 border-b border-gray-300 text-gray-800">
                   Tổng tiền
                 </h2>
 
@@ -226,7 +226,7 @@ const Cart = () => {
                     <span>Giảm giá:</span>
                     <span>0 đ</span>
                   </div>
-                  <div className="flex justify-between font-bold text-lg pt-3 border-t">
+                  <div className="flex justify-between font-bold text-lg pt-3 border-t border-gray-300">
                     <span>Tổng cộng:</span>
                     <span className="text-red-600">
                       {cartTotal.toLocaleString()} đ
