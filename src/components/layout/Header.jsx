@@ -12,7 +12,6 @@ import {
 import { APP_INFO, BANNER } from "../../constants/app.constants";
 import Navbar from "./Navbar";
 import { useAuth } from "../../utils/authUtils";
-import { isValidImageUrl } from "../../utils/validate";
 
 const Header = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -113,11 +112,7 @@ const Header = () => {
                   >
                     {/* <FaUser className="text-[#0078E8] h-5 w-5" /> */}
                     <img
-                      src={
-                        isValidImageUrl(user.avatar)
-                          ? user.avatar
-                          : APP_INFO.DEFAULT_AVATAR
-                      }
+                      src={user.avatar || APP_INFO.DEFAULT_AVATAR}
                       className="h-11 w-11 rounded-full border-1 border-white object-cover"
                     />
                     <span className="hidden md:block text-[#0078E8] ml-1 pr-1 text-xs truncate max-w-30">

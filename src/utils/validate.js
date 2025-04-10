@@ -1,9 +1,3 @@
-export const isValidImageUrl = (url) => {
-  return (
-    typeof url === "string" && url.match(/\.(jpeg|jpg|gif|png|webp|bmp|svg)$/i)
-  );
-};
-
 export const validatePhone = (phoneNumber) => {
   const phoneRegex = /(0[3|5|7|8|9])+([0-9]{8})\b/;
   return phoneRegex.test(phoneNumber) ? "" : "Bắt đầu bằng 0 và có 10 số";

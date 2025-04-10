@@ -18,9 +18,9 @@ import {
   FaCheckCircle,
   FaTruck,
   FaCalendar,
+  FaCamera,
 } from "react-icons/fa";
 import { useAuth } from "../utils/authUtils";
-import { isValidImageUrl } from "../utils/validate";
 import { APP_INFO } from "../constants/app.constants";
 
 const Profile = () => {
@@ -30,13 +30,14 @@ const Profile = () => {
   const [orders, setOrders] = useState([]);
 
   const [formData, setFormData] = useState({
-    avatar: user?.avatar || "",
+    avatar: user?.avatar || null,
     fullName: user?.fullName || "",
     email: user?.email || "",
     phone: user?.phone || "",
     gender: user?.gender.toString() || "",
     dateOfBirth: user?.dateOfBirth || "",
   });
+  const [avatarPreview, setAvatarPreview] = useState(formData.avatar);
 
   useEffect(() => {
     // Lấy danh sách đơn hàng từ localStorage
@@ -63,6 +64,12 @@ const Profile = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleAvatarChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFormData((prev) => ({ ...prev, avatar: selectedFile }));
+    setAvatarPreview(URL.createObjectURL(selectedFile));
   };
 
   const handleSubmit = async (e) => {
@@ -295,18 +302,25 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow-md p-6 mb-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center justify-center rounded-ful">
-                  {/* <FaUser className="text-white text-3xl" /> */}
+                <div className="relative">
                   <img
-                    src={
-                      isValidImageUrl(user?.avatar)
-                        ? user?.avatar
-                        : APP_INFO.DEFAULT_AVATAR
-                    }
+                    src={avatarPreview || APP_INFO.DEFAULT_AVATAR}
                     alt="Avatar"
-                    className="w-20 h-20 rounded-full object-cover"
+                    className="w-20 h-20 rounded-full object-cover border-2 border-[#0078E8]"
                   />
+                  {isEditing && (
+                    <label className="absolute bottom-0 right-0 bg-blue-100 text-blue-700 px-2 py-1 rounded-lg cursor-pointer">
+                      <FaCamera />
+                      <input
+                        type="file"
+                        name="avatar"
+                        hidden
+                        onChange={handleAvatarChange}
+                      />
+                    </label>
+                  )}
                 </div>
+
                 <div>
                   <h1 className="text-2xl font-bold text-gray-800">
                     {user?.fullName || "Chưa cập nhật"}
