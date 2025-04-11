@@ -59,6 +59,16 @@ const Profile = () => {
     setAvatarPreview(user?.avatar);
   }, [user]);
 
+  const handleCancelEdit = () => {
+    setFormData({
+      ...user,
+      gender: user?.gender.toString() || "",
+    });
+    setAvatarPreview(user?.avatar);
+    setErrors({});
+    setIsEditing(false);
+  };
+
   useEffect(() => {
     // Lấy danh sách đơn hàng từ localStorage
     const fetchOrders = () => {
@@ -373,15 +383,11 @@ const Profile = () => {
               {activeTab === "profile" && (
                 <Button
                   variant="outline"
-                  onClick={() => setIsEditing(!isEditing)}
+                  onClick={() =>
+                    isEditing ? handleCancelEdit() : setIsEditing(true)
+                  }
                   icon={FaEdit}
-                  disabled={isLoading}
                 >
-                  {isLoading && (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loading size="sm" />
-                    </div>
-                  )}
                   {isEditing ? "Hủy" : "Chỉnh sửa"}
                 </Button>
               )}
@@ -497,8 +503,20 @@ const Profile = () => {
 
                 {isEditing && (
                   <div className="flex justify-end space-x-4">
-                    <Button type="submit" variant="primary" fullWidth>
-                      Lưu thay đổi
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      fullWidth
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <Loading size="sm" />
+                          <span>Đang xử lý...</span>
+                        </div>
+                      ) : (
+                        "Lưu thay đổi"
+                      )}
                     </Button>
                   </div>
                 )}
