@@ -4,7 +4,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Input from "../components/common/Input";
 import Button from "../components/common/Button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FaUser,
   FaPhone,
@@ -22,10 +22,16 @@ import {
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
 import { validateDayOfBirth, validatePhone } from "../utils/validate";
+import { updateProfile } from "../services/userService";
+import { updateUser } from "../redux/slices/authSlice";
+import { toast } from "react-toastify";
+import Loading from "../components/common/Loading";
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("profile");
   const [orders, setOrders] = useState([]);
@@ -100,19 +106,22 @@ const Profile = () => {
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const response = await updateProfile(formData);
-    //   if (response.success) {
-    //     dispatch(updateUser(response.result));
-    //     toast.success("Cập nhật thông tin thành công!");
-    //     setIsEditing(false);
-    //   } else {
-    //     toast.error(response.message || "Cập nhật thông tin thất bại!");
-    //   }
-    // } catch (error) {
-    //   console.error("Error updating profile:", error);
-    //   toast.error("Có lỗi xảy ra khi cập nhật thông tin!");
-    // }
+    setIsLoading(true);
+    try {
+      const response = await updateProfile(formData);
+      if (response) {
+        dispatch(updateUser(response));
+        toast.success("Cập nhật thông tin thành công!");
+        setIsEditing(false);
+      } else {
+        toast.error(response.message || "Cập nhật thông tin thất bại!");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật thông tin!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Hàm định dạng ngày tháng
@@ -366,7 +375,13 @@ const Profile = () => {
                   variant="outline"
                   onClick={() => setIsEditing(!isEditing)}
                   icon={FaEdit}
+                  disabled={isLoading}
                 >
+                  {isLoading && (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loading size="sm" />
+                    </div>
+                  )}
                   {isEditing ? "Hủy" : "Chỉnh sửa"}
                 </Button>
               )}

@@ -39,19 +39,18 @@ export const verifyOTP = async (email, otp) => {
 
 export const updateProfile = async (formData) => {
   const userData = new FormData();
-  formData.avatar !== null && userData.append("avatar", formData.avatar);
+  if (formData.avatar) {
+    userData.append("avatar", formData.avatar);
+  }
   userData.append("email", formData.email);
   userData.append("gender", formData.gender);
   userData.append("fullName", formData.fullName);
   userData.append("phone", formData.phone);
   userData.append("dateOfBirth", formData.dateOfBirth);
 
-  console.log("FormData content:");
-  for (let [key, value] of userData.entries()) {
-    console.log(`${key}:`, value);
-  }
-  const response = await axiosInstance.put("/user-profile/user/update", {
-    userData,
-  });
-  return response.data;
+  const response = await axiosInstance.put(
+    "/user-profile/user/update",
+    userData
+  );
+  return response.data.result;
 };
