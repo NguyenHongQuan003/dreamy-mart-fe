@@ -54,3 +54,15 @@ export const updateProfile = async (formData) => {
   );
   return response.data.result;
 };
+
+export const forgotPassword = async (email, newPassword) => {
+  const response = await axiosInstance.post(
+    "/user-profile/user/forgot-password",
+    {
+      email,
+      newPassword,
+    }
+  );
+  if (response.data.message === "Change password successfully") return true;
+  return false;
+};

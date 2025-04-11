@@ -8,17 +8,23 @@ import { APP_INFO } from "../constants/app.constants";
 import Footer from "../components/layout/Footer";
 import OTPInput from "../components/common/OTPInput";
 import { toast } from "react-toastify";
-import { generateOTP, verifyOTP } from "../services/userService";
+import {
+  generateOTP,
+  verifyOTP,
+  forgotPassword,
+} from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import {
   validateConfirmPassword,
   validateOTP,
   validatePassword,
 } from "../utils/validate";
+import Loading from "../components/common/Loading";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(3);
+  const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     email: "",
@@ -62,6 +68,7 @@ const ForgotPassword = () => {
 
   const handleStep1Submit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const result = await generateOTP(formData.email);
       if (result) {
@@ -72,6 +79,8 @@ const ForgotPassword = () => {
     } catch (error) {
       console.error("Lỗi gửi OTP:", error);
       toast.error("Gửi mã OTP không thành công");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,8 +97,15 @@ const ForgotPassword = () => {
         value={formData.email}
       />
 
-      <Button type="submit" fullWidth>
-        Tiếp tục
+      <Button type="submit" fullWidth disabled={isLoading}>
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Tiếp tục"
+        )}
       </Button>
 
       <div className="mt-6">
@@ -107,6 +123,7 @@ const ForgotPassword = () => {
   );
 
   const handleVerifyOTP = async () => {
+    setIsLoading(true);
     try {
       const result = await verifyOTP(formData.email, formData.otp);
       console.log("Kết quả xác minh OTP:", result);
@@ -121,6 +138,8 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       console.error("Lỗi xác minh OTP:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -152,38 +171,55 @@ const ForgotPassword = () => {
       <Button
         type="submit"
         fullWidth
-        disabled={errors.otp !== "" || formData.otp === "" ? true : false}
+        disabled={
+          (errors.otp !== "" || formData.otp === "" ? true : false) || isLoading
+        }
       >
-        Xác nhận
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Xác nhận"
+        )}
       </Button>
     </form>
   );
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const passwordError = validatePassword(formData.password);
     const confirmPasswordError = validateConfirmPassword(
-      formData.confirm_password
+      formData.confirm_password,
+      formData.password
     );
 
     if (!passwordError && !confirmPasswordError) {
       console.log("Registration completed:", formData);
-      //   try {
-      //     const response = await register(formData);
-      //     if (response.message === "User created successfully") {
-      //       toast.success("Đăng ký thành công!");
-      //       navigate("/login");
-      //     } else {
-      //       toast.error("Đăng ký thất bại!");
-      //     }
-      //   } catch (error) {
-      //     console.log("Error when register:", error);
-      //   }
-      // } else {
-      //   setErrors({
-      //     passWord: passwordError,
-      //     confirm_password: confirmPasswordError,
-      //     dayOfBirth: dayOfBirthError,
-      //   });
+      try {
+        const response = await forgotPassword(
+          formData.email,
+          formData.password
+        );
+        console.log("response forgotPassword", response);
+        if (response) {
+          toast.success("Đổi mật khẩu thành công!");
+          navigate("/login");
+        } else {
+          toast.error("Đổi mật khẩu thất bại!");
+        }
+      } catch (error) {
+        console.log("Error when register:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setErrors({
+        password: passwordError,
+        confirm_password: confirmPasswordError,
+      });
+      setIsLoading(false);
     }
   };
   const renderStep3 = () => (
@@ -213,8 +249,15 @@ const ForgotPassword = () => {
         value={formData.confirm_password}
         error={errors.confirm_password}
       />
-      <Button type="submit" fullWidth>
-        Xác nhận
+      <Button type="submit" fullWidth disabled={isLoading}>
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Xác nhận"
+        )}
       </Button>
     </form>
   );
