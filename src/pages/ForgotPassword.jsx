@@ -12,6 +12,7 @@ import {
   generateOTP,
   verifyOTP,
   forgotPassword,
+  checkEmail,
 } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import {
@@ -70,6 +71,12 @@ const ForgotPassword = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      const isEmailExist = await checkEmail(formData.email);
+      if (!isEmailExist) {
+        toast.error("Email không tồn tại");
+        setIsLoading(false);
+        return;
+      }
       const result = await generateOTP(formData.email);
       if (result) {
         toast.success("Mã OTP đã được gửi đến email của bạn");

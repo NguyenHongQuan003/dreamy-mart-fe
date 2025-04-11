@@ -66,3 +66,11 @@ export const forgotPassword = async (email, newPassword) => {
   if (response.data.message === "Change password successfully") return true;
   return false;
 };
+
+export const checkEmail = async (email) => {
+  const response = await axiosInstance.get(
+    `/user-profile/user/verify-email/${email}`
+  );
+  console.log("response checkEmail", response);
+  return response.data.result;
+};
