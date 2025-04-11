@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartTotalQuantity } from "../../redux/slices/cartSlice";
 import {
@@ -15,6 +15,7 @@ import { logout } from "../../services/authService";
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -129,7 +130,10 @@ const Header = () => {
                         Hồ sơ
                       </Link>
                       <button
-                        onClick={() => logout()}
+                        onClick={() => {
+                          logout();
+                          navigate("/login");
+                        }}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                       >
                         Đăng xuất
