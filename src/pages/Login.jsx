@@ -10,10 +10,11 @@ import { useState } from "react";
 import Footer from "../components/layout/Footer";
 import { toast } from "react-toastify";
 import { login } from "../services/authService";
+import Loading from "../components/common/Loading";
 
 const Login = () => {
   const navigate = useNavigate();
-  // const { signIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,6 +30,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const response = await login(formData.email, formData.password);
     console.log("response", response);
     if (response) {
@@ -37,6 +39,7 @@ const Login = () => {
     } else {
       toast.error("Email hoặc password không chính xác!");
     }
+    setIsLoading(false);
   };
   return (
     <>
@@ -91,8 +94,15 @@ const Login = () => {
                 Quên mật khẩu?
               </Link>
             </div>
-            <Button type="submit" fullWidth>
-              Đăng nhập
+            <Button type="submit" fullWidth disabled={isLoading}>
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loading size="sm" />
+                  <span>Đang xử lý...</span>
+                </div>
+              ) : (
+                "Đăng nhập"
+              )}
             </Button>
 
             <div className="flex items-center my-6">

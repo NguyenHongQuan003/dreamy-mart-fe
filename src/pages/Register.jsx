@@ -25,11 +25,13 @@ import {
   validatePassword,
   validatePhone,
 } from "../utils/validate";
+import Loading from "../components/common/Loading";
 
 const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
@@ -85,6 +87,7 @@ const Register = () => {
 
   const handleStep1Submit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const result = await generateOTP(formData.email);
       if (result) {
@@ -95,6 +98,8 @@ const Register = () => {
     } catch (error) {
       console.error("Lỗi gửi OTP:", error);
       toast.error("Gửi mã OTP không thành công");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,8 +116,15 @@ const Register = () => {
         value={formData.email}
       />
 
-      <Button type="submit" fullWidth>
-        Tiếp tục
+      <Button type="submit" fullWidth disabled={isLoading}>
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Tiếp tục"
+        )}
       </Button>
 
       <div className="flex items-center my-6">
@@ -146,6 +158,7 @@ const Register = () => {
   );
 
   const handleVerifyOTP = async () => {
+    setIsLoading(true);
     try {
       const result = await verifyOTP(formData.email, formData.otp);
       console.log("Kết quả xác minh OTP:", result);
@@ -160,6 +173,8 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Lỗi xác minh OTP:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -191,9 +206,18 @@ const Register = () => {
       <Button
         type="submit"
         fullWidth
-        disabled={errors.otp !== "" || formData.otp === "" ? true : false}
+        disabled={
+          (errors.otp !== "" || formData.otp === "" ? true : false) || isLoading
+        }
       >
-        Xác nhận
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Xác nhận"
+        )}
       </Button>
     </form>
   );
@@ -208,6 +232,7 @@ const Register = () => {
 
     if (!passwordError && !confirmPasswordError && !dayOfBirthError) {
       console.log("Registration completed:", formData);
+      setIsLoading(true);
       try {
         const response = await register(formData);
         if (response.message === "User created successfully") {
@@ -218,6 +243,9 @@ const Register = () => {
         }
       } catch (error) {
         console.log("Error when register:", error);
+        toast.error("Đăng ký thất bại!");
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setErrors({
@@ -341,8 +369,15 @@ const Register = () => {
         </Link>
       </div>
 
-      <Button type="submit" fullWidth>
-        Đăng ký
+      <Button type="submit" fullWidth disabled={isLoading}>
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loading size="sm" />
+            <span>Đang xử lý...</span>
+          </div>
+        ) : (
+          "Đăng ký"
+        )}
       </Button>
     </form>
   );
