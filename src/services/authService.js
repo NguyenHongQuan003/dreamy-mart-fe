@@ -37,7 +37,10 @@ export const login = async (username, password) => {
       store.dispatch(setUser(userData));
     }
     return true;
-  } catch {
+  } catch (error) {
+    if (error.response.status === 503) {
+      console.error("Server auth not running");
+    }
     return false;
   }
 };
