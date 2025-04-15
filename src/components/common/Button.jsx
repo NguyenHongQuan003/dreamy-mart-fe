@@ -12,7 +12,7 @@ const Button = ({
   icon: Icon,
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+    "inline-flex items-center justify-center font-medium rounded-md transition-all duration-200 focus:outline-none";
 
   const variants = {
     primary: "bg-[#0078E8] text-white hover:bg-[#0066CC] focus:ring-[#0078E8]",
@@ -57,13 +57,12 @@ const Button = ({
     >
       {Icon && (
         <Icon
-          className={`${
-            size === "small"
-              ? "h-4 w-4"
-              : size === "mini"
+          className={`${size === "small"
+            ? "h-4 w-4"
+            : size === "mini"
               ? "h-3 w-3"
               : "h-5 w-5 mr-2"
-          }`}
+            }`}
         />
       )}
       {children}

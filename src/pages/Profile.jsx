@@ -10,8 +10,6 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaEdit,
-  FaPlus,
-  FaTrash,
   FaShoppingBag,
   FaEye,
   FaRegClock,
@@ -21,11 +19,12 @@ import {
   FaCamera,
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
-import { validateDayOfBirth, validatePhone } from "../utils/validate";
+import { validateDayOfBirth, validateFullName, validatePhone } from "../utils/validate";
 import { updateProfile } from "../services/userService";
 import { updateUser } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import Loading from "../components/common/Loading";
+import Address from "../components/layout/Address";
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -45,6 +44,9 @@ const Profile = () => {
     dateOfBirth: user?.dateOfBirth || "",
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
+  useEffect(() => {
+    console.log("avatarPreview", avatarPreview);
+  }, [avatarPreview]);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -94,6 +96,12 @@ const Profile = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     switch (name) {
+      case "fullName":
+        setErrors((prev) => ({
+          ...prev,
+          fullName: validateFullName(value),
+        }));
+        break;
       case "phone":
         setErrors((prev) => ({ ...prev, phone: validatePhone(value) }));
         break;
@@ -398,33 +406,30 @@ const Profile = () => {
           <div className="bg-white rounded-lg shadow-md p-2 mb-6">
             <div className="flex overflow-x-auto">
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "profile"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "profile"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("profile")}
               >
                 <FaUser className="inline mr-2" />
                 Thông tin cá nhân
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "orders"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "orders"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("orders")}
               >
                 <FaShoppingBag className="inline mr-2" />
                 Đơn hàng của tôi
               </button>
               <button
-                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${
-                  activeTab === "addresses"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`px-4 py-2 font-medium text-sm rounded-t-lg ${activeTab === "addresses"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 onClick={() => setActiveTab("addresses")}
               >
                 <FaMapMarkerAlt className="inline mr-2" />
@@ -445,6 +450,7 @@ const Profile = () => {
                     onChange={handleChange}
                     disabled={!isEditing}
                     icon={FaUser}
+                    error={errors.fullName}
                   />
 
                   {/* Gender Selection */}
@@ -539,77 +545,12 @@ const Profile = () => {
           {/* Delivery Addresses */}
           {activeTab === "addresses" && (
             <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Địa chỉ nhận hàng
-                </h2>
-                <Button variant="outline" icon={FaPlus}>
-                  Thêm địa chỉ mới
-                </Button>
-              </div>
+
 
               {/* Address List */}
               <div className="space-y-4">
                 {/* Default Address */}
-                <div className="border border-[#0078E8] rounded-lg p-4 bg-gray-50">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <FaUser className="text-gray-600" />
-                        <span className="font-medium">Nguyễn Văn A</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <FaPhone className="text-gray-600" />
-                        <span>0123456789</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <FaMapMarkerAlt className="text-gray-600" />
-                        <span>123 Đường ABC, Quận 1, TP.HCM</span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="small" icon={FaEdit}>
-                        Sửa
-                      </Button>
-                      <Button variant="danger" size="small" icon={FaTrash}>
-                        Xóa
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="mt-2">
-                    <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                      Địa chỉ mặc định
-                    </span>
-                  </div>
-                </div>
-
-                {/* Other Address */}
-                <div className="border border-[#0078E8] rounded-lg p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <FaUser className="text-gray-600" />
-                        <span className="font-medium">Nguyễn Văn B</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <FaPhone className="text-gray-600" />
-                        <span>0987654321</span>
-                      </div>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <FaMapMarkerAlt className="text-gray-600" />
-                        <span>456 Đường XYZ, Quận 2, TP.HCM</span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="small" icon={FaEdit}>
-                        Sửa
-                      </Button>
-                      <Button variant="danger" size="small" icon={FaTrash}>
-                        Xóa
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                <Address />
               </div>
             </div>
           )}

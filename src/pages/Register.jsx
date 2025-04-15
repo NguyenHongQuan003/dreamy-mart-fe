@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import {
   validateConfirmPassword,
   validateDayOfBirth,
+  validateFullName,
   validateOTP,
   validatePassword,
   validatePhone,
@@ -52,13 +53,16 @@ const Register = () => {
       case "phone":
         setErrors((prev) => ({ ...prev, phone: validatePhone(value) }));
         break;
+      case "fullname":
+        setErrors((prev) => ({ ...prev, fullname: validateFullName(value) }));
+        break;
       case "otp":
         setErrors((prev) => ({ ...prev, otp: validateOTP(value) }));
         break;
       case "password":
         setErrors((prev) => ({
           ...prev,
-          confirm_password: validateConfirmPassword(value, formData.password),
+          confirm_password: validateConfirmPassword(formData.confirm_password, value),
         }));
         setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
         break;

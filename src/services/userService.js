@@ -74,3 +74,5 @@ export const checkEmail = async (email) => {
   console.log("response checkEmail", response);
   return response.data.result;
 };
+
+
