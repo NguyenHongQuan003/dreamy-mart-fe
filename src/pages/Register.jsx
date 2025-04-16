@@ -31,6 +31,8 @@ import Loading from "../components/common/Loading";
 const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [timer, setTimer] = useState(0);
+  const [timerInterval, setTimerInterval] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -83,6 +85,21 @@ const Register = () => {
     }
   };
 
+  const handleTimer = () => {
+    setTimer(60);
+    setTimerInterval(
+      setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000)
+    );
+  }
+
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -99,6 +116,7 @@ const Register = () => {
         setFormData((prev) => ({ ...prev, otp: "" }));
       }
       setStep(2);
+      handleTimer();
     } catch (error) {
       console.error("Lỗi gửi OTP:", error);
       toast.error("Gửi mã OTP không thành công");
@@ -222,6 +240,9 @@ const Register = () => {
         ) : (
           "Xác nhận"
         )}
+      </Button>
+      <Button fullWidth disabled={timer > 0} onClick={handleStep1Submit}>
+        Gửi lại mã OTP {timer > 0 ? `(${timer}s)` : ""}
       </Button>
     </form>
   );

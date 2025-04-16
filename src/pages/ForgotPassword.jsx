@@ -25,6 +25,8 @@ import Loading from "../components/common/Loading";
 const ForgotPassword = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [timerInterval, setTimerInterval] = useState(null);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -61,6 +63,21 @@ const ForgotPassword = () => {
     }
   };
 
+  const handleTimer = () => {
+    setTimer(60);
+    setTimerInterval(
+      setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000)
+    );
+  }
+
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -83,6 +100,7 @@ const ForgotPassword = () => {
         setFormData((prev) => ({ ...prev, otp: "" }));
       }
       setStep(2);
+      handleTimer();
     } catch (error) {
       console.error("Lỗi gửi OTP:", error);
       toast.error("Gửi mã OTP không thành công");
@@ -190,6 +208,9 @@ const ForgotPassword = () => {
         ) : (
           "Xác nhận"
         )}
+      </Button>
+      <Button fullWidth disabled={timer > 0} onClick={handleStep1Submit}>
+        Gửi lại mã OTP {timer > 0 ? `(${timer}s)` : ""}
       </Button>
     </form>
   );
