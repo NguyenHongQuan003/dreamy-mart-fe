@@ -11,55 +11,57 @@ import {
   FaBabyCarriage,
   FaCar,
   FaDog,
+  FaThLarge,
 } from "react-icons/fa";
 
 const categoryData = [
   {
+    id: 0,
+    name: "Tất cả sản phẩm",
+    icon: <FaThLarge />,
+    link: "/products/category/all",
+  },
+  {
     id: 1,
     name: "Điện tử",
     icon: <FaLaptop />,
-    link: "/products/electronics/all",
+    link: "",
     subcategories: [
-      { id: 101, name: "Điện thoại", link: "/products/electronics/phones" },
-      { id: 102, name: "Laptop", link: "/products/electronics/laptops" },
-      { id: 103, name: "Máy tính bảng", link: "/products/electronics/tablets" },
-      { id: 104, name: "Phụ kiện", link: "/products/electronics/accessories" },
-      {
-        id: 105,
-        name: "Thiết bị thông minh",
-        link: "/products/electronics/smart-devices",
-      },
+      { id: 101, name: "Điện thoại", link: "/products/category/phone" },
+      { id: 102, name: "Laptop", link: "/products/category/laptop" },
+      { id: 103, name: "Máy tính bảng", link: "/products/category/tablet" },
+      { id: 104, name: "Tai nghe", link: "/products/category/headphone" },
     ],
   },
   {
     id: 2,
     name: "Thời trang",
     icon: <FaTshirt />,
-    link: "/products/fashion/all",
+    link: "",
     subcategories: [
-      { id: 201, name: "Nam", link: "/products/fashion/men" },
-      { id: 202, name: "Nữ", link: "/products/fashion/women" },
-      { id: 203, name: "Trẻ em", link: "/products/fashion/kids" },
-      { id: 204, name: "Phụ kiện", link: "/products/fashion/accessories" },
+      { id: 201, name: "Nam", link: "/products/category/nam" },
+      { id: 202, name: "Nữ", link: "/products/category/nu" },
+      { id: 203, name: "Trẻ em", link: "/products/category/kid" },
+      { id: 204, name: "Giày", link: "/products/category/shoes" },
     ],
   },
   {
     id: 3,
     name: "Đồ gia dụng",
     icon: <FaHome />,
-    link: "/products/home-appliances/all",
+    link: "",
     subcategories: [
-      { id: 301, name: "Nhà bếp", link: "/products/home-appliances/kitchen" },
-      { id: 302, name: "Phòng ngủ", link: "/products/home-appliances/bedroom" },
+      { id: 301, name: "Nhà bếp", link: "/products/category/kitchen" },
+      { id: 302, name: "Phòng ngủ", link: "/products/category/bedroom" },
       {
         id: 303,
         name: "Phòng tắm",
-        link: "/products/home-appliances/bathroom",
+        link: "/products/category/bathroom",
       },
       {
         id: 304,
         name: "Nội thất",
-        link: "/products/home-appliances/furniture",
+        link: "/products/category/furniture",
       },
     ],
   },
@@ -67,12 +69,12 @@ const categoryData = [
     id: 4,
     name: "Sách",
     icon: <FaBook />,
-    link: "/products/books/all",
+    link: "",
     subcategories: [
-      { id: 401, name: "Sách giáo khoa", link: "/products/books/textbooks" },
-      { id: 402, name: "Tiểu thuyết", link: "/products/books/novels" },
-      { id: 403, name: "Sách kinh doanh", link: "/products/books/business" },
-      { id: 404, name: "Sách thiếu nhi", link: "/products/books/children" },
+      { id: 401, name: "Sách giáo khoa", link: "/products/category/textbooks" },
+      { id: 402, name: "Tiểu thuyết", link: "/products/category/novels" },
+      { id: 403, name: "Sách kinh doanh", link: "/products/category/business" },
+      { id: 404, name: "Sách thiếu nhi", link: "/products/category/children" },
     ],
   },
   {
@@ -81,10 +83,10 @@ const categoryData = [
     icon: <FaHeartbeat />,
     link: "/products/beauty/all",
     subcategories: [
-      { id: 501, name: "Chăm sóc da", link: "/products/beauty/skincare" },
-      { id: 502, name: "Trang điểm", link: "/products/beauty/makeup" },
-      { id: 503, name: "Chăm sóc tóc", link: "/products/beauty/haircare" },
-      { id: 504, name: "Nước hoa", link: "/products/beauty/perfume" },
+      { id: 501, name: "Chăm sóc da", link: "/products/category/skincare" },
+      { id: 502, name: "Trang điểm", link: "/products/category/makeup" },
+      { id: 503, name: "Chăm sóc tóc", link: "/products/category/haircare" },
+      { id: 504, name: "Nước hoa", link: "/products/category/perfume" },
     ],
   },
   {
@@ -93,10 +95,10 @@ const categoryData = [
     icon: <FaBabyCarriage />,
     link: "/products/mother-baby/all",
     subcategories: [
-      { id: 601, name: "Đồ cho mẹ", link: "/products/mother-baby/mother" },
-      { id: 602, name: "Đồ cho bé", link: "/products/mother-baby/baby" },
-      { id: 603, name: "Đồ chơi", link: "/products/mother-baby/toys" },
-      { id: 604, name: "Dinh dưỡng", link: "/products/mother-baby/nutrition" },
+      { id: 601, name: "Đồ cho mẹ", link: "/products/category/mother" },
+      { id: 602, name: "Đồ cho bé", link: "/products/category/baby" },
+      { id: 603, name: "Đồ chơi", link: "/products/category/toys" },
+      { id: 604, name: "Dinh dưỡng", link: "/products/category/nutrition" },
     ],
   },
   {
@@ -105,14 +107,12 @@ const categoryData = [
     icon: <FaCar />,
     link: "/products/vehicles/all",
     subcategories: [
-      { id: 701, name: "Phụ tùng ô tô", link: "/products/vehicles/car-parts" },
+      { id: 701, name: "Phụ tùng ô tô", link: "/products/category/car-parts" },
       {
         id: 702,
         name: "Phụ tùng xe máy",
-        link: "/products/vehicles/motorcycle-parts",
+        link: "/products/category/motorcycle-parts",
       },
-      { id: 703, name: "Chăm sóc xe", link: "/products/vehicles/care" },
-      { id: 704, name: "Phụ kiện", link: "/products/vehicles/accessories" },
     ],
   },
   {
@@ -121,10 +121,10 @@ const categoryData = [
     icon: <FaDog />,
     link: "/products/pets/all",
     subcategories: [
-      { id: 801, name: "Thức ăn cho chó", link: "/products/pets/dog-food" },
-      { id: 802, name: "Thức ăn cho mèo", link: "/products/pets/cat-food" },
-      { id: 803, name: "Phụ kiện", link: "/products/pets/accessories" },
-      { id: 804, name: "Chăm sóc thú cưng", link: "/products/pets/care" },
+      { id: 801, name: "Thức ăn cho chó", link: "/products/category/dog-food" },
+      { id: 802, name: "Thức ăn cho mèo", link: "/products/category/cat-food" },
+      { id: 803, name: "Phụ kiện", link: "/products/category/accessories" },
+      { id: 804, name: "Chăm sóc thú cưng", link: "/products/category/care" },
     ],
   },
 ];
@@ -160,16 +160,28 @@ const Navbar = () => {
                 onMouseEnter={() => handleMouseEnter(category.id)}
                 onMouseLeave={handleMouseLeave}
               >
-                <Link
-                  to={category.link}
-                  className="flex items-center px-4 py-3 text-gray-700 hover:text-[#0078E8] hover:bg-gray-50 transition-colors"
-                >
-                  <span className="mr-2">{category.icon}</span>
-                  {category.name}
-                  {category.subcategories && (
-                    <FaChevronDown className="ml-1 text-xs" />
-                  )}
-                </Link>
+                {category.name === "Tất cả sản phẩm" ? (
+                  <Link
+                    to={category.link}
+                    className="flex items-center px-4 py-3 text-gray-700 hover:text-[#0078E8] hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="mr-2">{category.icon}</span>
+                    {category.name}
+                    {category.subcategories && (
+                      <FaChevronDown className="ml-1 text-xs" />
+                    )}
+                  </Link>
+                ) : (
+                  <div
+                    className="flex items-center px-4 py-3 text-gray-700 hover:text-[#0078E8] hover:bg-gray-50 transition-colors cursor-default"
+                  >
+                    <span className="mr-2">{category.icon}</span>
+                    {category.name}
+                    {category.subcategories && (
+                      <FaChevronDown className="ml-1 text-xs" />
+                    )}
+                  </div>
+                )}
 
                 {/* Dropdown for subcategories */}
                 {category.subcategories && hoveredCategory === category.id && (
@@ -219,11 +231,10 @@ const Navbar = () => {
                   </Link>
                   {category.subcategories && (
                     <FaChevronDown
-                      className={`text-gray-500 transition-transform duration-200 ${
-                        expandedCategory === category.id
-                          ? "transform rotate-180"
-                          : ""
-                      }`}
+                      className={`text-gray-500 transition-transform duration-200 ${expandedCategory === category.id
+                        ? "transform rotate-180"
+                        : ""
+                        }`}
                     />
                   )}
                 </div>

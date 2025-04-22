@@ -12,11 +12,16 @@ export const getProductById = async (id) => {
 }
 
 // /products/category?page=2&size=1&categoryName=Phone
-export const getProductByCategory = async (page, size, categoryName) => {
-    const products = await axiosInstance.get(`/products/category?page=${page}&size=${size}&categoryName=${categoryName}`);
-    console.log("Service get product by category:", products)
-    return products.data.result;
-}
+export const getProductByCategory = async (categoryName, page = null, size = null) => {
+    const params = new URLSearchParams();
+    if (page !== null) params.append("page", page);
+    if (size !== null) params.append("size", size);
+    if (categoryName) params.append("categoryName", categoryName);
+
+    const response = await axiosInstance.get(`/products/category?${params.toString()}`);
+    return response.data.result;
+};
+
 
 // /products/brand?brandName=apply
 export const getProductByBrand = async (brandName) => {

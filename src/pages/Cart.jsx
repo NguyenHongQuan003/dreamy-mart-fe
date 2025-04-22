@@ -27,9 +27,9 @@ const Cart = () => {
   const cartTotal = useSelector(selectCartTotalAmount);
 
   const handleRemoveItem = (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      dispatch(removeFromCart(id));
-    }
+    // if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+    dispatch(removeFromCart(id));
+    // }
   };
 
   const handleUpdateQuantity = (id, quantity) => {
@@ -99,7 +99,7 @@ const Cart = () => {
               <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
                 <div className="p-4 border-b border-gray-300 bg-gray-50">
                   <div className="grid grid-cols-12 gap-4 font-medium text-gray-700">
-                    <div className="col-span-6">Sản phẩm</div>
+                    <div className="col-span-5">Sản phẩm</div>
                     <div className="col-span-2 text-center">Đơn giá</div>
                     <div className="col-span-2 text-center">Số lượng</div>
                     <div className="col-span-2 text-right">Thành tiền</div>
@@ -113,12 +113,12 @@ const Cart = () => {
                       className="p-4 hover:bg-gray-50 transition-colors"
                     >
                       <div className="grid grid-cols-12 gap-4 items-center">
-                        <div className="col-span-6">
+                        <div className="col-span-5">
                           <div className="flex items-center">
                             <div className="relative flex-shrink-0">
                               <img
                                 src={item.image || APP_INFO.NO_IAMGE_AVAILABLE}
-                                alt={item.productName}
+                                alt={item.name}
                                 className="w-20 h-20 object-cover rounded-md border border-gray-200"
                               />
                             </div>
@@ -127,7 +127,7 @@ const Cart = () => {
                                 to={`/products/${item.id}`}
                                 className="text-blue-600 hover:underline line-clamp-2 font-medium"
                               >
-                                {item.productName}
+                                {item.name}
                               </Link>
                               <p className="text-sm text-gray-500 mt-1">
                                 Mã SP: {item.id}
@@ -138,7 +138,7 @@ const Cart = () => {
 
                         <div className="col-span-2 text-center">
                           <span className="text-red-600 font-medium">
-                            {item.price.toLocaleString()} đ
+                            {item.sellingPrice.toLocaleString()} đ
                           </span>
                         </div>
 
@@ -167,9 +167,9 @@ const Cart = () => {
                           </div>
                         </div>
 
-                        <div className="col-span-1 text-right">
+                        <div className="col-span-2 text-right">
                           <span className="text-red-600 font-medium">
-                            {(item.price * item.quantity).toLocaleString()} đ
+                            {(item.sellingPrice * item.quantity).toLocaleString()} đ
                           </span>
                         </div>
 

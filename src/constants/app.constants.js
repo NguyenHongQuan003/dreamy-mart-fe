@@ -29,3 +29,11 @@ export const CONTACT_INFO = {
   EMAIL: "support@dreamymart.com",
   ADDRESS: "123 Đường ABC, Quận 1, TP.HCM",
 };
+
+export const priceRanges = [
+  { id: "price-1", name: "Tất cả", value: "all" },
+  { id: "price-2", name: "500.000đ - 1 triệu", value: "500000-1000000" },
+  { id: "price-3", name: "1 - 5 triệu", value: "1000000-5000000" },
+  { id: "price-4", name: "5 - 10 triệu", value: "5000000-10000000" },
+  { id: "price-5", name: "Trên 10 triệu", value: "10000000-999999999" },
+];

@@ -18,7 +18,7 @@ const calculateInitialTotals = (items) => {
 
   items.forEach((item) => {
     quantity += item.quantity;
-    total += item.price * item.quantity;
+    total += item.sellingPrice * item.quantity;
   });
 
   return { quantity, total };
@@ -88,7 +88,7 @@ export const cartSlice = createSlice({
 
       state.items.forEach((item) => {
         quantity += item.quantity;
-        total += item.price * item.quantity;
+        total += item.sellingPrice * item.quantity;
       });
 
       state.cartTotalQuantity = quantity;

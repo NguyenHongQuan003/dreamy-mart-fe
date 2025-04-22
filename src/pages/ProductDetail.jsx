@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/slices/cartSlice";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
-import { getImageByProductId, getProductById } from "../services/apiFunctions";
 import Button from "../components/common/Button";
 import { APP_INFO } from "../constants/app.constants";
 import {
@@ -25,6 +24,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { getProductById } from "../services/productService";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -35,7 +35,7 @@ const ProductDetail = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
-  const [relatedProducts, setRelatedProducts] = useState([]);
+  // const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,44 +44,39 @@ const ProductDetail = () => {
       try {
         // Fetch product info
         const response = await getProductById(id);
-        setProductInfo(response[0]);
+        console.log("Product Info:", response);
+        setProductInfo(response);
+        setImageList(response.images || []);
 
-        // Fetch product images
-        const images = await getImageByProductId(id);
-        setImageList(images);
-
-        // Fetch related products (mô phỏng - trong thực tế sẽ gọi API)
-        // Giả lập lấy 4 sản phẩm tương tự
-        const fakeRelatedProducts = [
-          {
-            id: 101,
-            productName: "Sản phẩm tương tự 1",
-            price: 249000,
-            image: "https://via.placeholder.com/150",
-          },
-          {
-            id: 102,
-            productName: "Sản phẩm tương tự 2",
-            price: 299000,
-            image: "https://via.placeholder.com/150",
-          },
-          {
-            id: 103,
-            productName: "Sản phẩm tương tự 3",
-            price: 349000,
-            image: "https://via.placeholder.com/150",
-          },
-          {
-            id: 104,
-            productName: "Sản phẩm tương tự 4",
-            price: 199000,
-            image: "https://via.placeholder.com/150",
-          },
-        ];
-        setRelatedProducts(fakeRelatedProducts);
+        // const fakeRelatedProducts = [
+        //   {
+        //     id: 101,
+        //     productName: "Sản phẩm tương tự 1",
+        //     price: 249000,
+        //     image: "https://via.placeholder.com/150",
+        //   },
+        //   {
+        //     id: 102,
+        //     productName: "Sản phẩm tương tự 2",
+        //     price: 299000,
+        //     image: "https://via.placeholder.com/150",
+        //   },
+        //   {
+        //     id: 103,
+        //     productName: "Sản phẩm tương tự 3",
+        //     price: 349000,
+        //     image: "https://via.placeholder.com/150",
+        //   },
+        //   {
+        //     id: 104,
+        //     productName: "Sản phẩm tương tự 4",
+        //     price: 199000,
+        //     image: "https://via.placeholder.com/150",
+        //   },
+        // ];
+        // setRelatedProducts(fakeRelatedProducts);
       } catch (error) {
         console.error("Failed to fetch data", error);
-        toast.error("Không thể tải thông tin sản phẩm");
       } finally {
         setLoading(false);
       }
@@ -94,7 +89,7 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (imageList.length > 0) {
-      setImagePreview(imageList[0]?.downloadUrl);
+      setImagePreview(imageList[0]?.fileUri);
     }
   }, [imageList]);
 
@@ -147,29 +142,29 @@ const ProductDetail = () => {
   };
 
   // Hiển thị một sản phẩm liên quan
-  const RelatedProductCard = ({ product }) => (
-    <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
-      <Link to={`/product/${product.id}`}>
-        <img
-          src={product.image}
-          alt={product.productName}
-          className="w-full h-40 object-cover"
-        />
-        <div className="p-3">
-          <h3 className="text-sm font-medium line-clamp-2 h-10 mb-2">
-            {product.productName}
-          </h3>
-          <p className="text-red-600 font-bold">
-            {product.price?.toLocaleString()} đ
-          </p>
-          <div className="flex items-center mt-1">
-            {renderRatingStars(4)}
-            <span className="text-xs text-gray-500 ml-1">(12)</span>
-          </div>
-        </div>
-      </Link>
-    </div>
-  );
+  // const RelatedProductCard = ({ product }) => (
+  //   <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+  //     <Link to={`/product/${product.id}`}>
+  //       <img
+  //         src={product.image}
+  //         alt={product.productName}
+  //         className="w-full h-40 object-cover"
+  //       />
+  //       <div className="p-3">
+  //         <h3 className="text-sm font-medium line-clamp-2 h-10 mb-2">
+  //           {product.productName}
+  //         </h3>
+  //         <p className="text-red-600 font-bold">
+  //           {product.price?.toLocaleString()} đ
+  //         </p>
+  //         <div className="flex items-center mt-1">
+  //           {renderRatingStars(4)}
+  //           <span className="text-xs text-gray-500 ml-1">(12)</span>
+  //         </div>
+  //       </div>
+  //     </Link>
+  //   </div>
+  // );
 
   if (loading) {
     return (
@@ -199,7 +194,7 @@ const ProductDetail = () => {
           </Link>
           <FaChevronRight className="mx-2 text-xs text-gray-400" />
           <span className="text-gray-700 font-medium truncate max-w-xs">
-            {productInfo.productName}
+            {productInfo.name}
           </span>
         </nav>
 
@@ -210,12 +205,12 @@ const ProductDetail = () => {
               <div className="sticky top-20">
                 <div className="relative mb-4 border border-gray-100 rounded-lg overflow-hidden">
                   <div className="absolute top-4 left-4 z-10 flex gap-2">
-                    <span className="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
+                    {/* <span className="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
                       -15%
-                    </span>
-                    <span className="bg-blue-500 text-white text-xs font-bold py-1 px-2 rounded">
+                    </span> */}
+                    {/* <span className="bg-blue-500 text-white text-xs font-bold py-1 px-2 rounded">
                       Mới
-                    </span>
+                    </span> */}
                   </div>
                   <div className="absolute top-4 right-4 z-10 flex gap-2">
                     <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors">
@@ -227,7 +222,7 @@ const ProductDetail = () => {
                   </div>
                   <img
                     src={imagePreview || APP_INFO.NO_IAMGE_AVAILABLE}
-                    alt={productInfo.productName}
+                    alt={productInfo.name}
                     className="w-full h-[300px] md:h-[400px] object-contain rounded-lg"
                   />
                 </div>
@@ -235,16 +230,15 @@ const ProductDetail = () => {
                 <div className="flex items-center gap-2 overflow-x-auto pb-2">
                   {imageList.map((image, index) => (
                     <div
-                      key={image.id || index}
-                      className={`w-16 h-16 flex-shrink-0 rounded-md cursor-pointer border-2 ${
-                        imagePreview === image.downloadUrl
-                          ? "border-blue-500"
-                          : "border-transparent"
-                      } hover:border-blue-300 transition-all`}
-                      onClick={() => setImagePreview(image.downloadUrl)}
+                      key={index}
+                      className={`w-16 h-16 flex-shrink-0 rounded-md cursor-pointer border-2 ${imagePreview === image.fileUri
+                        ? "border-blue-500"
+                        : "border-transparent"
+                        } hover:border-blue-300 transition-all`}
+                      onClick={() => setImagePreview(image.fileUri)}
                     >
                       <img
-                        src={image.downloadUrl}
+                        src={image.fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
                         alt={`Thumbnail ${index + 1}`}
                         className="w-full h-full object-cover rounded-md"
                       />
@@ -266,7 +260,7 @@ const ProductDetail = () => {
               </div>
 
               <h1 className="text-2xl font-bold text-gray-800 mb-3">
-                {productInfo.productName}
+                {productInfo.name}
               </h1>
 
               <div className="flex items-center gap-4 mb-4">
@@ -282,12 +276,12 @@ const ProductDetail = () => {
               <div className="mb-6">
                 <div className="flex items-baseline gap-3">
                   <div className="text-3xl font-bold text-red-600">
-                    {productInfo.price?.toLocaleString()} đ
+                    {productInfo.sellingPrice?.toLocaleString()} đ
                   </div>
                   <div className="text-lg text-gray-500 line-through">
-                    {((productInfo.price || 0) * 1.15).toLocaleString()} đ
+                    {/* {((productInfo.price || 0) * 1.15).toLocaleString()} đ */}
                   </div>
-                  <div className="text-red-600 text-sm font-medium">-15%</div>
+                  {/* <div className="text-red-600 text-sm font-medium">-15%</div> */}
                 </div>
                 <p className="text-sm text-green-600 mt-1">
                   <FaBolt className="inline mr-1" />
@@ -296,14 +290,14 @@ const ProductDetail = () => {
               </div>
 
               <div className="border-t border-b border-gray-100 py-4 mb-6">
-                <div className="flex items-center mb-4">
+                {/* <div className="flex items-center mb-4">
                   <span className="w-24 text-gray-600">Màu sắc:</span>
                   <div className="flex gap-2">
                     <button className="w-10 h-10 rounded-full bg-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
                     <button className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
                     <button className="w-10 h-10 rounded-full bg-blue-600 border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex items-center">
                   <span className="w-24 text-gray-600">Số lượng:</span>
@@ -322,14 +316,20 @@ const ProductDetail = () => {
                       min="1"
                       max="99"
                       value={quantity}
+                      // disabled={productInfo.quantity <= 0}
                       onChange={(e) =>
-                        setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                        setQuantity(
+                          Math.max(
+                            1,
+                            Math.min(parseInt(e.target.value) || 1, productInfo.quantity)
+                          )
+                        )
                       }
                       className="w-14 text-center border-x border-gray-300 py-1 focus:outline-none"
                     />
                     <button
                       className="px-3 py-1 text-gray-600 hover:bg-gray-100"
-                      onClick={() => setQuantity((prev) => prev + 1)}
+                      onClick={() => setQuantity((prev) => Math.min(prev + 1, productInfo.quantity))}
                     >
                       <FaPlus size={12} />
                     </button>
@@ -403,31 +403,28 @@ const ProductDetail = () => {
           <div className="border-b border-gray-200 mb-6">
             <nav className="flex space-x-8">
               <button
-                className={`pb-4 font-medium text-sm border-b-2 ${
-                  activeTab === "description"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`pb-4 font-medium text-sm border-b-2 ${activeTab === "description"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
                 onClick={() => setActiveTab("description")}
               >
                 Mô tả sản phẩm
               </button>
-              <button
-                className={`pb-4 font-medium text-sm border-b-2 ${
-                  activeTab === "specification"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+              {/* <button
+                className={`pb-4 font-medium text-sm border-b-2 ${activeTab === "specification"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
                 onClick={() => setActiveTab("specification")}
               >
                 Thông số kỹ thuật
-              </button>
+              </button> */}
               <button
-                className={`pb-4 font-medium text-sm border-b-2 ${
-                  activeTab === "reviews"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
+                className={`pb-4 font-medium text-sm border-b-2 ${activeTab === "reviews"
+                  ? "border-blue-500 text-blue-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
                 onClick={() => setActiveTab("reviews")}
               >
                 Đánh giá (124)
@@ -448,7 +445,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            {activeTab === "specification" && (
+            {/* {activeTab === "specification" && (
               <div className="overflow-hidden">
                 <table className="min-w-full divide-y divide-gray-200">
                   <tbody className="divide-y divide-gray-200">
@@ -457,7 +454,7 @@ const ProductDetail = () => {
                         Thương hiệu
                       </td>
                       <td className="py-3 px-4 text-sm text-gray-900">
-                        DreamyMart
+                        {productInfo?.brand}
                       </td>
                     </tr>
                     <tr>
@@ -495,7 +492,7 @@ const ProductDetail = () => {
                   </tbody>
                 </table>
               </div>
-            )}
+            )} */}
 
             {activeTab === "reviews" && (
               <div>
@@ -598,11 +595,11 @@ const ProductDetail = () => {
         {/* Related Products */}
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {relatedProducts.map((product) => (
               <RelatedProductCard key={product.id} product={product} />
             ))}
-          </div>
+          </div> */}
         </div>
       </main>
       <Footer />

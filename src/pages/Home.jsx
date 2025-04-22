@@ -21,7 +21,7 @@ const Home = () => {
     {
       id: 1,
       image:
-        "https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=2148&auto=format&fit=crop",
+        "https://plus.unsplash.com/premium_photo-1671148863396-6a5fd4b88832?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Khuyến mãi mùa hè",
       description: "Giảm giá đến 50% cho tất cả sản phẩm điện tử",
       buttonText: "Mua ngay",
@@ -30,7 +30,7 @@ const Home = () => {
     {
       id: 2,
       image:
-        "https://images.unsplash.com/photo-1517336714731-489689fd1ca4?q=80&w=1926&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1653704841996-c2ed854aedd8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Bộ sưu tập mới",
       description: "Khám phá bộ sưu tập mới nhất của chúng tôi",
       buttonText: "Khám phá",
@@ -39,7 +39,7 @@ const Home = () => {
     {
       id: 3,
       image:
-        "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?q=80&w=1965&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1588620862555-4da1a7c523b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fGZyZWUlMjBkZWxpdmVyeXxlbnwwfHwwfHx8MA%3D%3D",
       title: "Miễn phí vận chuyển",
       description: "Miễn phí vận chuyển cho đơn hàng trên 500.000đ",
       buttonText: "Tìm hiểu thêm",
@@ -53,42 +53,42 @@ const Home = () => {
       name: "Điện thoại",
       image:
         "https://images.unsplash.com/photo-1605236453806-6ff36851218e?q=80&w=2784&auto=format&fit=crop",
-      link: "/products/electronics/phones",
+      link: "/products/category/phone",
     },
     {
       id: 2,
       name: "Laptop",
       image:
         "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1964&auto=format&fit=crop",
-      link: "/products/electronics/laptops",
+      link: "/products/category/laptop",
     },
     {
       id: 3,
       name: "Tai nghe",
       image:
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
-      link: "/products/electronics/headphones",
+      link: "/products/category/headphone",
     },
     {
       id: 4,
       name: "Thời trang",
       image:
         "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071&auto=format&fit=crop",
-      link: "/products/fashion/all",
+      link: "/products/category/nu",
     },
     {
       id: 5,
       name: "Đồ gia dụng",
       image:
         "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1887&auto=format&fit=crop",
-      link: "/products/home-appliances/all",
+      link: "/products/category/kitchen",
     },
     {
       id: 6,
       name: "Sách",
       image:
         "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1798&auto=format&fit=crop",
-      link: "/products/books/all",
+      link: "/products/category/children",
     },
   ];
 
@@ -213,18 +213,17 @@ const Home = () => {
           {sliderItems.map((item, index) => (
             <div
               key={item.id}
-              className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
-                currentSlide === index
-                  ? "opacity-100"
-                  : "opacity-0 pointer-events-none"
-              }`}
+              className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${currentSlide === index
+                ? "opacity-100"
+                : "opacity-0 pointer-events-none"
+                }`}
             >
               <img
                 src={item.image}
                 alt={item.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center">
+              <div className="absolute inset-0 bg-[#000000]/30 flex items-center">
                 <div className="container mx-auto px-4">
                   <div className="max-w-xl text-white">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -261,9 +260,8 @@ const Home = () => {
             {sliderItems.map((_, index) => (
               <button
                 key={index}
-                className={`w-3 h-3 rounded-full ${
-                  currentSlide === index ? "bg-white" : "bg-white bg-opacity-50"
-                }`}
+                className={`w-3 h-3 rounded-full ${currentSlide === index ? "bg-white" : "bg-white bg-opacity-50"
+                  }`}
                 onClick={() => setCurrentSlide(index)}
               />
             ))}
@@ -292,7 +290,7 @@ const Home = () => {
               Danh mục nổi bật
             </h2>
             <Link
-              to="/categories"
+              to="/products/category/all"
               className="text-[#0078E8] hover:underline flex items-center"
             >
               Xem tất cả <FaArrowRight className="ml-2" />
@@ -393,7 +391,7 @@ const Home = () => {
               </div>
               <div className="md:w-1/2">
                 <img
-                  src="https://images.unsplash.com/photo-1594968973184-9040a5a79963?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src="https://plus.unsplash.com/premium_photo-1670509045675-af9f249b1bbe?q=80&w=2035&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="Promotion"
                   className="w-full h-64 md:h-full object-cover"
                 />

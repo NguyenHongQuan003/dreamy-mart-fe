@@ -1,9 +1,9 @@
 import axios from "axios";
-import { API_URL } from "../constants/api.constants";
+import { API_AUTH, API_URL } from "../constants/api.constants";
 
 export const getProducts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await axios.get(`${API_AUTH}/products/all`);
     return response.data;
   } catch (error) {
     throw new Error("Failed to fetch products", error);
@@ -12,7 +12,7 @@ export const getProducts = async () => {
 
 export const getProductById = async (productId) => {
   try {
-    const response = await axios.get(`${API_URL}/products?id=${productId}`);
+    const response = await axios.get(`${API_AUTH}/products?id=${productId}`);
     return response.data;
   } catch (error) {
     throw new Error("Failed to fetch product info", error);

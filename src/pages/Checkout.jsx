@@ -30,6 +30,7 @@ const Checkout = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [totalAmount, setTotalAmount] = useState("");
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -152,6 +153,7 @@ const Checkout = () => {
       const generatedOrderId =
         "DM" + Math.floor(100000 + Math.random() * 900000);
       setOrderId(generatedOrderId);
+      setTotalAmount(cartTotal);
       setIsProcessing(false);
 
       // Lưu thông tin đơn hàng vào localStorage để có thể xem lại
@@ -386,16 +388,16 @@ const Checkout = () => {
         <div className="space-y-4">
           <div
             className={`border ${paymentMethod === "cod"
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-200"
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-200"
               } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("cod")}
           >
             <div className="flex items-center">
               <div
                 className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "cod"
-                    ? "border-blue-500"
-                    : "border-gray-300"
+                  ? "border-blue-500"
+                  : "border-gray-300"
                   } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "cod" && (
@@ -418,16 +420,16 @@ const Checkout = () => {
 
           <div
             className={`border ${paymentMethod === "bank"
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-200"
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-200"
               } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("bank")}
           >
             <div className="flex items-center">
               <div
                 className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "bank"
-                    ? "border-blue-500"
-                    : "border-gray-300"
+                  ? "border-blue-500"
+                  : "border-gray-300"
                   } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "bank" && (
@@ -452,16 +454,16 @@ const Checkout = () => {
 
           <div
             className={`border ${paymentMethod === "card"
-                ? "border-blue-500 bg-blue-50"
-                : "border-gray-200"
+              ? "border-blue-500 bg-blue-50"
+              : "border-gray-200"
               } rounded-lg p-4 cursor-pointer transition-colors`}
             onClick={() => handlePaymentMethodChange("card")}
           >
             <div className="flex items-center">
               <div
                 className={`w-5 h-5 rounded-full border-2 ${paymentMethod === "card"
-                    ? "border-blue-500"
-                    : "border-gray-300"
+                  ? "border-blue-500"
+                  : "border-gray-300"
                   } flex items-center justify-center mr-3`}
               >
                 {paymentMethod === "card" && (
@@ -534,7 +536,7 @@ const Checkout = () => {
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Tổng tiền:</span>
                 <span className="font-bold">
-                  {cartTotal.toLocaleString()} đ
+                  {totalAmount} đ
                 </span>
               </div>
               <div className="flex justify-between mb-2">
@@ -579,7 +581,7 @@ const Checkout = () => {
                 <div className="relative">
                   <img
                     src={item.image}
-                    alt={item.productName}
+                    alt={item.name}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -588,15 +590,15 @@ const Checkout = () => {
                 </div>
                 <div className="ml-4 flex-1">
                   <p className="text-sm font-medium line-clamp-1">
-                    {item.productName}
+                    {item.name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {item.price.toLocaleString()} đ
+                    {item.sellingPrice.toLocaleString()} đ
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-gray-800">
-                    {(item.price * item.quantity).toLocaleString()} đ
+                    {(item.sellingPrice * item.quantity).toLocaleString()} đ
                   </p>
                 </div>
               </div>

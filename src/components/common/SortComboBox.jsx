@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import PropTypes from "prop-types";
 
-function SortComboBox() {
+function SortComboBox({ list, setList }) {
   const [selectedSort, setSelectedSort] = useState("default");
 
   const sortOptions = [
@@ -15,7 +16,31 @@ function SortComboBox() {
   const handleSortChange = (event) => {
     setSelectedSort(event.target.value);
     console.log("Đã chọn:", event.target.value);
-    // Thêm logic sắp xếp tại đây nếu cần
+
+    switch (event.target.value) {
+      case "price-asc":
+        setList((prevList) =>
+          [...prevList].sort((a, b) => a.sellingPrice - b.sellingPrice)
+        );
+        break;
+      case "price-desc":
+        setList((prevList) =>
+          [...prevList].sort((a, b) => b.sellingPrice - a.sellingPrice)
+        );
+        break;
+      case "name-asc":
+        setList((prevList) =>
+          [...prevList].sort((a, b) => a.name.localeCompare(b.name))
+        );
+        break;
+      case "name-desc":
+        setList((prevList) =>
+          [...prevList].sort((a, b) => b.name.localeCompare(a.name))
+        );
+        break;
+      default:
+        setList(list);
+    }
   };
 
   return (
@@ -51,5 +76,10 @@ function SortComboBox() {
     </div>
   );
 }
+
+SortComboBox.propTypes = {
+  list: PropTypes.array.isRequired,
+  setList: PropTypes.func.isRequired,
+};
 
 export default SortComboBox;

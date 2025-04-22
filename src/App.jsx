@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setupInterceptors } from "./utils/axiosConfig";
 import { loadUserFromToken } from "./services/authService";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -44,12 +45,16 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/cart" element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          } />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders/:orderId" element={<OrderDetail />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route
-            path="/products/:category/:subcategory"
+            path="/products/category/:categoryName"
             element={<ProductList />}
           />
           <Route path="/admin/login" element={<AdminLogin />} />
