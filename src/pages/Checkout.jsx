@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   selectCartItems,
   selectCartTotalAmount,
-  clearCart,
+  clearCartAsync,
 } from "../redux/slices/cartSlice";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -177,7 +177,7 @@ const Checkout = () => {
       );
 
       // Xóa giỏ hàng sau khi đặt hàng thành công
-      dispatch(clearCart());
+      dispatch(clearCartAsync());
     }, 3000);
   };
 
@@ -580,8 +580,8 @@ const Checkout = () => {
               >
                 <div className="relative">
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item?.product?.images[0]?.fileUri}
+                    alt={item?.product?.name}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <span className="absolute -top-2 -right-2 bg-gray-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -590,15 +590,15 @@ const Checkout = () => {
                 </div>
                 <div className="ml-4 flex-1">
                   <p className="text-sm font-medium line-clamp-1">
-                    {item.name}
+                    {item?.product?.name}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {item.sellingPrice.toLocaleString()} đ
+                    {item?.product?.sellingPrice.toLocaleString()} đ
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-medium text-gray-800">
-                    {(item.sellingPrice * item.quantity).toLocaleString()} đ
+                    {(item?.product?.sellingPrice * item.quantity).toLocaleString()} đ
                   </p>
                 </div>
               </div>

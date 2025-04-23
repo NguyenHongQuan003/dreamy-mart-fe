@@ -9,8 +9,8 @@ import {
   FaArrowRight,
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
-// import { getLatestProducts } from "../services/apiFunctions";
 import { useSelector } from "react-redux";
+// import { getLatestProducts } from "../services/apiFunctions";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -273,7 +273,7 @@ const Home = () => {
           <div className="container mx-auto px-4 py-6">
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-2xl font-semibold text-gray-800">
-                Xin chào, {user.fullname}!
+                Xin chào, {user.fullName}!
               </h2>
               <p className="text-gray-600 mt-2">
                 Chào mừng bạn quay trở lại với DreamyMart. Khám phá những sản

@@ -3,9 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   selectCartItems,
   selectCartTotalAmount,
-  removeFromCart,
-  updateQuantity,
-  clearCart,
+  selectCartStatus,
+  selectCartError,
+  removeFromCartAsync,
+  updateQuantityAsync,
+  clearCartAsync,
+  fetchCartItems
 } from "../redux/slices/cartSlice";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -19,26 +22,31 @@ import {
   FaCreditCard,
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
+import { useEffect } from "react";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotalAmount);
+  const status = useSelector(selectCartStatus);
+  const error = useSelector(selectCartError);
+
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
 
   const handleRemoveItem = (id) => {
-    // if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-    dispatch(removeFromCart(id));
-    // }
+    dispatch(removeFromCartAsync(id));
   };
 
   const handleUpdateQuantity = (id, quantity) => {
-    dispatch(updateQuantity({ id, quantity }));
+    dispatch(updateQuantityAsync({ productId: id, quantity }));
   };
 
   const handleClearCart = () => {
     if (window.confirm("Bạn có chắc chắn muốn xóa tất cả sản phẩm?")) {
-      dispatch(clearCart());
+      dispatch(clearCartAsync());
     }
   };
 
@@ -46,6 +54,51 @@ const Cart = () => {
   const handleCheckout = () => {
     navigate("/checkout");
   };
+
+  if (status === 'loading') {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 py-12">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="bg-white rounded-lg shadow-md p-8 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Đang tải giỏ hàng...</p>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gray-50 py-12">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="bg-white rounded-lg shadow-md p-8 text-center">
+              <div className="text-red-600 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">Đã có lỗi xảy ra</h2>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button
+                onClick={() => dispatch(fetchCartItems())}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              >
+                Thử lại
+              </button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -117,20 +170,20 @@ const Cart = () => {
                           <div className="flex items-center">
                             <div className="relative flex-shrink-0">
                               <img
-                                src={item.image || APP_INFO.NO_IAMGE_AVAILABLE}
-                                alt={item.name}
+                                src={item?.product?.images[0]?.fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
+                                alt={item?.product?.name}
                                 className="w-20 h-20 object-cover rounded-md border border-gray-200"
                               />
                             </div>
                             <div className="ml-4">
                               <Link
-                                to={`/products/${item.id}`}
+                                to={`/products/${item?.product?.id}`}
                                 className="text-blue-600 hover:underline line-clamp-2 font-medium"
                               >
-                                {item.name}
+                                {item?.product?.name}
                               </Link>
                               <p className="text-sm text-gray-500 mt-1">
-                                Mã SP: {item.id}
+                                Mã SP: {item?.product?.id}
                               </p>
                             </div>
                           </div>
@@ -138,7 +191,7 @@ const Cart = () => {
 
                         <div className="col-span-2 text-center">
                           <span className="text-red-600 font-medium">
-                            {item.sellingPrice.toLocaleString()} đ
+                            {item?.product?.sellingPrice.toLocaleString()} đ
                           </span>
                         </div>
 
@@ -147,7 +200,7 @@ const Cart = () => {
                             <button
                               className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
                               onClick={() =>
-                                handleUpdateQuantity(item.id, item.quantity - 1)
+                                handleUpdateQuantity(item?.product?.id, item.quantity - 1)
                               }
                               disabled={item.quantity <= 1}
                             >
@@ -159,7 +212,7 @@ const Cart = () => {
                             <button
                               className="px-3 py-1 text-gray-600 hover:bg-gray-100 transition-colors"
                               onClick={() =>
-                                handleUpdateQuantity(item.id, item.quantity + 1)
+                                handleUpdateQuantity(item?.product?.id, item.quantity + 1)
                               }
                             >
                               <FaPlus size={12} />
@@ -169,14 +222,14 @@ const Cart = () => {
 
                         <div className="col-span-2 text-right">
                           <span className="text-red-600 font-medium">
-                            {(item.sellingPrice * item.quantity).toLocaleString()} đ
+                            {(item?.product?.sellingPrice * item.quantity).toLocaleString()} đ
                           </span>
                         </div>
 
                         <div className="col-span-1 text-right">
                           <button
                             className="text-gray-400 hover:text-red-600 transition-colors p-1"
-                            onClick={() => handleRemoveItem(item.id)}
+                            onClick={() => handleRemoveItem(item?.product?.id)}
                             title="Xóa sản phẩm"
                           >
                             <FaTrash size={16} />

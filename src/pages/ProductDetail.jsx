@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
+import { addToCartAsync } from "../redux/slices/cartSlice";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Button from "../components/common/Button";
@@ -23,7 +23,6 @@ import {
   FaShareAlt,
   FaInfoCircle,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { getProductById } from "../services/productService";
 
 const ProductDetail = () => {
@@ -94,25 +93,11 @@ const ProductDetail = () => {
   }, [imageList]);
 
   const handleAddToCart = () => {
-    const productWithImage = {
-      ...productInfo,
-      image: imagePreview || APP_INFO.NO_IAMGE_AVAILABLE,
-    };
-
-    dispatch(addToCart({ product: productWithImage, quantity }));
-    toast.success("Đã thêm sản phẩm vào giỏ hàng!", {
-      position: "top-right",
-      autoClose: 2000,
-    });
+    dispatch(addToCartAsync({ productId: productInfo.id, quantity }));
   };
 
   const handleBuyNow = () => {
-    const productWithImage = {
-      ...productInfo,
-      image: imagePreview || APP_INFO.NO_IAMGE_AVAILABLE,
-    };
-
-    dispatch(addToCart({ product: productWithImage, quantity }));
+    dispatch(addToCartAsync({ productId: productInfo.id, quantity }));
     navigate("/checkout");
   };
 

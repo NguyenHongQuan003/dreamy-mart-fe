@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
-import { FaStar, FaShoppingCart, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaStar, FaShoppingCart } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { APP_INFO } from "../../constants/app.constants";
 import Button from "../common/Button";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/slices/cartSlice";
+import { addToCartAsync } from "../../redux/slices/cartSlice";
 
 const ProductCard = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  // const [isFavorite, setIsFavorite] = useState(false);
   const dispatch = useDispatch();
 
   // Giả sử rằng một số sản phẩm có thể có giảm giá
@@ -25,23 +25,17 @@ const ProductCard = ({ product }) => {
   // Tính số sao dựa trên thuộc tính rating hoặc giá trị mặc định
   const rating = product.rating || 4.5;
 
-  const handleFavoriteToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsFavorite(!isFavorite);
-  };
+  // const handleFavoriteToggle = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setIsFavorite(!isFavorite);
+  // };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Xử lý thêm vào giỏ hàng - có thể triển khai sau
-    const productWithImage = {
-      ...product,
-      image: product?.images[0]?.fileUri || APP_INFO.NO_IAMGE_AVAILABLE,
-    };
     const quantity = 1;
-
-    dispatch(addToCart({ product: productWithImage, quantity }));
+    dispatch(addToCartAsync({ productId: product.id, quantity }));
   };
 
   return (
@@ -60,7 +54,7 @@ const ProductCard = ({ product }) => {
           )} */}
 
           {/* Favorite button */}
-          <button
+          {/* <button
             className="absolute top-2 right-2 bg-white rounded-full p-2 shadow-md z-10 transition-transform duration-300 hover:scale-110"
             onClick={handleFavoriteToggle}
           >
@@ -69,7 +63,7 @@ const ProductCard = ({ product }) => {
             ) : (
               <FaRegHeart className="text-gray-400" />
             )}
-          </button>
+          </button> */}
 
           {/* Image container */}
           <div className="relative h-52 overflow-hidden">

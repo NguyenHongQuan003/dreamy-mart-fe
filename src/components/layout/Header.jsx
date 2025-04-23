@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectCartTotalQuantity } from "../../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { removeAllCartItemsAsync, selectCartTotalQuantity } from "../../redux/slices/cartSlice";
 import {
   FaSearch,
   FaShoppingBag,
@@ -12,9 +12,13 @@ import {
 import { APP_INFO, BANNER } from "../../constants/app.constants";
 import Navbar from "./Navbar";
 import { logout } from "../../services/authService";
+import useCart from "../../hook/useCart";
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  useCart();
+
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
@@ -133,6 +137,7 @@ const Header = () => {
                         onClick={() => {
                           logout();
                           navigate("/login");
+                          dispatch(removeAllCartItemsAsync());
                         }}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                       >
