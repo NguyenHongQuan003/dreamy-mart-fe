@@ -4,12 +4,6 @@ import axios from "axios";
 import { API_URL } from "../../constants/api.constants";
 import {
   FaEye,
-  FaUsers,
-  FaShoppingBag,
-  FaClipboardList,
-  FaChartLine,
-  FaSignOutAlt,
-  FaTachometerAlt,
   FaSearch,
   FaFilter,
   FaFileDownload,
@@ -18,6 +12,7 @@ import {
   FaRegClock,
   FaTimes,
 } from "react-icons/fa";
+import AdminNavbar from "./AdminNavbar";
 
 const OrderManagement = () => {
   const navigate = useNavigate();
@@ -150,11 +145,6 @@ const OrderManagement = () => {
     fetchOrders();
   }, [navigate]);
 
-  // Logout function
-  const handleLogout = () => {
-    localStorage.removeItem("adminInfo");
-    navigate("/admin/login");
-  };
 
   // Xử lý cập nhật trạng thái đơn hàng
   const handleUpdateStatus = async (orderId, newStatus) => {
@@ -300,55 +290,7 @@ const OrderManagement = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
-      <div className="w-64 bg-[#1e293b] text-white">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">DreamyMart Admin</h1>
-        </div>
-        <nav className="mt-6">
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin" className="flex items-center text-white">
-              <FaTachometerAlt className="mr-3" />
-              Bảng điều khiển
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin/products" className="flex items-center text-white">
-              <FaShoppingBag className="mr-3" />
-              Sản phẩm
-            </Link>
-          </div>
-          <div className="px-4 py-3 bg-[#334155]">
-            <Link to="/admin/orders" className="flex items-center text-white">
-              <FaClipboardList className="mr-3" />
-              Đơn hàng
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin/users" className="flex items-center text-white">
-              <FaUsers className="mr-3" />
-              Người dùng
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link
-              to="/admin/statistics"
-              className="flex items-center text-white"
-            >
-              <FaChartLine className="mr-3" />
-              Thống kê
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors mt-auto">
-            <button
-              onClick={handleLogout}
-              className="flex items-center text-white w-full text-left"
-            >
-              <FaSignOutAlt className="mr-3" />
-              Đăng xuất
-            </button>
-          </div>
-        </nav>
-      </div>
+      <AdminNavbar />
 
       {/* Main Content */}
       <div className="flex-1 p-8">
@@ -606,11 +548,10 @@ const OrderManagement = () => {
                       <button
                         key={number + 1}
                         onClick={() => paginate(number + 1)}
-                        className={`relative inline-flex items-center px-4 py-2 border ${
-                          currentPage === number + 1
-                            ? "bg-blue-50 border-blue-500 text-blue-600"
-                            : "border-gray-300 bg-white text-gray-500 hover:bg-gray-50"
-                        } text-sm font-medium`}
+                        className={`relative inline-flex items-center px-4 py-2 border ${currentPage === number + 1
+                          ? "bg-blue-50 border-blue-500 text-blue-600"
+                          : "border-gray-300 bg-white text-gray-500 hover:bg-gray-50"
+                          } text-sm font-medium`}
                       >
                         {number + 1}
                       </button>

@@ -1,7 +1,11 @@
 import axiosInstance from "../utils/axiosConfig"
-export const getAllProducts = async (page, size, pageSize) => {
-    const products = await axiosInstance.get(`/products/all?page=${page}&size=${size}&pageSize=${pageSize}`);
-    console.log("Service list product:", products)
+export const getAllProducts = async (page = null, size = null, pageSize = null) => {
+    const params = new URLSearchParams();
+    if (page !== null) params.append("page", page);
+    if (size !== null) params.append("size", size);
+    if (pageSize !== null) params.append("pageSize", pageSize);
+    const products = await axiosInstance.get(`/products/all?${params.toString()}`);
+    console.log("Service list product:", products.data.result)
     return products.data.result;
 }
 
@@ -37,6 +41,24 @@ export const getProductByCategoryAndBrand = async (brandName, categoryName) => {
     return products.data.result;
 }
 
+export const createProduct = async (data, files) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("quantity", data.quantity);
+    formData.append("brand", data.brand);
+    formData.append("costPrice", data.costPrice);
+    formData.append("sellingPrice", data.sellingPrice);
+    formData.append("categoryName", data.categoryName);
+    if (files) {
+        files.forEach((file) => {
+            formData.append("files", file);
+        });
+    }
+    const response = await axiosInstance.post("/products/create", formData);
+    console.log("Service create product:", response)
+    return response.data.result;
+}
 
 
 

@@ -82,7 +82,7 @@ const Header = () => {
             </div>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+            {/* <div className="hidden md:flex flex-1 max-w-2xl mx-8">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -98,7 +98,7 @@ const Header = () => {
                   <FaSearch className="text-white" />
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Mobile Search Button */}
             <button
@@ -173,7 +173,7 @@ const Header = () => {
           </div>
 
           {/* Mobile Search Bar */}
-          {isSearchOpen && (
+          {/* {isSearchOpen && (
             <div className="md:hidden mt-4">
               <div className="relative w-full">
                 <input
@@ -190,7 +190,7 @@ const Header = () => {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
       {/* Mobile Menu */}

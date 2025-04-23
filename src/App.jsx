@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setupInterceptors } from "./utils/axiosConfig";
 import { loadUserFromToken } from "./services/authService";
+import AddProduct from "./pages/admin/AddProduct";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
+          <Route path="/admin/products/add" element={<AddProduct />} />
           <Route path="/admin/orders" element={<OrderManagement />} />
           <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
         </Routes>

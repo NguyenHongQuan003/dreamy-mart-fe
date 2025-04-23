@@ -3,12 +3,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../constants/api.constants";
 import {
-  FaUsers,
-  FaShoppingBag,
-  FaClipboardList,
-  FaChartLine,
-  FaSignOutAlt,
-  FaTachometerAlt,
   FaArrowLeft,
   FaCheckCircle,
   FaTruck,
@@ -21,6 +15,7 @@ import {
   FaFileInvoice,
   FaCreditCard,
 } from "react-icons/fa";
+import AdminNavbar from "./AdminNavbar";
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -107,11 +102,6 @@ const OrderDetail = () => {
     fetchOrderDetail();
   }, [orderId, navigate]);
 
-  // Logout function
-  const handleLogout = () => {
-    localStorage.removeItem("adminInfo");
-    navigate("/admin/login");
-  };
 
   // Hàm định dạng ngày tháng
   const formatDate = (dateString) => {
@@ -205,55 +195,7 @@ const OrderDetail = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar - Ẩn khi in */}
-      <div className="w-64 bg-[#1e293b] text-white print:hidden">
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">DreamyMart Admin</h1>
-        </div>
-        <nav className="mt-6">
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin" className="flex items-center text-white">
-              <FaTachometerAlt className="mr-3" />
-              Bảng điều khiển
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin/products" className="flex items-center text-white">
-              <FaShoppingBag className="mr-3" />
-              Sản phẩm
-            </Link>
-          </div>
-          <div className="px-4 py-3 bg-[#334155]">
-            <Link to="/admin/orders" className="flex items-center text-white">
-              <FaClipboardList className="mr-3" />
-              Đơn hàng
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link to="/admin/users" className="flex items-center text-white">
-              <FaUsers className="mr-3" />
-              Người dùng
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors">
-            <Link
-              to="/admin/statistics"
-              className="flex items-center text-white"
-            >
-              <FaChartLine className="mr-3" />
-              Thống kê
-            </Link>
-          </div>
-          <div className="px-4 py-3 hover:bg-[#334155] transition-colors mt-auto">
-            <button
-              onClick={handleLogout}
-              className="flex items-center text-white w-full text-left"
-            >
-              <FaSignOutAlt className="mr-3" />
-              Đăng xuất
-            </button>
-          </div>
-        </nav>
-      </div>
+      <AdminNavbar />
 
       {/* Main Content */}
       <div className="flex-1 p-8">

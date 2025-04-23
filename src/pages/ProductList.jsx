@@ -5,7 +5,6 @@ import Footer from "../components/layout/Footer";
 import ProductCard from "../components/product/ProductCard";
 import SortComboBox from "../components/common/SortComboBox";
 import Button from "../components/common/Button";
-import { getProducts } from "../services/apiFunctions";
 import {
   FaHome,
   FaChevronRight,
@@ -13,7 +12,7 @@ import {
   FaTimes,
   FaSlidersH,
 } from "react-icons/fa";
-import { getProductByCategory } from "../services/productService";
+import { getAllProducts, getProductByCategory } from "../services/productService";
 import { getCategories } from "../services/categoryService";
 import Filters from "../components/common/Filters";
 import { priceRanges } from "../constants/app.constants";
@@ -41,10 +40,10 @@ const ProductList = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await getProducts();
+      const response = await getAllProducts();
       console.log("Fetched products:", response);
-      setProducts(response.result.data);
-      setFilteredProducts(response.result.data);
+      setProducts(response.data);
+      setFilteredProducts(response.data);
     } catch (error) {
       console.error("Failed to fetch products", error);
       setProducts([]);
