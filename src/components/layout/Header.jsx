@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { removeAllCartItemsAsync, selectCartTotalQuantity } from "../../redux/slices/cartSlice";
+import { fetchCartItems, resetCart, selectCartTotalQuantity } from "../../redux/slices/cartSlice";
 import {
   FaSearch,
   FaShoppingBag,
@@ -12,17 +12,31 @@ import {
 import { APP_INFO, BANNER } from "../../constants/app.constants";
 import Navbar from "./Navbar";
 import { logout } from "../../services/authService";
-import useCart from "../../hook/useCart";
 
 const Header = () => {
   const user = useSelector((state) => state.auth.user);
-  const dispatch = useDispatch();
-  useCart();
-
+  const items = useSelector((state) => state.cart.items);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchCartItems());
+    }
+  }, [dispatch, user])
+
+  useEffect(() => {
+    const resetCartWhenUserNull = () => {
+      if (user === null && items.length > 0) {
+        dispatch(resetCart());
+      }
+    }
+    resetCartWhenUserNull();
+  }, [user, items, dispatch])
+
 
   const cartQuantity = useSelector(selectCartTotalQuantity);
 
@@ -137,7 +151,6 @@ const Header = () => {
                         onClick={() => {
                           logout();
                           navigate("/login");
-                          dispatch(removeAllCartItemsAsync());
                         }}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-200"
                       >

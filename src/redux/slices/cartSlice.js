@@ -60,13 +60,6 @@ export const clearCartAsync = createAsyncThunk(
   }
 );
 
-export const removeAllCartItemsAsync = createAsyncThunk(
-  "cart/removeAllCartItems",
-  async () => {
-    return [];
-  }
-);
-
 const initialState = {
   items: [],
   cartTotalQuantity: 0,
@@ -86,10 +79,17 @@ const calculateTotals = (items) => {
 
   return { quantity, total };
 };
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    resetCart: (state) => {
+      state.items = [];
+      state.cartTotalQuantity = 0;
+      state.cartTotalAmount = 0;
+      state.status = 'idle';
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -139,15 +139,10 @@ export const cartSlice = createSlice({
         state.cartTotalQuantity = 0;
         state.cartTotalAmount = 0;
       })
-
-      // Remove all cart items
-      .addCase(removeAllCartItemsAsync.fulfilled, (state) => {
-        state.items = [];
-        state.cartTotalQuantity = 0;
-        state.cartTotalAmount = 0;
-      });
   },
 });
+
+export const { resetCart } = cartSlice.actions;
 export const selectCartItems = (state) => state.cart.items;
 export const selectCartTotalQuantity = (state) => state.cart.cartTotalQuantity;
 export const selectCartTotalAmount = (state) => state.cart.cartTotalAmount;

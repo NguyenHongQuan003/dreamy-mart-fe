@@ -3,12 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   selectCartItems,
   selectCartTotalAmount,
-  selectCartStatus,
-  selectCartError,
   removeFromCartAsync,
   updateQuantityAsync,
   clearCartAsync,
-  fetchCartItems
 } from "../redux/slices/cartSlice";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -22,19 +19,13 @@ import {
   FaCreditCard,
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
-import { useEffect } from "react";
 
 const Cart = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotalAmount);
-  const status = useSelector(selectCartStatus);
-  const error = useSelector(selectCartError);
 
-  useEffect(() => {
-    dispatch(fetchCartItems());
-  }, [dispatch]);
 
   const handleRemoveItem = (id) => {
     dispatch(removeFromCartAsync(id));
@@ -54,52 +45,6 @@ const Cart = () => {
   const handleCheckout = () => {
     navigate("/checkout");
   };
-
-  if (status === 'loading') {
-    return (
-      <>
-        <Header />
-        <div className="min-h-screen bg-gray-50 py-12">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Đang tải giỏ hàng...</p>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
-  if (status === 'failed') {
-    return (
-      <>
-        <Header />
-        <div className="min-h-screen bg-gray-50 py-12">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <div className="text-red-600 mb-4">
-                <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold mb-4 text-gray-800">Đã có lỗi xảy ra</h2>
-              <p className="text-gray-600 mb-4">{error}</p>
-              <button
-                onClick={() => dispatch(fetchCartItems())}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-              >
-                Thử lại
-              </button>
-            </div>
-          </div>
-        </div>
-        <Footer />
-      </>
-    );
-  }
-
   if (cartItems.length === 0) {
     return (
       <>
