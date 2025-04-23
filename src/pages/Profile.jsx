@@ -280,13 +280,13 @@ const Profile = () => {
                                 <div className="flex-shrink-0 h-10 w-10">
                                   <img
                                     className="h-10 w-10 rounded object-cover"
-                                    src={item.image}
-                                    alt={item.productName}
+                                    src={item?.product?.images[0].fileUri}
+                                    alt={item?.product?.name}
                                   />
                                 </div>
                                 <div className="ml-4">
                                   <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                                    {item.productName}
+                                    {item?.product?.name}
                                   </div>
                                 </div>
                               </div>
@@ -295,10 +295,10 @@ const Profile = () => {
                               {item.quantity}
                             </td>
                             <td className="px-3 py-3 whitespace-nowrap text-right text-sm text-gray-500">
-                              {item.price.toLocaleString()} đ
+                              {item?.product?.sellingPrice.toLocaleString()} đ
                             </td>
                             <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                              {(item.price * item.quantity).toLocaleString()} đ
+                              {(item?.product?.sellingPrice * item.quantity).toLocaleString()} đ
                             </td>
                           </tr>
                         ))}

@@ -275,16 +275,16 @@ const OrderDetail = () => {
                             <div className="flex-shrink-0 w-12 h-12">
                               <img
                                 className="w-full h-full object-cover rounded"
-                                src={item.image || APP_INFO.NO_IAMGE_AVAILABLE}
-                                alt={item.productName}
+                                src={item?.product?.images[0].fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
+                                alt={item?.product?.name}
                               />
                             </div>
                             <div className="ml-3">
                               <p className="text-sm font-medium text-gray-800">
-                                {item.productName}
+                                {item?.product?.name}
                               </p>
                               <p className="text-xs text-gray-500">
-                                Mã SP: {item.id}
+                                Mã SP: {item?.product?.id}
                               </p>
                             </div>
                           </div>
@@ -296,12 +296,12 @@ const OrderDetail = () => {
                         </td>
                         <td className="px-4 py-4 text-right">
                           <span className="text-sm text-gray-800">
-                            {item.price.toLocaleString()} đ
+                            {item?.product?.sellingPrice.toLocaleString()} đ
                           </span>
                         </td>
                         <td className="px-4 py-4 text-right">
                           <span className="text-sm font-medium text-gray-800">
-                            {(item.price * item.quantity).toLocaleString()} đ
+                            {(item?.product?.sellingPrice * item.quantity).toLocaleString()} đ
                           </span>
                         </td>
                       </tr>

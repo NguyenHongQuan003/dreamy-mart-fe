@@ -326,7 +326,7 @@ const Home = () => {
               Sản phẩm nổi bật
             </h2>
             <Link
-              to="/products"
+              to="/products/category/all"
               className="text-[#0078E8] hover:underline flex items-center"
             >
               Xem tất cả <FaArrowRight className="ml-2" />

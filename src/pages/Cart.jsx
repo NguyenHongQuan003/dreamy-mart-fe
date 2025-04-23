@@ -61,7 +61,7 @@ const Cart = () => {
               <p className="text-gray-600 mb-6">
                 Bạn chưa có sản phẩm nào trong giỏ hàng.
               </p>
-              <Link to="/">
+              <Link to="/products/category/all">
                 <Button variant="primary" icon={FaArrowLeft}>
                   Tiếp tục mua sắm
                 </Button>

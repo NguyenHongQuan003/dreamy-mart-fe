@@ -9,7 +9,6 @@ import {
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Button from "../components/common/Button";
-import Input from "../components/common/Input";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -20,12 +19,14 @@ import {
   FaShoppingBag,
   FaCheckCircle,
 } from "react-icons/fa";
+import ShippingForm from "../components/layout/ShippingForm";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const cartTotal = useSelector(selectCartTotalAmount);
+  const user = useSelector((state) => state.auth.user);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -38,9 +39,6 @@ const Checkout = () => {
     email: "",
     phone: "",
     address: "",
-    city: "",
-    district: "",
-    ward: "",
     notes: "",
   });
 
@@ -54,22 +52,16 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Nếu giỏ hàng trống, chuyển hướng về trang giỏ hàng
-    if (cartItems.length === 0 && currentStep === 1) {
-      navigate("/cart");
-    }
-
     // Khi trang tải, lấy thông tin người dùng từ localStorage (nếu có)
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo) {
+    if (user) {
       setShippingInfo((prev) => ({
         ...prev,
-        fullName: userInfo.fullname || prev.fullName,
-        email: userInfo.email || prev.email,
-        phone: userInfo.phone || prev.phone,
+        fullName: user.fullName || prev.fullName,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
       }));
     }
-  }, [cartItems.length, navigate, currentStep]);
+  }, [cartItems.length, navigate, currentStep, user]);
 
   const validateStep1 = () => {
     const newErrors = {};
@@ -90,11 +82,6 @@ const Checkout = () => {
 
     if (!shippingInfo.address.trim())
       newErrors.address = "Vui lòng nhập địa chỉ";
-    if (!shippingInfo.city.trim())
-      newErrors.city = "Vui lòng chọn tỉnh/thành phố";
-    if (!shippingInfo.district.trim())
-      newErrors.district = "Vui lòng chọn quận/huyện";
-    if (!shippingInfo.ward.trim()) newErrors.ward = "Vui lòng chọn phường/xã";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -238,144 +225,80 @@ const Checkout = () => {
   };
 
   // Component hiển thị thông tin giao hàng (Bước 1)
-  const ShippingForm = () => {
-    return (
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-xl font-bold mb-6 pb-2 border-b border-gray-200">
-          Thông tin giao hàng
-        </h2>
+  // const ShippingForm = () => {
+  //   return (
+  //     <div className="bg-white rounded-lg shadow-sm p-6">
+  //       <h2 className="text-xl font-bold mb-6 pb-2 border-b border-gray-200">
+  //         Thông tin giao hàng
+  //       </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <Input
-              label="Họ và tên"
-              type="text"
-              name="fullName"
-              value={shippingInfo.fullName}
-              onChange={handleInputChange}
-              placeholder="Nguyễn Văn A"
-              required
-              error={errors.fullName}
-            />
-          </div>
+  //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  //         <div>
+  //           <Input
+  //             label="Họ và tên"
+  //             type="text"
+  //             name="fullName"
+  //             value={user?.fullName}
+  //             onChange={handleInputChange}
+  //             placeholder="Nguyễn Văn A"
+  //             required
+  //             error={errors.fullName}
+  //           />
+  //         </div>
 
-          <div>
-            <Input
-              label="Email"
-              type="email"
-              name="email"
-              value={shippingInfo.email}
-              onChange={handleInputChange}
-              placeholder="example@gmail.com"
-              required
-              error={errors.email}
-            />
-          </div>
+  //         <div>
+  //           <Input
+  //             label="Email"
+  //             type="email"
+  //             name="email"
+  //             value={user?.email}
+  //             onChange={handleInputChange}
+  //             placeholder="example@gmail.com"
+  //             required
+  //             error={errors.email}
+  //           />
+  //         </div>
 
-          <div>
-            <Input
-              label="Số điện thoại"
-              type="tel"
-              name="phone"
-              value={shippingInfo.phone}
-              onChange={handleInputChange}
-              placeholder="0123456789"
-              required
-              error={errors.phone}
-            />
-          </div>
+  //         <div>
+  //           <Input
+  //             label="Số điện thoại"
+  //             type="tel"
+  //             name="phone"
+  //             value={user?.phone}
+  //             onChange={handleInputChange}
+  //             placeholder="0123456789"
+  //             required
+  //             error={errors.phone}
+  //           />
+  //         </div>
 
-          <div>
-            <Input
-              label="Địa chỉ"
-              type="text"
-              name="address"
-              value={shippingInfo.address}
-              onChange={handleInputChange}
-              placeholder="Số nhà, đường, phường/xã"
-              required
-              error={errors.address}
-            />
-          </div>
+  //         <div>
+  //           <Input
+  //             label="Địa chỉ"
+  //             type="text"
+  //             name="address"
+  //             value={shippingInfo.address}
+  //             onChange={handleInputChange}
+  //             placeholder="Số nhà, đường, phường/xã"
+  //             required
+  //             error={errors.address}
+  //           />
+  //         </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tỉnh/Thành phố <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="city"
-              value={shippingInfo.city}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${errors.city ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
-            >
-              <option value="">Chọn Tỉnh/Thành phố</option>
-              <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-              <option value="Hà Nội">Hà Nội</option>
-              <option value="Đà Nẵng">Đà Nẵng</option>
-              <option value="Cần Thơ">Cần Thơ</option>
-            </select>
-            {errors.city && (
-              <p className="mt-1 text-red-500 text-xs">{errors.city}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Quận/Huyện <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="district"
-              value={shippingInfo.district}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${errors.district ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
-            >
-              <option value="">Chọn Quận/Huyện</option>
-              <option value="Quận Gò Vấp">Quận Gò Vấp</option>
-              <option value="Quận 1">Quận 1</option>
-              <option value="Quận 7">Quận 7</option>
-            </select>
-            {errors.district && (
-              <p className="mt-1 text-red-500 text-xs">{errors.district}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Phường/Xã <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="ward"
-              value={shippingInfo.ward}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${errors.ward ? "border-red-500" : "border-gray-300"
-                } rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500`}
-            >
-              <option value="">Chọn Phường/Xã</option>
-              <option value="Phường 5">Phường 5</option>
-              <option value="Phường 12">Phường 12</option>
-              <option value="Phường 14">Phường 14</option>
-            </select>
-            {errors.ward && (
-              <p className="mt-1 text-red-500 text-xs">{errors.ward}</p>
-            )}
-          </div>
-
-          <div className="md:col-span-2">
-            <Input
-              label="Ghi chú đơn hàng (tùy chọn)"
-              type="textarea"
-              name="notes"
-              value={shippingInfo.notes}
-              onChange={handleInputChange}
-              placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
+  //         <div className="md:col-span-2">
+  //           <Input
+  //             label="Ghi chú đơn hàng (tùy chọn)"
+  //             type="textarea"
+  //             name="notes"
+  //             value={shippingInfo.notes}
+  //             onChange={handleInputChange}
+  //             placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
+  //           />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   // Component hiển thị phương thức thanh toán (Bước 2)
   const PaymentMethod = () => {
@@ -685,7 +608,7 @@ const Checkout = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Main content area */}
             <div className="lg:w-2/3">
-              {currentStep === 1 && <ShippingForm />}
+              {currentStep === 1 && <ShippingForm handleInputChange={handleInputChange} errors={errors} shippingInfo={shippingInfo} />}
               {currentStep === 2 && <PaymentMethod />}
               {currentStep === 3 && <OrderComplete />}
             </div>
