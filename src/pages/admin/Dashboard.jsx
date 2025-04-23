@@ -30,6 +30,19 @@ const Dashboard = () => {
       }
     };
 
+    // const fetchProducts = async () => {
+
+    //   try {
+    //     const response = await getAllProducts();
+    //     console.log("Fetched products:", response);
+    //     setProducts(response.data);
+    //     setFilteredProducts(response.data);
+    //   } catch (error) {
+    //     console.error("Failed to fetch products", error);
+    //   }
+    // };
+    // fetchProducts();
+
     const fetchStats = async () => {
       setIsLoading(true);
       try {

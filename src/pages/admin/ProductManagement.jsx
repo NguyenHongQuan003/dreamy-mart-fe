@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { Table, Input, Button, Space, Image } from "antd";
 import { FaPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { getAllProducts } from "../../services/productService";
+import { deleteProduct, getAllProducts, getProductById } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
-import { API_URL } from "../../constants/api.constants";
-import axios from "axios";
+import ProductDetailModal from "../../components/ProductDetailModal";
 
 const { Search } = Input;
 
@@ -15,6 +14,9 @@ const ProductManagement = () => {
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAdminAuth = () => {
@@ -42,11 +44,24 @@ const ProductManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
       try {
-        await axios.delete(`${API_URL}/products/${id}`);
+        await deleteProduct(id);
         setProducts(products.filter((p) => p.id !== id));
       } catch {
         setProducts(products.filter((p) => p.id !== id));
       }
+    }
+  };
+
+  const handleViewProduct = async (id) => {
+    setLoading(true);
+    try {
+      const response = await getProductById(id);
+      setSelectedProduct(response);
+      setModalVisible(true);
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,7 +132,13 @@ const ProductManagement = () => {
       key: "actions",
       render: (_, record) => (
         <Space>
-          <Link to={`/admin/products/view/${record.id}`}>Xem</Link>
+          <Button
+            type="link"
+            onClick={() => handleViewProduct(record.id)}
+            loading={loading && selectedProduct?.id === record.id}
+          >
+            Xem
+          </Button>
           <Link to={`/admin/products/edit/${record.id}`}>Sửa</Link>
           <Button danger onClick={() => handleDelete(record.id)}>
             Xoá
@@ -159,6 +180,12 @@ const ProductManagement = () => {
           dataSource={filtered}
           rowKey="id"
           pagination={{ pageSize: 8 }}
+        />
+
+        <ProductDetailModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          product={selectedProduct}
         />
       </div>
     </div>

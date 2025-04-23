@@ -60,6 +60,14 @@ export const createProduct = async (data, files) => {
     return response.data.result;
 }
 
+export const deleteProduct = async (id) => {
+    const response = await axiosInstance.delete(`/products/delete/${id}`);
+    console.log("Service delete product:", response)
+    return response.data.result;
+}
+
+
+
 
 
 
