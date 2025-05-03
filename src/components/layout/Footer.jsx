@@ -182,7 +182,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <FaMapMarkerAlt className="text-gray-400 mt-1 mr-3 flex-shrink-0" />
                 <span className="text-gray-400">
-                  123 Nguyễn Văn Linh, Quận 7, TP. Hồ Chí Minh
+                  12 Nguyễn Văn Bảo, Phường 1, Quận Gò Vấp, TP. Hồ Chí Minh
                 </span>
               </li>
               <li className="flex items-center">
@@ -195,7 +195,7 @@ const Footer = () => {
               </li>
             </ul>
 
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <h4 className="font-medium mb-2">Đăng ký nhận thông tin</h4>
               <div className="flex">
                 <input
@@ -207,7 +207,7 @@ const Footer = () => {
                   Đăng ký
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

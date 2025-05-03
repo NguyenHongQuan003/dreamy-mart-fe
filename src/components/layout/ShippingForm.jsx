@@ -102,16 +102,19 @@ const ShippingForm = ({ handleInputChange, errors, shippingInfo }) => {
                 </div>
 
 
-                <div className="md:col-span-2">
-                    <Input
-                        label="Ghi chú đơn hàng (tùy chọn)"
-                        type="textarea"
+                {/* <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                        Ghi chú đơn hàng (tùy chọn)
+                    </label>
+                    <textarea
+                        type="text"
                         name="notes"
                         value={shippingInfo.notes}
                         onChange={handleInputChange}
                         placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn."
+                        className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring"
                     />
-                </div>
+                </div> */}
             </div>
         </div>
     );

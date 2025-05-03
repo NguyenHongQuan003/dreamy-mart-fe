@@ -98,7 +98,7 @@ const ProductDetail = () => {
 
   const handleBuyNow = () => {
     dispatch(addToCartAsync({ productId: productInfo.id, quantity }));
-    navigate("/checkout");
+    navigate("/cart");
   };
 
   // Hiển thị đánh giá bằng sao

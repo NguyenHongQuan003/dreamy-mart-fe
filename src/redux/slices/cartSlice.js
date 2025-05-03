@@ -47,8 +47,7 @@ export const updateQuantityAsync = createAsyncThunk(
   "cart/updateQuantity",
   async ({ productId, quantity }) => {
     await updateCartItem(productId, quantity);
-    const response = await getAllCartItems();
-    return response.result.data;
+    return { productId, quantity };
   }
 );
 
@@ -127,9 +126,13 @@ export const cartSlice = createSlice({
 
       // Update quantity
       .addCase(updateQuantityAsync.fulfilled, (state, action) => {
-        state.items = action.payload;
-        const { quantity, total } = calculateTotals(action.payload);
-        state.cartTotalQuantity = quantity;
+        const { productId, quantity } = action.payload;
+        const index = state.items.findIndex(item => item.product.id === productId);
+        if (index !== -1) {
+          state.items[index].quantity = quantity;
+        }
+        const { total, quantity: newQuantity } = calculateTotals(state.items);
+        state.cartTotalQuantity = newQuantity;
         state.cartTotalAmount = total;
       })
 
