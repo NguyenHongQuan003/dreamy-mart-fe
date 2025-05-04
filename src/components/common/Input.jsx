@@ -69,10 +69,9 @@ const Input = ({
             ${Icon ? "pl-10" : "pl-4"} pr-4 py-2
             border border-gray-300
             disabled:bg-gray-100 disabled:cursor-not-allowed
-            ${
-              error
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : ""
+            ${error
+              ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+              : ""
             }
             ${className}
           `}
@@ -122,15 +121,6 @@ Input.propTypes = {
   className: PropTypes.string,
   icon: PropTypes.elementType,
   autoComplete: PropTypes.string,
-};
-
-Input.defaultProps = {
-  type: "text",
-  required: false,
-  disabled: false,
-  className: "",
-  value: "",
-  onChange: () => {},
 };
 
 export default Input;

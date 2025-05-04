@@ -87,14 +87,4 @@ Button.propTypes = {
   type: PropTypes.oneOf(["button", "submit", "reset"]),
   icon: PropTypes.elementType,
 };
-
-Button.defaultProps = {
-  variant: "primary",
-  size: "medium",
-  fullWidth: false,
-  disabled: false,
-  className: "",
-  type: "button",
-};
-
 export default Button;

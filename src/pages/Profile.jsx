@@ -25,6 +25,7 @@ import { updateUser } from "../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import Loading from "../components/common/Loading";
 import Address from "../components/layout/Address";
+import { getOrderDetail } from "../services/orderService";
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -73,12 +74,12 @@ const Profile = () => {
 
   useEffect(() => {
     // Lấy danh sách đơn hàng từ localStorage
-    const fetchOrders = () => {
+    const fetchOrders = async () => {
       try {
-        const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+        const savedOrders = await getOrderDetail();
         // Sắp xếp theo thời gian mới nhất
-        const sortedOrders = savedOrders.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
+        const sortedOrders = savedOrders.result.sort(
+          (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
         );
         setOrders(sortedOrders);
       } catch (error) {
@@ -87,8 +88,10 @@ const Profile = () => {
       }
     };
 
-    fetchOrders();
-  }, []);
+    if (activeTab === "orders") {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,8 +151,8 @@ const Profile = () => {
       year: "numeric",
       month: "numeric",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      // hour: "2-digit",
+      // minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
@@ -157,25 +160,25 @@ const Profile = () => {
   // Hiển thị trạng thái đơn hàng
   const getOrderStatusBadge = (status) => {
     switch (status) {
-      case "Đã thanh toán":
+      case "PAYMENT_COMPLETED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             <FaCheckCircle className="mr-1" />
             Đã thanh toán
           </span>
         );
-      case "Đang giao hàng":
+      case "PAYMENT_FAILED":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             <FaTruck className="mr-1" />
-            Đang giao hàng
+            Thanh toán thất bại
           </span>
         );
-      case "Chờ xử lý":
+      case "PAYMENT_PROCESSING":
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
             <FaRegClock className="mr-1" />
-            Chờ xử lý
+            Chờ thanh toán
           </span>
         );
       default:
@@ -202,7 +205,7 @@ const Profile = () => {
           <p className="text-gray-600 mb-6">
             Hãy tiếp tục mua sắm để đặt đơn hàng đầu tiên của bạn
           </p>
-          <Link to="/">
+          <Link to="/products/category/all">
             <Button variant="primary">Mua sắm ngay</Button>
           </Link>
         </div>
@@ -220,12 +223,12 @@ const Profile = () => {
               <div className="flex items-center space-x-4">
                 <h3 className="font-medium">Đơn hàng #{order.id}</h3>
                 <span className="text-sm text-gray-500">
-                  {formatDate(order.date)}
+                  {formatDate(order.orderDate)}
                 </span>
               </div>
 
               <div className="flex items-center space-x-2">
-                {getOrderStatusBadge(order.payment.status)}
+                {getOrderStatusBadge(order.status)}
                 <Link to={`/orders/${order.id}`}>
                   <Button
                     variant="outline"
@@ -233,7 +236,7 @@ const Profile = () => {
                     className="ml-2"
                     icon={FaEye}
                   >
-                    Chi tiết
+                    Xem
                   </Button>
                 </Link>
               </div>
@@ -329,12 +332,15 @@ const Profile = () => {
                   <span className="text-gray-600 font-medium mr-2">
                     Phương thức thanh toán:
                   </span>
-                  <span>
+                  {/* <span>
                     {order.payment.method === "cod" &&
                       "Thanh toán khi nhận hàng (COD)"}
                     {order.payment.method === "bank" &&
                       "Chuyển khoản ngân hàng"}
                     {order.payment.method === "card" && "Thẻ tín dụng/ghi nợ"}
+                  </span> */}
+                  <span className="text-pink-500 font-medium mr-2">
+                    momo
                   </span>
                 </div>
                 <div className="flex items-center mt-2 sm:mt-0">
@@ -342,7 +348,7 @@ const Profile = () => {
                     Tổng cộng:
                   </span>
                   <span className="text-red-600 font-bold text-lg">
-                    {order.total.toLocaleString()} đ
+                    {order.totalAmount.toLocaleString()} đ
                   </span>
                 </div>
               </div>

@@ -158,7 +158,7 @@ const Checkout = () => {
       // 2. Kiểm tra số lượng sản phẩm
       const checkResponse = await checkToOrder(orderId);
 
-      if (checkResponse.code !== 1000 || !checkResponse.result) {
+      if (checkResponse.result === false) {
         throw new Error("Số lượng sản phẩm không đủ");
       }
 

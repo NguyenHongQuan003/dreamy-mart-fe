@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { setupInterceptors } from "./utils/axiosConfig";
 import { loadUserFromToken } from "./services/authService";
 import AddProduct from "./pages/admin/AddProduct";
+import NotifyPayment from "./pages/NotifyPayment";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ function App() {
           } />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders/:orderId" element={<OrderDetail />} />
+          <Route path="/payment/notify" element={<NotifyPayment />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route
             path="/products/category/:categoryName"

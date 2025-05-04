@@ -34,8 +34,4 @@ FilterCheckBox.propTypes = {
     type: PropTypes.oneOf(['radio', 'checkbox']),
 }
 
-FilterCheckBox.defaultProps = {
-    type: 'radio',
-}
-
 export default FilterCheckBox

@@ -8,5 +8,8 @@ export default defineConfig({
   server: {
     host: "localhost",
     port: 5173,
+    allowedHosts: [
+      "98ff-2402-800-6305-970-e997-e244-4412-85fa.ngrok-free.app" // 👈 thêm dòng này
+    ]
   },
 });

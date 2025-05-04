@@ -11,24 +11,22 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import Button from "../components/common/Button";
 import { APP_INFO } from "../constants/app.constants";
+import { getOrderDetailById } from "../services/orderService";
+import { useSelector } from "react-redux";
 
 const OrderDetail = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const userAuth = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     // Tìm kiếm đơn hàng trong localStorage
-    const fetchOrderDetails = () => {
+    const fetchOrderDetails = async () => {
       setLoading(true);
       try {
-        const orders = JSON.parse(localStorage.getItem("orders")) || [];
-        const foundOrder = orders.find((order) => order.id === orderId);
-
-        if (foundOrder) {
-          setOrder(foundOrder);
-        }
-
+        const response = await getOrderDetailById(orderId);
+        setOrder(response.result);
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi lấy thông tin đơn hàng:", error);
@@ -44,8 +42,8 @@ const OrderDetail = () => {
       year: "numeric",
       month: "long",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      // hour: "2-digit",
+      // minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
@@ -167,7 +165,7 @@ const OrderDetail = () => {
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Ngày đặt hàng</p>
-                <p className="font-medium">{formatDate(order.date)}</p>
+                <p className="font-medium">{formatDate(order.orderDate)}</p>
               </div>
             </div>
 
@@ -179,15 +177,15 @@ const OrderDetail = () => {
                 <div className="text-sm">
                   <p className="mb-1">
                     <span className="font-medium">Họ tên:</span>{" "}
-                    {order.shipping.fullName}
+                    {userAuth.fullName}
                   </p>
                   <p className="mb-1">
                     <span className="font-medium">Email:</span>{" "}
-                    {order.shipping.email}
+                    {userAuth.email}
                   </p>
                   <p>
                     <span className="font-medium">Số điện thoại:</span>{" "}
-                    {order.shipping.phone}
+                    {userAuth.phone}
                   </p>
                 </div>
               </div>
@@ -196,11 +194,11 @@ const OrderDetail = () => {
                   Địa chỉ giao hàng
                 </h3>
                 <div className="text-sm">
-                  <p className="mb-1">{order.shipping.address}</p>
+                  <p className="mb-1">{userAuth.address}</p>
                   <p className="mb-1">
-                    {order.shipping.ward}, {order.shipping.district}
+                    {userAuth.ward}, {userAuth.district}
                   </p>
-                  <p>{order.shipping.city}</p>
+                  <p>{userAuth.city}</p>
                 </div>
               </div>
             </div>
@@ -211,25 +209,25 @@ const OrderDetail = () => {
                   Phương thức thanh toán
                 </h3>
                 <div className="text-sm">
-                  <p className="mb-1">
+                  {/* <p className="mb-1">
                     {order.payment.method === "cod" &&
                       "Thanh toán khi nhận hàng (COD)"}
                     {order.payment.method === "bank" &&
                       "Chuyển khoản ngân hàng"}
                     {order.payment.method === "card" &&
                       "Thanh toán thẻ tín dụng/ghi nợ"}
-                  </p>
+                  </p> */}
                   <p>
                     <span className="font-medium">Trạng thái:</span>{" "}
-                    {order.payment.status || "Chưa thanh toán"}
+                    {order.status || "Chưa thanh toán"}
                   </p>
                 </div>
               </div>
               <div>
-                <h3 className="font-medium text-gray-800 mb-2">Ghi chú</h3>
-                <p className="text-sm">
+                {/* <h3 className="font-medium text-gray-800 mb-2">Ghi chú</h3> */}
+                {/* <p className="text-sm">
                   {order.shipping.notes || "Không có ghi chú"}
-                </p>
+                </p> */}
               </div>
             </div>
 
@@ -316,7 +314,7 @@ const OrderDetail = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tạm tính:</span>
-                    <span>{order.total.toLocaleString()} đ</span>
+                    <span>{order.totalAmount.toLocaleString()} đ</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Phí vận chuyển:</span>
@@ -329,7 +327,7 @@ const OrderDetail = () => {
                   <div className="flex justify-between text-lg font-bold pt-2 border-t">
                     <span>Tổng cộng:</span>
                     <span className="text-red-600">
-                      {order.total.toLocaleString()} đ
+                      {order.totalAmount.toLocaleString()} đ
                     </span>
                   </div>
                 </div>
