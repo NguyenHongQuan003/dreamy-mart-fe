@@ -32,12 +32,7 @@ const Checkout = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [orderId, setOrderId] = useState("");
-  const [totalAmount, setTotalAmount] = useState(initialTotalAmount || {
-    subtotal: 0,
-    discount: 0,
-    total: 0
-  });
+  const [totalAmount, setTotalAmount] = useState(initialTotalAmount);
 
   // Form states
   const [shippingInfo, setShippingInfo] = useState({
@@ -172,37 +167,12 @@ const Checkout = () => {
         throw new Error(paymentResponse.message || "Tạo thanh toán thất bại");
       }
 
-      // 4. Lưu thông tin đơn hàng vào localStorage
-      const orderDetails = {
-        id: orderId,
-        date: new Date().toISOString(),
-        items: selectedCartItems,
-        total: totalAmount,
-        shipping: shippingInfo,
-        payment: {
-          method: paymentMethod,
-          status: "Chờ thanh toán",
-          paymentUrl: paymentResponse.result.payUrl
-        },
-        promotion: appliedPromotion ? {
-          code: appliedPromotion.result.couponCode,
-          name: appliedPromotion.result.promotionName,
-          discount: totalAmount.discount
-        } : null
-      };
-
-      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-      localStorage.setItem(
-        "orders",
-        JSON.stringify([...existingOrders, orderDetails])
-      );
-
-      // 5. Xóa các sản phẩm đã thanh toán khỏi giỏ hàng
+      // 4. Xóa các sản phẩm đã thanh toán khỏi giỏ hàng
       selectedItems.forEach(itemId => {
         dispatch(removeFromCartAsync(itemId));
       });
 
-      // 6. Chuyển hướng đến trang thanh toán MoMo
+      // 5. Chuyển hướng đến trang thanh toán MoMo
       window.location.href = paymentResponse.result.payUrl;
 
     } catch (error) {
@@ -409,7 +379,7 @@ const Checkout = () => {
           </div>
         ) : (
           <div className="py-8">
-            <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-6">
+            {/* <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-6">
               <FaCheckCircle className="text-4xl" />
             </div>
             <h2 className="text-2xl font-bold mb-4 text-green-600">
@@ -442,7 +412,7 @@ const Checkout = () => {
               <Link to={`/orders/${orderId}`}>
                 <Button variant="primary">Xem chi tiết đơn hàng</Button>
               </Link>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

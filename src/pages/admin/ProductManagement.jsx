@@ -135,22 +135,25 @@ const ProductManagement = () => {
             onClick={() => handleViewProduct(record.id)}
             icon={FaEye}
           >
-
+            {""}
           </Button>
+
           <Button
             variant="outline"
             size="small"
             icon={FaEdit}
+            onClick={() => navigate(`/admin/products/edit/${record.id}`)}
           >
-            <Link to={`/admin/products/edit/${record.id}`}></Link>
+            {""}
           </Button>
+
           <Button
             variant="danger"
             size="small"
             onClick={() => handleDelete(record.id)}
             icon={FaTrash}
           >
-
+            {""}
           </Button>
         </Space>
       ),

@@ -6,6 +6,13 @@ import {
   FaPrint,
   FaDownload,
   FaCheckCircle,
+  FaRegClock,
+  FaTimesCircle,
+  FaClipboardList,
+  FaShippingFast,
+  FaExclamationTriangle,
+  FaClipboardCheck,
+  FaRedo,
 } from "react-icons/fa";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -114,6 +121,113 @@ const OrderDetail = () => {
     );
   }
 
+  const getOrderStatusBadge = (status) => {
+    const statusMap = {
+      // Payment
+      PAYMENT_COMPLETED: {
+        label: "Đã thanh toán",
+        icon: <FaCheckCircle className="mr-1" />,
+        color: "bg-green-100 text-green-800",
+      },
+      PAYMENT_FAILED: {
+        label: "Thanh toán thất bại",
+        icon: <FaTimesCircle className="mr-1" />,
+        color: "bg-red-100 text-red-800",
+      },
+      PAYMENT_PROCESSING: {
+        label: "Đang xử lý thanh toán",
+        icon: <FaRegClock className="mr-1" />,
+        color: "bg-yellow-100 text-yellow-800",
+      },
+      PAYMENT_REFUND_COMPLETED: {
+        label: "Hoàn tiền thành công",
+        icon: <FaRedo className="mr-1" />,
+        color: "bg-blue-100 text-blue-800",
+      },
+      PAYMENT_REFUND_FAILED: {
+        label: "Hoàn tiền thất bại",
+        icon: <FaExclamationTriangle className="mr-1" />,
+        color: "bg-red-100 text-red-800",
+      },
+      PAYMENT_REFUND_PROCESSING: {
+        label: "Đang hoàn tiền",
+        icon: <FaRegClock className="mr-1" />,
+        color: "bg-yellow-100 text-yellow-800",
+      },
+
+      // Inventory
+      INVENTORY_CHECKED: {
+        label: "Đã kiểm kho",
+        icon: <FaClipboardCheck className="mr-1" />,
+        color: "bg-green-100 text-green-800",
+      },
+      INVENTORY_COMPLETED: {
+        label: "Xuất kho hoàn tất",
+        icon: <FaClipboardList className="mr-1" />,
+        color: "bg-blue-100 text-blue-800",
+      },
+      INVENTORY_FAILED: {
+        label: "Lỗi kiểm kho",
+        icon: <FaExclamationTriangle className="mr-1" />,
+        color: "bg-red-100 text-red-800",
+      },
+      INVENTORY_PROCESSING: {
+        label: "Đang xử lý kho",
+        icon: <FaRegClock className="mr-1" />,
+        color: "bg-gray-100 text-gray-800",
+      },
+
+      // Delivery
+      DELIVERY_PROCESSING: {
+        label: "Đang giao hàng",
+        icon: <FaShippingFast className="mr-1" />,
+        color: "bg-yellow-100 text-yellow-800",
+      },
+      DELIVERY_COMPLETED: {
+        label: "Giao hàng thành công",
+        icon: <FaCheckCircle className="mr-1" />,
+        color: "bg-green-100 text-green-800",
+      },
+      DELIVERY_FAILED: {
+        label: "Giao hàng thất bại",
+        icon: <FaTimesCircle className="mr-1" />,
+        color: "bg-red-100 text-red-800",
+      },
+
+      // Order
+      ORDER_CREATED: {
+        label: "Đơn hàng mới",
+        icon: <FaClipboardList className="mr-1" />,
+        color: "bg-blue-100 text-blue-800",
+      },
+      ORDER_COMPLETED: {
+        label: "Hoàn tất đơn hàng",
+        icon: <FaCheckCircle className="mr-1" />,
+        color: "bg-green-100 text-green-800",
+      },
+      ORDER_CANCELLED: {
+        label: "Đã hủy đơn hàng",
+        icon: <FaTimesCircle className="mr-1" />,
+        color: "bg-red-100 text-red-800",
+      },
+    };
+
+    const { label, icon, color } = statusMap[status] || {
+      label: "Không xác định",
+      icon: <FaRegClock className="mr-1" />,
+      color: "bg-gray-100 text-gray-800",
+    };
+
+    return (
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${color}`}
+      >
+        {icon}
+        {label}
+      </span>
+    );
+  };
+
   return (
     <>
       <Header />
@@ -219,7 +333,7 @@ const OrderDetail = () => {
                   </p> */}
                   <p>
                     <span className="font-medium">Trạng thái:</span>{" "}
-                    {order.status || "Chưa thanh toán"}
+                    {getOrderStatusBadge(order.status)}
                   </p>
                 </div>
               </div>

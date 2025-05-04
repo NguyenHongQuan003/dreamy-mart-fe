@@ -76,7 +76,7 @@ const ProductDetailModal = ({ visible, onClose, product }) => {
 ProductDetailModal.propTypes = {
     visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    product: PropTypes.object.isRequired,
+    product: PropTypes.object,
 };
 
 export default ProductDetailModal; 

@@ -16,7 +16,8 @@ const NotifyPayment = () => {
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500">Vui lòng đợi trong giây lát</div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                <div className="text-xl font-bold">Vui lòng đợi trong giây lát</div>
             </div>
         </div>
     );
