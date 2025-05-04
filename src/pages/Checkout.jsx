@@ -13,7 +13,6 @@ import {
   FaArrowLeft,
   FaArrowRight,
   FaCreditCard,
-  FaUniversity,
   FaCheck,
   FaShoppingBag,
   FaCheckCircle,
@@ -328,11 +327,11 @@ const Checkout = () => {
                 )}
               </div>
               <div className="flex items-center">
-                <FaUniversity className="text-blue-600 mr-2" />
+                <FaCreditCard className="text-blue-600 mr-2" />
                 <span className="font-medium">Chuyển khoản</span>
               </div>
             </div>
-            {paymentMethod === "bank" && (
+            {/* {paymentMethod === "bank" && (
               <div className="text-sm text-gray-600 mt-2 ml-8">
                 <p>Thông tin tài khoản:</p>
                 <p>Ngân hàng: Vietcombank</p>
@@ -340,7 +339,7 @@ const Checkout = () => {
                 <p>Chủ tài khoản: NGUYEN VAN A</p>
                 <p>Nội dung: [Tên của bạn] thanh toán đơn hàng</p>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* <div

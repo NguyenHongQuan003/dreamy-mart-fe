@@ -58,10 +58,10 @@ const Button = ({
       {Icon && (
         <Icon
           className={`${size === "small"
-            ? "h-4 w-4 mr-2"
+            ? "h-4 w-4 mx-2"
             : size === "mini"
               ? "h-3 w-3"
-              : "h-5 w-5 mr-2"
+              : "h-5 w-5 mx-2"
             }`}
         />
       )}

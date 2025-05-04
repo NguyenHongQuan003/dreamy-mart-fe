@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import { hostNgrok } from "./src/constants/api.constants";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -9,7 +10,7 @@ export default defineConfig({
     host: "localhost",
     port: 5173,
     allowedHosts: [
-      "98ff-2402-800-6305-970-e997-e244-4412-85fa.ngrok-free.app" // 👈 thêm dòng này
+      hostNgrok
     ]
   },
 });

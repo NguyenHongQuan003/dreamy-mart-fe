@@ -113,7 +113,7 @@ const AdminLogin = () => {
 
         <div className="mt-6 text-center text-sm">
           <p className="text-gray-600">
-            Chỉ dành cho quản trị viên, không phải khu vực khách hàng
+            Chỉ dành cho quản trị viên
           </p>
           <p className="text-gray-500 mt-2">
             <a href="/" className="text-blue-600 hover:underline">

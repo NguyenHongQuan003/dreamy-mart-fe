@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Button, Space, Image } from "antd";
-import { FaPlus } from "react-icons/fa";
+import { Table, Input, Space, Image } from "antd";
+import Button from "../../components/common/Button";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteProduct, getAllProducts, getProductById } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
@@ -16,7 +17,6 @@ const ProductManagement = () => {
   const [selectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAdminAuth = () => {
@@ -53,15 +53,12 @@ const ProductManagement = () => {
   };
 
   const handleViewProduct = async (id) => {
-    setLoading(true);
     try {
       const response = await getProductById(id);
       setSelectedProduct(response);
       setModalVisible(true);
     } catch (error) {
       console.error("Error fetching product details:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -133,15 +130,27 @@ const ProductManagement = () => {
       render: (_, record) => (
         <Space>
           <Button
-            type="link"
+            variant="secondary"
+            size="small"
             onClick={() => handleViewProduct(record.id)}
-            loading={loading && selectedProduct?.id === record.id}
+            icon={FaEye}
           >
-            Xem
+
           </Button>
-          <Link to={`/admin/products/edit/${record.id}`}>Sửa</Link>
-          <Button danger onClick={() => handleDelete(record.id)}>
-            Xoá
+          <Button
+            variant="outline"
+            size="small"
+            icon={FaEdit}
+          >
+            <Link to={`/admin/products/edit/${record.id}`}></Link>
+          </Button>
+          <Button
+            variant="danger"
+            size="small"
+            onClick={() => handleDelete(record.id)}
+            icon={FaTrash}
+          >
+
           </Button>
         </Space>
       ),

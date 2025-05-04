@@ -341,7 +341,7 @@ const OrderDetail = () => {
                 Quay lại
               </Button>
             </Link>
-            <Link to="/">
+            <Link to="/products/category/all">
               <Button variant="primary">Tiếp tục mua sắm</Button>
             </Link>
           </div>
