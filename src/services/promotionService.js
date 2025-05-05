@@ -5,5 +5,10 @@ export const getPromotionByCode = async (code) => {
     return response.data;
 };
 
+export const getAllPromotions = async () => {
+    const response = await axiosInstance.get("/promotions/all");
+    return response.data;
+};
+
 
 

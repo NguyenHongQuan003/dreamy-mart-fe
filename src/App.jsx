@@ -24,6 +24,7 @@ import { loadUserFromToken } from "./services/authService";
 import AddProduct from "./pages/admin/AddProduct";
 import NotifyPayment from "./pages/NotifyPayment";
 import ProductEdit from "./pages/admin/ProductEdit";
+import PromotionManagement from "./pages/admin/PromotionManagement";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ function App() {
           <Route path="/admin/products/add" element={<AddProduct />} />
           <Route path="/admin/orders" element={<OrderManagement />} />
           <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
+          <Route path="/admin/promotions" element={<PromotionManagement />} />
         </Routes>
         <ToastContainer
           position="top-center"
