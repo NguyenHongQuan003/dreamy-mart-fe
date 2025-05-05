@@ -81,7 +81,7 @@ const ProductCard = ({ product }) => {
             >
               <Button
                 variant="primary"
-                size="sm"
+                size="small"
                 className="!rounded-full px-3 py-2 text-sm font-medium"
                 onClick={handleAddToCart}
                 icon={FaShoppingCart}

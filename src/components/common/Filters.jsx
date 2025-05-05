@@ -41,8 +41,8 @@ const Filters = ({ filters, clearFilters, handleFilterChange, categories }) => {
             <FilterSection title="Danh mục">
                 {categories.map((category) => (
                     <FilterCheckBox
-                        key={category.id}
-                        id={category.id}
+                        key={category.id.toString()}
+                        id={category.id.toString()}
                         name={category.name}
                         value={category.name}
                         currentValue={filters.category}

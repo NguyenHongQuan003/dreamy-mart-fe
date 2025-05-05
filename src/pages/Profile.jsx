@@ -40,6 +40,7 @@ const Profile = () => {
   const [errors, setErrors] = useState({});
   const [activeTab, setActiveTab] = useState("profile");
   const [orders, setOrders] = useState([]);
+  const [isLoadingOrder, setIsLoadingOrder] = useState(false);
 
   const [formData, setFormData] = useState({
     avatar: user?.avatar || null,
@@ -50,9 +51,9 @@ const Profile = () => {
     dateOfBirth: user?.dateOfBirth || "",
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
-  useEffect(() => {
-    console.log("avatarPreview", avatarPreview);
-  }, [avatarPreview]);
+  // useEffect(() => {
+  //   console.log("avatarPreview", avatarPreview);
+  // }, [avatarPreview]);
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -80,8 +81,10 @@ const Profile = () => {
   useEffect(() => {
     // Lấy danh sách đơn hàng từ localStorage
     const fetchOrders = async () => {
+      setIsLoadingOrder(true);
       try {
         const savedOrders = await getOrderDetail();
+        // console.log("savedOrders", savedOrders);
         // Sắp xếp theo thời gian mới nhất
         const sortedOrders = savedOrders.result.sort(
           (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
@@ -90,6 +93,8 @@ const Profile = () => {
       } catch (error) {
         console.error("Error loading orders:", error);
         setOrders([]);
+      } finally {
+        setIsLoadingOrder(false);
       }
     };
 
@@ -156,8 +161,8 @@ const Profile = () => {
       year: "numeric",
       month: "numeric",
       day: "numeric",
-      // hour: "2-digit",
-      // minute: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
@@ -272,6 +277,15 @@ const Profile = () => {
 
   // Component hiển thị danh sách đơn hàng
   const OrdersHistory = () => {
+    if (isLoadingOrder) {
+      return (
+        <>
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </>
+      );
+    }
     if (orders.length === 0) {
       return (
         <div className="text-center py-10">
@@ -300,7 +314,7 @@ const Profile = () => {
           >
             <div className="bg-gray-50 px-4 py-3 border-b flex flex-wrap items-center justify-between">
               <div className="flex items-center space-x-4">
-                <h3 className="font-medium">Đơn hàng #{order.id}</h3>
+                <h3 className="text-[14px]">Đơn hàng #{order.id}</h3>
                 <span className="text-sm text-gray-500">
                   {formatDate(order.orderDate)}
                 </span>

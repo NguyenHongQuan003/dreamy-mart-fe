@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+// import { useEffect } from "react";
+import { useState } from "react";
 import {
   selectCartItems,
   removeFromCartAsync,
@@ -30,9 +31,9 @@ const Cart = () => {
   const [appliedPromotion, setAppliedPromotion] = useState(null);
   const [promotionError, setPromotionError] = useState("");
 
-  useEffect(() => {
-    console.log(selectedItems);
-  }, [selectedItems])
+  // useEffect(() => {
+  //   console.log(selectedItems);
+  // }, [selectedItems])
 
 
   const handleRemoveItem = (id) => {

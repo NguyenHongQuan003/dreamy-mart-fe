@@ -5,13 +5,13 @@ export const getAllProducts = async (page = null, size = null, pageSize = null) 
     if (size !== null) params.append("size", size);
     if (pageSize !== null) params.append("pageSize", pageSize);
     const products = await axiosInstance.get(`/products/all?${params.toString()}`);
-    console.log("Service list product:", products.data.result)
+    // console.log("Service list product:", products.data.result)
     return products.data.result;
 }
 
 export const getProductById = async (id) => {
     const product = await axiosInstance.get(`/products/product/${id}`);
-    console.log("Service get product by id:", product)
+    // console.log("Service get product by id:", product)
     return product.data.result;
 }
 
@@ -30,14 +30,14 @@ export const getProductByCategory = async (categoryName, page = null, size = nul
 // /products/brand?brandName=apply
 export const getProductByBrand = async (brandName) => {
     const products = await axiosInstance.get(`/products/brand?brandName=${brandName}`);
-    console.log("Service get product by brand:", products)
+    // console.log("Service get product by brand:", products)
     return products.data.result;
 }
 
 // /products/category/brand?brandName=Apply&categoryName=Apple
 export const getProductByCategoryAndBrand = async (brandName, categoryName) => {
     const products = await axiosInstance.get(`/products/category/brand?brandName=${brandName}&categoryName=${categoryName}`);
-    console.log("Service get product by category and brand:", products)
+    // console.log("Service get product by category and brand:", products)
     return products.data.result;
 }
 
@@ -56,13 +56,13 @@ export const createProduct = async (data, files) => {
         });
     }
     const response = await axiosInstance.post("/products/create", formData);
-    console.log("Service create product:", response)
+    // console.log("Service create product:", response)
     return response.data.result;
 }
 
 export const deleteProduct = async (id) => {
     const response = await axiosInstance.delete(`/products/delete/${id}`);
-    console.log("Service delete product:", response)
+    // console.log("Service delete product:", response)
     return response.data.result;
 }
 

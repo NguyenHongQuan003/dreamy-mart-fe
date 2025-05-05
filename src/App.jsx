@@ -69,7 +69,7 @@ function App() {
           <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
         </Routes>
         <ToastContainer
-          position="top-right"
+          position="top-center"
           autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}

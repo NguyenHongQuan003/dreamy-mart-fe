@@ -32,7 +32,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     const response = await login(formData.email, formData.password);
-    console.log("response", response);
+    // console.log("response", response);
     if (response) {
       toast.success("Đăng nhập thành công!");
       navigate("/");

@@ -15,7 +15,7 @@ function SortComboBox({ list, setList }) {
 
   const handleSortChange = (event) => {
     setSelectedSort(event.target.value);
-    console.log("Đã chọn:", event.target.value);
+    // console.log("Đã chọn:", event.target.value);
 
     switch (event.target.value) {
       case "price-asc":

@@ -19,8 +19,8 @@ import {
   FaUndo,
   FaHome,
   FaChevronRight,
-  FaHeart,
-  FaShareAlt,
+  // FaHeart,
+  // FaShareAlt,
   FaInfoCircle,
 } from "react-icons/fa";
 import { getProductById } from "../services/productService";
@@ -43,7 +43,7 @@ const ProductDetail = () => {
       try {
         // Fetch product info
         const response = await getProductById(id);
-        console.log("Product Info:", response);
+        // console.log("Product Info:", response);
         setProductInfo(response);
         setImageList(response.images || []);
 
@@ -197,14 +197,14 @@ const ProductDetail = () => {
                       Mới
                     </span> */}
                   </div>
-                  <div className="absolute top-4 right-4 z-10 flex gap-2">
+                  {/* <div className="absolute top-4 right-4 z-10 flex gap-2">
                     <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors">
                       <FaHeart className="text-gray-400 hover:text-red-500" />
                     </button>
                     <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors">
                       <FaShareAlt className="text-gray-400 hover:text-blue-500" />
                     </button>
-                  </div>
+                  </div> */}
                   <img
                     src={imagePreview || APP_INFO.NO_IAMGE_AVAILABLE}
                     alt={productInfo.name}
@@ -268,10 +268,10 @@ const ProductDetail = () => {
                   </div>
                   {/* <div className="text-red-600 text-sm font-medium">-15%</div> */}
                 </div>
-                <p className="text-sm text-green-600 mt-1">
+                {/* <p className="text-sm text-green-600 mt-1">
                   <FaBolt className="inline mr-1" />
                   Giảm thêm 5% cho đơn hàng từ 500K
-                </p>
+                </p> */}
               </div>
 
               <div className="border-t border-b border-gray-100 py-4 mb-6">
@@ -374,7 +374,7 @@ const ProductDetail = () => {
                   <div>
                     <p className="font-medium">Hỗ trợ 24/7</p>
                     <p className="text-sm text-gray-500">
-                      Hotline: {APP_INFO.HOTLINE}
+                      Hotline: 0123 456 789
                     </p>
                   </div>
                 </div>
@@ -578,14 +578,14 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products */}
-        <div className="mb-8">
+        {/* <div className="mb-8">
           <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
-          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {relatedProducts.map((product) => (
               <RelatedProductCard key={product.id} product={product} />
             ))}
-          </div> */}
-        </div>
+          </div>
+        </div> */}
       </main>
       <Footer />
     </div>

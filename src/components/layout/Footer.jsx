@@ -111,14 +111,14 @@ const Footer = () => {
                   Làm đẹp
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   to="/products/sports/all"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Thể thao
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 

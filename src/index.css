@@ -6,6 +6,27 @@
     font-family: "Inter", sans-serif;
   }
 }
+
+@media print {
+  header, footer {
+    display: none !important;
+  }
+  
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+  }
+  
+  .container {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
 /* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

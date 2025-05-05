@@ -15,7 +15,7 @@ export const addToCart = async (productId, quantity) => {
         productId,
         quantity
     });
-    console.log("response add to cart", response);
+    // console.log("response add to cart", response);
     return response.data;
 }
 

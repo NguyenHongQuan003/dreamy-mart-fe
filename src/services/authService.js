@@ -23,7 +23,7 @@ export const login = async (username, password) => {
       username,
       password,
     });
-    console.log("response", response.data);
+    // console.log("response", response.data);
     if (response.data.result) {
       const { access_token, refresh_token } = response.data.result;
       store.dispatch(

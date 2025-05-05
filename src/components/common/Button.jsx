@@ -78,6 +78,8 @@ Button.propTypes = {
     "outline",
     "danger",
     "success",
+    "google",
+    "facebook",
   ]),
   size: PropTypes.oneOf(["small", "medium", "large"]),
   fullWidth: PropTypes.bool,

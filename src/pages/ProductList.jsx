@@ -41,7 +41,7 @@ const ProductList = () => {
     setLoading(true);
     try {
       const response = await getAllProducts();
-      console.log("Fetched products:", response);
+      // console.log("Fetched products:", response);
       setProducts(response.data);
       setFilteredProducts(response.data);
     } catch (error) {

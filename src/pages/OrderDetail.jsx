@@ -4,7 +4,7 @@ import {
   FaHome,
   FaArrowLeft,
   FaPrint,
-  FaDownload,
+  // FaDownload,
   FaCheckCircle,
   FaRegClock,
   FaTimesCircle,
@@ -47,10 +47,10 @@ const OrderDetail = () => {
   const formatDate = (dateString) => {
     const options = {
       year: "numeric",
-      month: "long",
+      month: "numeric",
       day: "numeric",
-      // hour: "2-digit",
-      // minute: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
     };
     return new Date(dateString).toLocaleDateString("vi-VN", options);
   };
@@ -230,7 +230,7 @@ const OrderDetail = () => {
 
   return (
     <>
-      <Header />
+      <Header className="print:hidden" />
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="mb-6 flex items-center justify-between">
@@ -238,7 +238,7 @@ const OrderDetail = () => {
               <h1 className="text-2xl font-bold text-gray-800">
                 Chi tiết đơn hàng #{order.id}
               </h1>
-              <div className="text-sm breadcrumbs text-gray-500 mt-1">
+              <div className="print:hidden text-sm breadcrumbs text-gray-500 mt-1">
                 <ul className="flex">
                   <li className="after:content-['/'] after:mx-2">
                     <Link to="/">Trang chủ</Link>
@@ -256,9 +256,9 @@ const OrderDetail = () => {
               <Button variant="outline" onClick={handlePrint} icon={FaPrint}>
                 In hóa đơn
               </Button>
-              <Button variant="outline" icon={FaDownload}>
+              {/* <Button variant="outline" icon={FaDownload}>
                 Tải xuống PDF
-              </Button>
+              </Button> */}
             </div>
           </div>
 
@@ -305,14 +305,11 @@ const OrderDetail = () => {
               </div>
               <div>
                 <h3 className="font-medium text-gray-800 mb-2">
-                  Địa chỉ giao hàng
+                  Địa chỉ giao hàng:
                 </h3>
                 <div className="text-sm">
-                  <p className="mb-1">{userAuth.address}</p>
-                  <p className="mb-1">
-                    {userAuth.ward}, {userAuth.district}
-                  </p>
-                  <p>{userAuth.city}</p>
+                  <p className="mb-1">{order.shippingAddress}</p>
+
                 </div>
               </div>
             </div>
@@ -461,7 +458,7 @@ const OrderDetail = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer className="print:hidden" />
     </>
   );
 };
