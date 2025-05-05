@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { deleteProduct, getAllProducts, getProductById } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
 import ProductDetailModal from "../../components/ProductDetailModal";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
+import { useSelector } from "react-redux";
 
 const { Search } = Input;
 
@@ -18,12 +20,10 @@ const ProductManagement = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const checkAdminAuth = () => {
-      const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
-      if (!adminInfo) navigate("/admin/login");
-    };
+  const user = useSelector((state) => state.auth.user);
+  useCheckAdminAuth(user);
 
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await getAllProducts();
@@ -37,7 +37,6 @@ const ProductManagement = () => {
       }
     };
 
-    checkAdminAuth();
     fetchProducts();
   }, [navigate]);
 
@@ -131,7 +130,7 @@ const ProductManagement = () => {
         <Space>
           <Button
             variant="secondary"
-            size="small"
+            size="mini"
             onClick={() => handleViewProduct(record.id)}
             icon={FaEye}
           >
@@ -140,7 +139,7 @@ const ProductManagement = () => {
 
           <Button
             variant="outline"
-            size="small"
+            size="mini"
             icon={FaEdit}
             onClick={() => navigate(`/admin/products/edit/${record.id}`)}
           >
@@ -149,7 +148,7 @@ const ProductManagement = () => {
 
           <Button
             variant="danger"
-            size="small"
+            size="mini"
             onClick={() => handleDelete(record.id)}
             icon={FaTrash}
           >
@@ -167,7 +166,6 @@ const ProductManagement = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-800">Quản lý sản phẩm</h1>
-            <p className="text-gray-600">Tổng số: {filtered.length} sản phẩm</p>
           </div>
           <Link
             to="/admin/products/add"
@@ -179,19 +177,20 @@ const ProductManagement = () => {
 
         <div className="mb-4 flex flex-col md:flex-row gap-4">
           <Search
-            placeholder="Tìm kiếm sản phẩm"
+            placeholder="Nhập tên sản phẩm để tìm kiếm"
             onSearch={(value) => setSearchTerm(value)}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ maxWidth: 300 }}
             allowClear
           />
+          <p className="text-gray-600 ml-auto">Tổng số: {filtered.length} sản phẩm</p>
         </div>
 
         <Table
           columns={columns}
           dataSource={filtered}
           rowKey="id"
-          pagination={{ pageSize: 8 }}
+          pagination={{ pageSize: 7 }}
         />
 
         <ProductDetailModal

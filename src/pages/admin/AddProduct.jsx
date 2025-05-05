@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { createProduct } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
 import { getCategories } from "../../services/categoryService";
-
+import { useSelector } from "react-redux";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 const { TextArea } = Input;
 
 const AddProduct = () => {
@@ -20,12 +21,13 @@ const AddProduct = () => {
     //     { value: "Tablet", label: "Máy tính bảng" },
     //     { value: "Accessories", label: "Phụ kiện" }
     // ]);
-
+    const user = useSelector((state) => state.auth.user);
+    useCheckAdminAuth(user);
     const fetchCategories = async () => {
         setLoading(true);
         try {
             const response = await getCategories();
-            console.log("Fetched categories:", response);
+            // console.log("Fetched categories:", response);
             setCategories(response);
         } catch (error) {
             console.error("Failed to fetch categories", error);

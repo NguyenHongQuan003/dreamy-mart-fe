@@ -35,7 +35,8 @@ export const setupInterceptors = (navigate) => {
     async (error) => {
       const originalRequest = error.config;
       localStorage.setItem("log", "Gọi refresh token");
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      const isAuthUrl = originalRequest.url.includes("/auth/login");
+      if (error.response?.status === 401 && !originalRequest._retry && !isAuthUrl) {
         originalRequest._retry = true;
         try {
           const refreshToken = store.getState().auth.refreshToken;

@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getProductById, updateProduct } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
 import { getCategories } from "../../services/categoryService";
-
+import { useSelector } from "react-redux";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 const { TextArea } = Input;
 
 const ProductEdit = () => {
@@ -15,6 +16,8 @@ const ProductEdit = () => {
     const [fileList, setFileList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
+    const user = useSelector((state) => state.auth.user);
+    useCheckAdminAuth(user);
 
     useEffect(() => {
         const fetchCategories = async () => {

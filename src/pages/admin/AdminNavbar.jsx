@@ -7,13 +7,17 @@ import {
     FaTag
 } from 'react-icons/fa'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { logout } from '../../services/authService';
+import { APP_INFO } from '../../constants/app.constants';
+import { useSelector } from 'react-redux';
 
 const AdminNavbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.user);
 
     const handleLogout = () => {
-        localStorage.removeItem("adminInfo");
+        logout();
         navigate("/admin/login");
     };
 
@@ -27,10 +31,28 @@ const AdminNavbar = () => {
 
     return (
         <div className="w-64 bg-[#1e293b] text-white h-screen flex flex-col">
-            <div className="p-4">
+            <div className="px-4 py-2">
                 <h1 className="text-2xl font-bold">DreamyMart Admin</h1>
             </div>
-            <nav className="mt-6 flex-1">
+            <div className="py-3 hover:bg-[#334155] transition-colors mt-auto">
+                {user && (
+                    <div className="relative px-4">
+                        <button
+                            className="flex items-center hover:cursor-pointer w-full"
+                        // onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        >
+                            <img
+                                src={user.avatar || APP_INFO.DEFAULT_AVATAR}
+                                className="h-12 w-12 rounded-full border-1 border-white object-cover"
+                            />
+                            <span className="hidden md:block text-[#0078E8] ml-2 pr-1 truncate">
+                                <strong>{user.fullName}</strong>
+                            </span>
+                        </button>
+                    </div>
+                )}
+            </div>
+            <nav className=" flex-1">
                 {navItems.map((item) => {
                     const isActive = location.pathname === item.to;
                     return (
@@ -55,7 +77,9 @@ const AdminNavbar = () => {
                         Đăng xuất
                     </button>
                 </div>
+
             </nav>
+
         </div>
     )
 }

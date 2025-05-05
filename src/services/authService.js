@@ -36,12 +36,13 @@ export const login = async (username, password) => {
       const userData = await getCurrentUser();
       store.dispatch(setUser(userData));
     }
-    return true;
+    localStorage.setItem("roles", response.data.result.roles);
+    return { flag: true, roles: response.data.result.roles };
   } catch (error) {
     if (error.response.status === 503) {
       console.error("Server auth not running");
     }
-    return false;
+    return { flag: false, roles: [] };
   }
 };
 
@@ -49,6 +50,7 @@ export const logout = async () => {
   const refreshToken = localStorage.getItem("refresh_token");
   const response = await axiosInstance.post(`/auth/logout`, { refreshToken });
   store.dispatch(clearAuth());
+  localStorage.removeItem("roles");
   return response.data;
 };
 

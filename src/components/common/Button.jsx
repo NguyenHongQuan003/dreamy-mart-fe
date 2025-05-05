@@ -81,7 +81,7 @@ Button.propTypes = {
     "google",
     "facebook",
   ]),
-  size: PropTypes.oneOf(["small", "medium", "large"]),
+  size: PropTypes.oneOf(["small", "medium", "large", "mini"]),
   fullWidth: PropTypes.bool,
   disabled: PropTypes.bool,
   onClick: PropTypes.func,

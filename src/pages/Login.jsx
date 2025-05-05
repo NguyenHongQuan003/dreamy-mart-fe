@@ -6,11 +6,12 @@ import Button from "../components/common/Button";
 import { FaEnvelope, FaFacebook, FaGoogle, FaLock } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
 import { toast } from "react-toastify";
 import { login } from "../services/authService";
 import Loading from "../components/common/Loading";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,6 +20,13 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +41,7 @@ const Login = () => {
     setIsLoading(true);
     const response = await login(formData.email, formData.password);
     // console.log("response", response);
-    if (response) {
+    if (response.flag) {
       toast.success("Đăng nhập thành công!");
       navigate("/");
     } else {

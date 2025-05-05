@@ -13,6 +13,8 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import AdminNavbar from "./AdminNavbar";
+import { useSelector } from "react-redux";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 
 const OrderManagement = () => {
   const navigate = useNavigate();
@@ -24,16 +26,10 @@ const OrderManagement = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const user = useSelector((state) => state.auth.user);
+  useCheckAdminAuth(user);
 
   useEffect(() => {
-    // Kiểm tra quyền admin
-    const checkAdminAuth = () => {
-      const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
-      if (!adminInfo) {
-        navigate("/admin/login");
-      }
-    };
-
     const fetchOrders = async () => {
       setIsLoading(true);
 
@@ -140,8 +136,6 @@ const OrderManagement = () => {
         setIsLoading(false);
       }
     };
-
-    checkAdminAuth();
     fetchOrders();
   }, [navigate]);
 

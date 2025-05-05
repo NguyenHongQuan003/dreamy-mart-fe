@@ -16,22 +16,19 @@ import {
   FaCreditCard,
 } from "react-icons/fa";
 import AdminNavbar from "./AdminNavbar";
-
+import { useSelector } from "react-redux";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 const OrderDetail = () => {
   const navigate = useNavigate();
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [orderStatus, setOrderStatus] = useState("");
+  const user = useSelector((state) => state.auth.user);
+  useCheckAdminAuth(user);
 
   useEffect(() => {
     // Kiểm tra quyền admin
-    const checkAdminAuth = () => {
-      const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
-      if (!adminInfo) {
-        navigate("/admin/login");
-      }
-    };
 
     const fetchOrderDetail = async () => {
       setIsLoading(true);
@@ -98,7 +95,6 @@ const OrderDetail = () => {
       }
     };
 
-    checkAdminAuth();
     fetchOrderDetail();
   }, [orderId, navigate]);
 

@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaLock, FaUser } from "react-icons/fa";
+import { login } from "../../services/authService";
+import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -8,8 +11,14 @@ const AdminLogin = () => {
     username: "",
     password: "",
   });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user && localStorage.getItem("roles").includes("ADMIN")) {
+      navigate("/admin");
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,27 +30,21 @@ const AdminLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
-    // Điều kiện đăng nhập đơn giản, trong thực tế nên gọi API
-    if (formData.username === "admin" && formData.password === "admin123") {
-      // Lưu thông tin admin vào localStorage
-      localStorage.setItem(
-        "adminInfo",
-        JSON.stringify({
-          username: "admin",
-          name: "Admin User",
-          role: "admin",
-          token: "admin_token_" + Date.now(),
-        })
-      );
-
+    const response = await login(formData.username, formData.password);
+    if (response.flag === false) {
+      toast.error("Email hoặc password không chính xác!");
       setLoading(false);
+      return;
+    }
+    if (response.roles.includes("ADMIN")) {
+      toast.success("Đăng nhập thành công!");
       navigate("/admin");
     } else {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng!");
+      toast.error("Bạn không có quyền truy cập vào trang quản trị!");
       setLoading(false);
+      return;
     }
   };
 
@@ -52,12 +55,6 @@ const AdminLogin = () => {
           <h1 className="text-3xl font-bold text-gray-800">DreamyMart Admin</h1>
           <p className="text-gray-600 mt-2">Đăng nhập để quản lý cửa hàng</p>
         </div>
-
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>

@@ -7,10 +7,9 @@ import {
   FaChartLine,
 
 } from "react-icons/fa";
-import axios from "axios";
-import { API_URL } from "../../constants/api.constants";
 import AdminNavbar from "./AdminNavbar";
-
+import { useSelector } from "react-redux";
+import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
@@ -20,81 +19,63 @@ const Dashboard = () => {
     revenue: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const user = useSelector((state) => state.auth.user);
+  useCheckAdminAuth(user);
+
 
   useEffect(() => {
-    // Kiểm tra quyền admin
-    const checkAdminAuth = () => {
-      const adminInfo = JSON.parse(localStorage.getItem("adminInfo"));
-      if (!adminInfo) {
-        navigate("/admin/login");
-      }
-    };
+    // const fetchStats = async () => {
+    // setIsLoading(true);
+    // try {
+    // Lấy thông tin users
+    // const usersResponse = await axios.get(`${API_URL}/users`);
 
-    // const fetchProducts = async () => {
+    // Lấy thông tin products
+    // const productsResponse = await axios.get(`${API_URL}/products`);
 
-    //   try {
-    //     const response = await getAllProducts();
-    //     console.log("Fetched products:", response);
-    //     setProducts(response.data);
-    //     setFilteredProducts(response.data);
-    //   } catch (error) {
-    //     console.error("Failed to fetch products", error);
+    // Lấy thông tin orders
+    // const ordersResponse = await axios.get(`${API_URL}/orders`);
+
+    // // Tính tổng doanh thu
+    // let totalRevenue = 0;
+    // if (ordersResponse.data && ordersResponse.data.length > 0) {
+    //   totalRevenue = ordersResponse.data.reduce((sum, order) => {
+    //     return sum + (parseFloat(order.total) || 0);
+    //   }, 0);
+    // } else {
+    // Giả lập dữ liệu nếu không có đơn hàng
+    //     const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    //     totalRevenue = savedOrders.reduce((sum, order) => {
+    //       return sum + (parseFloat(order.total) || 0);
+    //     }, 0);
     //   }
+
+    //   setStats({
+    //     users: usersResponse.data.length,
+    //     products: productsResponse.data.length,
+    //     orders:
+    //       ordersResponse.data.length ||
+    //       JSON.parse(localStorage.getItem("orders"))?.length ||
+    //       0,
+    //     revenue: totalRevenue,
+    //   });
+
+    //   setIsLoading(false);
+    // } catch (error) {
+    //   console.error("Error fetching dashboard data:", error);
+    // Dữ liệu mẫu nếu API lỗi
+    setStats({
+      users: 20,
+      products: 150,
+      orders: 75,
+      revenue: 50000000,
+    });
+    setIsLoading(false);
+    // }
     // };
-    // fetchProducts();
 
-    const fetchStats = async () => {
-      setIsLoading(true);
-      try {
-        // Lấy thông tin users
-        const usersResponse = await axios.get(`${API_URL}/users`);
-
-        // Lấy thông tin products
-        const productsResponse = await axios.get(`${API_URL}/products`);
-
-        // Lấy thông tin orders
-        const ordersResponse = await axios.get(`${API_URL}/orders`);
-
-        // Tính tổng doanh thu
-        let totalRevenue = 0;
-        if (ordersResponse.data && ordersResponse.data.length > 0) {
-          totalRevenue = ordersResponse.data.reduce((sum, order) => {
-            return sum + (parseFloat(order.total) || 0);
-          }, 0);
-        } else {
-          // Giả lập dữ liệu nếu không có đơn hàng
-          const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-          totalRevenue = savedOrders.reduce((sum, order) => {
-            return sum + (parseFloat(order.total) || 0);
-          }, 0);
-        }
-
-        setStats({
-          users: usersResponse.data.length,
-          products: productsResponse.data.length,
-          orders:
-            ordersResponse.data.length ||
-            JSON.parse(localStorage.getItem("orders"))?.length ||
-            0,
-          revenue: totalRevenue,
-        });
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-        // Dữ liệu mẫu nếu API lỗi
-        setStats({
-          users: 20,
-          products: 150,
-          orders: 75,
-          revenue: 50000000,
-        });
-        setIsLoading(false);
-      }
-    };
-
-    checkAdminAuth();
-    fetchStats();
+    // checkAdminAuth();
+    // fetchStats();
   }, [navigate]);
 
 
@@ -186,7 +167,7 @@ const Dashboard = () => {
             </div>
 
             {/* Recent Activities */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            {/* <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold mb-4">Hoạt động gần đây</h2>
               <div className="overflow-x-auto">
                 <table className="min-w-full bg-white">
@@ -252,7 +233,7 @@ const Dashboard = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </>
         )}
       </div>
