@@ -20,6 +20,9 @@ const ProductManagement = () => {
   const [selectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(7);
+  const [totalElements, setTotalElements] = useState(0);
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
@@ -27,8 +30,9 @@ const ProductManagement = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await getAllProducts();
+        const response = await getAllProducts(currentPage, pageSize);
         setProducts(response.data);
+        setTotalElements(response.totalElements);
         const uniqueCategories = [
           ...new Set(response.data.map((p) => p.category.name)),
         ];
@@ -39,7 +43,7 @@ const ProductManagement = () => {
     };
 
     fetchProducts();
-  }, [navigate]);
+  }, [currentPage, pageSize]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
@@ -185,14 +189,22 @@ const ProductManagement = () => {
             style={{ maxWidth: 300 }}
             allowClear
           />
-          <p className="text-gray-600 ml-auto">Tổng số: {filtered.length} sản phẩm</p>
+          <p className="text-gray-600 ml-auto">Tổng số: {totalElements} sản phẩm</p>
         </div>
 
         <Table
           columns={columns}
           dataSource={filtered}
           rowKey="id"
-          pagination={{ pageSize: 7 }}
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            total: totalElements,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+          }}
         />
 
         <ProductDetailModal
