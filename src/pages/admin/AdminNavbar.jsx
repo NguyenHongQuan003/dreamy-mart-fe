@@ -1,6 +1,8 @@
 import {
     FaChartLine,
     FaClipboardList,
+    FaFileAlt,
+    FaList,
     FaShoppingBag,
     FaSignOutAlt,
     FaTachometerAlt,
@@ -25,10 +27,11 @@ const AdminNavbar = () => {
     const navItems = [
         { to: "/admin", label: "Bảng điều khiển", icon: <FaTachometerAlt /> },
         { to: "/admin/products", label: "Sản phẩm", icon: <FaShoppingBag /> },
+        { to: "/admin/categories", label: "Danh mục", icon: <FaList /> },
         { to: "/admin/promotions", label: "Khuyến mãi", icon: <FaTag /> },
         { to: "/admin/orders", label: "Đơn hàng", icon: <FaClipboardList /> },
         { to: "/admin/delivery", label: "Giao hàng", icon: <FaTruck /> },
-        { to: "/admin/statistics", label: "Thống kê", icon: <FaChartLine /> },
+        { to: "/admin/reports", label: "Báo cáo", icon: <FaFileAlt /> },
     ];
 
     return (
@@ -41,7 +44,6 @@ const AdminNavbar = () => {
                     <div className="relative px-4">
                         <button
                             className="flex items-center hover:cursor-pointer w-full"
-                        // onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         >
                             <img
                                 src={user.avatar || APP_INFO.DEFAULT_AVATAR}
@@ -58,16 +60,15 @@ const AdminNavbar = () => {
                 {navItems.map((item) => {
                     const isActive = location.pathname === item.to;
                     return (
-                        <div
+                        <Link
+                            to={item.to}
                             key={item.to}
-                            className={`px-4 py-3 transition-colors ${isActive ? "bg-[#334155]" : "hover:bg-[#334155]"
-                                }`}
                         >
-                            <Link to={item.to} className="flex items-center text-white">
+                            <div className={`px-4 py-3 flex items-center text-white ${isActive ? "bg-[#334155]" : "hover:bg-[#334155]"}`}>
                                 <span className="mr-3">{item.icon}</span>
                                 {item.label}
-                            </Link>
-                        </div>
+                            </div>
+                        </Link>
                     );
                 })}
                 <div className="px-4 py-3 hover:bg-[#334155] transition-colors mt-auto">
@@ -80,9 +81,9 @@ const AdminNavbar = () => {
                     </button>
                 </div>
 
-            </nav>
+            </nav >
 
-        </div>
+        </div >
     )
 }
 
