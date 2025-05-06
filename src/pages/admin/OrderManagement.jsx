@@ -28,7 +28,6 @@ const OrderManagement = () => {
         setTotalElements(response.result.totalElements);
       } catch (error) {
         console.error("Fetch error:", error);
-        // toast.error("Không thể tải danh sách đơn hàng!");
       }
     };
 
@@ -191,51 +190,47 @@ const OrderManagement = () => {
       dataIndex: "id",
       key: "id",
       sorter: (a, b) => a.id.localeCompare(b.id),
+      render: (id) => id
+    },
+    {
+      title: "Tên khách hàng",
+      dataIndex: "user",
+      key: "user",
+      sorter: (a, b) => a.user.localeCompare(b.user),
       width: 200,
-      render: (id) => (
+      render: (user) => (
         <div style={{
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           maxWidth: '200px'
         }}
-          title={id}
+          title={user.fullName}
         >
-          {id}
+          {user.fullName}
         </div>
       ),
     },
     {
-      title: "Tên khách hàng",
-      dataIndex: "userId",
-      key: "userId",
-      sorter: (a, b) => a.userId.localeCompare(b.userId),
-      width: 200,
-      render: (userId) => (
-        <div style={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          maxWidth: '200px'
-        }}
-          title={userId}
-        >
-          {userId}
-        </div>
-      ),
+      title: "Số điện thoại",
+      dataIndex: "user",
+      key: "phone",
+      align: "right",
+      sorter: (a, b) => a.user.phone.localeCompare(b.user.phone),
+      render: (user) => user.phone
     },
     {
       title: "Địa chỉ giao hàng",
       dataIndex: "shippingAddress",
       key: "shippingAddress",
       sorter: (a, b) => a.shippingAddress.localeCompare(b.shippingAddress),
-      width: 200,
+      width: 350,
       render: (address) => (
         <div style={{
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          maxWidth: '200px'
+          maxWidth: '350px'
         }}
           title={address}
         >
@@ -247,6 +242,7 @@ const OrderManagement = () => {
       title: "Tổng tiền",
       dataIndex: "totalAmount",
       key: "totalAmount",
+      align: "right",
       sorter: (a, b) => a.totalAmount - b.totalAmount,
       render: (amount) => amount.toLocaleString('vi-VN') + ' đ',
     },
@@ -264,6 +260,7 @@ const OrderManagement = () => {
     {
       title: "Hành động",
       key: "actions",
+      align: "center",
       render: (_, record) => (
         <Space>
           <Button
@@ -278,10 +275,11 @@ const OrderManagement = () => {
       ),
     },
   ];
-
   const filtered = orders.filter(
     (order) =>
-      order.id.toLowerCase().includes(searchTerm.toLowerCase())
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user.phone.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -296,10 +294,10 @@ const OrderManagement = () => {
 
         <div className="mb-4 flex flex-col md:flex-row gap-4">
           <Search
-            placeholder="Tìm kiếm theo mã đơn hàng"
+            placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại"
             onSearch={(value) => setSearchTerm(value)}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ maxWidth: 300 }}
+            style={{ maxWidth: 500 }}
             allowClear
           />
           <p className="text-gray-600 ml-auto">Tổng số: {totalElements} đơn hàng</p>
@@ -325,7 +323,7 @@ const OrderManagement = () => {
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
-          width={720}
+          width={800}
         >
           {selectedOrder && (
             <div className="space-y-6 text-sm text-gray-700">
@@ -341,48 +339,75 @@ const OrderManagement = () => {
                 </div>
               </div>
 
-              {/* Địa chỉ */}
+              {/* Thông tin người đặt */}
+              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
+                <div>
+                  <p className="text-gray-500 font-medium">Tên khách hàng:</p>
+                  <p className="font-semibold text-gray-800">{selectedOrder.user.fullName}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 font-medium">Số điện thoại:</p>
+                  <p className="font-semibold text-gray-800">{selectedOrder.user.phone}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 font-medium">Email:</p>
+                  <p className="font-semibold text-gray-800">{selectedOrder.user.email}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500 font-medium">Giới tính:</p>
+                  <p className="font-semibold text-gray-800">
+                    {selectedOrder.user.gender ? "Nam" : "Nữ"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Địa chỉ giao hàng */}
               <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <p className="text-gray-500 font-medium">Địa chỉ giao hàng:</p>
                 <p className="font-semibold text-gray-800">{selectedOrder.shippingAddress}</p>
               </div>
 
-              {/* Sản phẩm */}
+              {/* Danh sách sản phẩm */}
               <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
                 <p className="text-gray-500 font-medium mb-2">Sản phẩm:</p>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {selectedOrder.items.map((item) => (
-                    <div key={item.id} className="flex justify-between items-center border-b pb-2">
-                      <div>
+                    <div key={item.id} className="flex gap-4 items-center border-b pb-2">
+                      <img
+                        src={item.product.images[0]?.fileUri}
+                        alt={item.product.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                      <div className="flex-1">
                         <p className="font-semibold text-gray-800">{item.product.name}</p>
-                        <p className="text-gray-500">Số lượng: {item.quantity}</p>
+                        <p className="text-gray-500 text-sm">Số lượng: {item.quantity}</p>
+                        <p className="text-gray-500 text-sm">Đơn giá: {item.price.toLocaleString("vi-VN")} đ</p>
                       </div>
-                      <p className="font-semibold text-gray-800">
-                        {(item.price * item.quantity).toLocaleString('vi-VN')} đ
-                      </p>
+                      <div className="text-right font-semibold text-gray-800">
+                        {(item.price * item.quantity).toLocaleString("vi-VN")} đ
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Tổng tiền và trạng thái */}
+              {/* Tổng tiền & Trạng thái */}
               <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
                 <div>
                   <p className="text-gray-500 font-medium">Tổng tiền:</p>
                   <p className="font-semibold text-gray-800">
-                    {selectedOrder.totalAmount.toLocaleString('vi-VN')} đ
+                    {selectedOrder.totalAmount.toLocaleString("vi-VN")} đ
                   </p>
                 </div>
                 <div>
                   <p className="text-gray-500 font-medium">Trạng thái:</p>
-                  <span className="flex items-center rounded-full text-xs">
-                    {getOrderStatusBadge(selectedOrder.status)}
-                  </span>
+                  <div className="mt-1">{getOrderStatusBadge(selectedOrder.status)}</div>
                 </div>
               </div>
             </div>
           )}
         </Modal>
+
       </div>
     </div>
   );
