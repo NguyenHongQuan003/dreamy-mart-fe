@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Space, Modal } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
@@ -34,17 +34,17 @@ const PromotionManagement = () => {
         fetchPromotions();
     }, [navigate]);
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
-            try {
-                toast.success(`Xóa khuyến mãi ${id} thành công`);
-                // await deleteProduct(id);
-                // setPromotions(promotions.filter((p) => p.id !== id));
-            } catch {
-                // setPromotions(promotions.filter((p) => p.id !== id));
-            }
-        }
-    };
+    // const handleDelete = async (id) => {
+    //     if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
+    //         try {
+    //             toast.success(`Xóa khuyến mãi ${id} thành công`);
+    //             // await deleteProduct(id);
+    //             // setPromotions(promotions.filter((p) => p.id !== id));
+    //         } catch {
+    //             // setPromotions(promotions.filter((p) => p.id !== id));
+    //         }
+    //     }
+    // };
 
     const handleViewPromotion = async (id) => {
         try {
@@ -198,14 +198,14 @@ const PromotionManagement = () => {
                         {""}
                     </Button>
 
-                    <Button
+                    {/* <Button
                         variant="danger"
                         size="mini"
                         onClick={() => handleDelete(record.couponCode)}
                         icon={FaTrash}
                     >
                         {""}
-                    </Button>
+                    </Button> */}
                 </Space>
             ),
         },

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Space, Image } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteProduct, getAllProducts, getProductById } from "../../services/productService";
+import { getAllProducts, getProductById } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
 import ProductDetailModal from "../../components/ProductDetailModal";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
@@ -40,16 +40,16 @@ const ProductManagement = () => {
     fetchProducts();
   }, [navigate]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
-      try {
-        await deleteProduct(id);
-        setProducts(products.filter((p) => p.id !== id));
-      } catch {
-        setProducts(products.filter((p) => p.id !== id));
-      }
-    }
-  };
+  // const handleDelete = async (id) => {
+  //   if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+  //     try {
+  //       await deleteProduct(id);
+  //       setProducts(products.filter((p) => p.id !== id));
+  //     } catch {
+  //       setProducts(products.filter((p) => p.id !== id));
+  //     }
+  //   }
+  // };
 
   const handleViewProduct = async (id) => {
     try {
@@ -146,14 +146,14 @@ const ProductManagement = () => {
             {""}
           </Button>
 
-          <Button
+          {/* <Button
             variant="danger"
             size="mini"
             onClick={() => handleDelete(record.id)}
             icon={FaTrash}
           >
             {""}
-          </Button>
+          </Button> */}
         </Space>
       ),
     },
