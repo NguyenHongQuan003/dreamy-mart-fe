@@ -40,8 +40,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await getAllProducts();
-      // console.log("Fetched products:", response);
+      const response = await getAllProducts(1, 100);
       setProducts(response.data);
       setFilteredProducts(response.data);
     } catch (error) {
