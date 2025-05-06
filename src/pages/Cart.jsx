@@ -31,10 +31,6 @@ const Cart = () => {
   const [appliedPromotion, setAppliedPromotion] = useState(null);
   const [promotionError, setPromotionError] = useState("");
 
-  // useEffect(() => {
-  //   console.log(selectedItems);
-  // }, [selectedItems])
-
 
   const handleRemoveItem = (id) => {
     dispatch(removeFromCartAsync(id));
@@ -119,15 +115,21 @@ const Cart = () => {
 
     if (appliedPromotion) {
       let discountAmount = 0;
+      let discountType = '';
 
       // Tính giảm giá theo phần trăm
-      if (appliedPromotion.result.discountPercent > 0) {
-        discountAmount = (subtotal * appliedPromotion.result.discountPercent) / 100;
-      }
+      const percentDiscount = (subtotal * appliedPromotion.result.discountPercent) / 100;
 
       // Tính giảm giá cố định
-      if (appliedPromotion.result.discountAmount > 0) {
-        discountAmount = appliedPromotion.result.discountAmount;
+      const fixedDiscount = appliedPromotion.result.discountAmount;
+
+      // So sánh và chọn loại giảm giá có lợi nhất
+      if (percentDiscount > fixedDiscount) {
+        discountAmount = percentDiscount;
+        discountType = 'percent';
+      } else {
+        discountAmount = fixedDiscount;
+        discountType = 'fixed';
       }
 
       // Đảm bảo số tiền giảm không vượt quá tổng tiền
@@ -136,14 +138,16 @@ const Cart = () => {
       return {
         subtotal,
         discount: discountAmount,
-        total: subtotal - discountAmount
+        total: subtotal - discountAmount,
+        discountType
       };
     }
 
     return {
       subtotal,
       discount: 0,
-      total: subtotal
+      total: subtotal,
+      discountType: null
     };
   };
 
@@ -180,8 +184,18 @@ const Cart = () => {
 
       setAppliedPromotion(response);
       setPromotionError("");
-    } catch {
-      setPromotionError("Mã giảm giá không hợp lệ");
+    } catch (error) {
+      switch (error.response.data.message) {
+        case "Promotion not active":
+          setPromotionError("Mã giảm giá không còn hiệu lực");
+          break;
+        case "Promotion not found":
+          setPromotionError("Mã giảm giá không tồn tại");
+          break;
+        default:
+          setPromotionError("Mã giảm giá không hợp lệ");
+          break;
+      }
     }
   };
 
@@ -399,7 +413,7 @@ const Cart = () => {
                   </div>
                   {appliedPromotion && (
                     <div className="flex justify-between text-gray-700">
-                      <span>Giảm giá {appliedPromotion.result.discountPercent > 0
+                      <span>Giảm giá {calculateSelectedTotal().discountType === 'percent'
                         ? `(${appliedPromotion.result.discountPercent}%)`
                         : `(${appliedPromotion.result.discountAmount.toLocaleString()}đ)`}:</span>
                       <span className="text-red-600">-{calculateSelectedTotal().discount.toLocaleString()} đ</span>

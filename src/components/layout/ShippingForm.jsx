@@ -10,7 +10,6 @@ const ShippingForm = ({ handleInputChange, errors, shippingInfo }) => {
         const fetchAddressList = async () => {
             try {
                 const response = await getAddressUser();
-                console.log("response address list", response);
                 setAddressShipping(response);
             } catch (error) {
                 console.log("Error fetching address list:", error);

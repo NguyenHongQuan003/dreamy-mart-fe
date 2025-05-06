@@ -78,7 +78,8 @@ const PromotionManagement = () => {
 
     const filtered = promotions.filter(
         (p) =>
-            p.promotionName?.toLowerCase().includes(searchTerm.toLowerCase())
+            p.promotionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.couponCode?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const columns = [
@@ -169,13 +170,34 @@ const PromotionManagement = () => {
             title: "Phạm vi áp dụng",
             dataIndex: "isGlobal",
             key: "isGlobal",
+            filters: [
+                {
+                    text: "Toàn bộ",
+                    value: true,
+                },
+                {
+                    text: "Cá nhân",
+                    value: false,
+                },
+            ],
+            onFilter: (value, record) => record.isGlobal === value,
             render: (isGlobal) => isGlobal ? "Toàn bộ" : isGlobal === false ? "Cá nhân" : "",
         },
         {
             title: "Trạng thái",
             dataIndex: "isActive",
             key: "isActive",
-            sorter: (a, b) => a.isActive.localeCompare(b.isActive),
+            filters: [
+                {
+                    text: "Hoạt động",
+                    value: true,
+                },
+                {
+                    text: "Không hoạt động",
+                    value: false,
+                },
+            ],
+            onFilter: (value, record) => record.isActive === value,
             render: (isActive) => isActive ? "Hoạt động" : "Không hoạt động",
         },
 
