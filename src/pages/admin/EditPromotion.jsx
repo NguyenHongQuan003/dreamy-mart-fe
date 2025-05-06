@@ -173,6 +173,14 @@ const EditPromotion = () => {
                         </div>
 
                         <Form.Item
+                            name="isGlobal"
+                            label="Phạm vi áp dụng"
+                            valuePropName="checked"
+                        >
+                            <Switch checkedChildren="Toàn bộ" unCheckedChildren="Cá nhân" />
+                        </Form.Item>
+
+                        <Form.Item
                             name="isActive"
                             label="Trạng thái"
                             valuePropName="checked"

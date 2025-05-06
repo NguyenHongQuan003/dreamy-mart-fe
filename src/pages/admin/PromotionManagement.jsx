@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Table, Input, Space, Modal } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaEye, FaPlus } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { getAllPromotions, getPromotionById } from "../../services/promotionService";
+import { deletePromotion, getAllPromotions, getPromotionById } from "../../services/promotionService";
 import { toast } from "react-toastify";
 const { Search } = Input;
 
@@ -16,6 +16,9 @@ const PromotionManagement = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(7);
+    const [totalElements, setTotalElements] = useState(0);
 
     const user = useSelector((state) => state.auth.user);
     useCheckAdminAuth(user);
@@ -23,28 +26,29 @@ const PromotionManagement = () => {
     useEffect(() => {
         const fetchPromotions = async () => {
             try {
-                const response = await getAllPromotions();
-                console.log(response.result);
-                setPromotions(response.result);
+                const response = await getAllPromotions(currentPage, pageSize);
+                setPromotions(response.result.data);
+                setTotalElements(response.result.totalElements);
             } catch (error) {
                 console.error("Fetch error:", error);
+                setPromotions([]);
             }
         };
 
         fetchPromotions();
-    }, [navigate]);
+    }, [currentPage, pageSize]);
 
-    // const handleDelete = async (id) => {
-    //     if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
-    //         try {
-    //             toast.success(`Xóa khuyến mãi ${id} thành công`);
-    //             // await deleteProduct(id);
-    //             // setPromotions(promotions.filter((p) => p.id !== id));
-    //         } catch {
-    //             // setPromotions(promotions.filter((p) => p.id !== id));
-    //         }
-    //     }
-    // };
+    const handleDelete = async (id) => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
+            try {
+                await deletePromotion(id);
+                toast.success(`Xóa khuyến mãi ${id} thành công`);
+                setPromotions(promotions.filter((p) => p.id !== id));
+            } catch {
+                toast.error("Xóa khuyến mãi thất bại");
+            }
+        }
+    };
 
     const handleViewPromotion = async (id) => {
         try {
@@ -74,17 +78,10 @@ const PromotionManagement = () => {
 
     const filtered = promotions.filter(
         (p) =>
-            p.promotionName.toLowerCase().includes(searchTerm.toLowerCase())
+            p.promotionName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const columns = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-            sorter: (a, b) => a.id.localeCompare(b.id),
-            render: (id) => id,
-        },
         {
             title: "Mã khuyến mãi",
             dataIndex: "couponCode",
@@ -169,6 +166,12 @@ const PromotionManagement = () => {
             render: (endDate) => formatDate(endDate),
         },
         {
+            title: "Phạm vi áp dụng",
+            dataIndex: "isGlobal",
+            key: "isGlobal",
+            render: (isGlobal) => isGlobal ? "Toàn bộ" : isGlobal === false ? "Cá nhân" : "",
+        },
+        {
             title: "Trạng thái",
             dataIndex: "isActive",
             key: "isActive",
@@ -198,14 +201,14 @@ const PromotionManagement = () => {
                         {""}
                     </Button>
 
-                    {/* <Button
+                    <Button
                         variant="danger"
                         size="mini"
-                        onClick={() => handleDelete(record.couponCode)}
+                        onClick={() => handleDelete(record.id)}
                         icon={FaTrash}
                     >
                         {""}
-                    </Button> */}
+                    </Button>
                 </Space>
             ),
         },
@@ -235,14 +238,22 @@ const PromotionManagement = () => {
                         style={{ maxWidth: 300 }}
                         allowClear
                     />
-                    <p className="text-gray-600 ml-auto">Tổng số: {filtered.length} khuyến mãi</p>
+                    <p className="text-gray-600 ml-auto">Tổng số: {totalElements} khuyến mãi</p>
                 </div>
 
                 <Table
                     columns={columns}
                     dataSource={filtered}
                     rowKey="id"
-                    pagination={{ pageSize: 9 }}
+                    pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: totalElements,
+                        onChange: (page, pageSize) => {
+                            setCurrentPage(page);
+                            setPageSize(pageSize);
+                        },
+                    }}
                 />
 
                 <Modal

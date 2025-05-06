@@ -12,6 +12,7 @@ const AddPromotion = () => {
     const onFinish = async (values) => {
         try {
             setLoading(true);
+            console.log('Form values:', values);
             const promotionData = {
                 ...values,
                 startDate: values.startDate.toISOString(),
@@ -19,6 +20,7 @@ const AddPromotion = () => {
                 discountPercent: values.discountPercent || 0,
                 discountAmount: values.discountAmount || 0,
             };
+            console.log('Promotion data:', promotionData);
 
             await createPromotion(promotionData);
             message.success("Thêm khuyến mãi thành công!");
@@ -46,6 +48,7 @@ const AddPromotion = () => {
                         onFinish={onFinish}
                         initialValues={{
                             isActive: true,
+                            isGlobal: true,
                             discountPercent: 0,
                             discountAmount: 0,
                         }}
@@ -138,6 +141,15 @@ const AddPromotion = () => {
                                 />
                             </Form.Item>
                         </div>
+
+                        <Form.Item
+                            name="isGlobal"
+                            label="Phạm vi áp dụng"
+                            valuePropName="checked"
+                        >
+                            <Switch checkedChildren="Toàn bộ" unCheckedChildren="Cá nhân" />
+                        </Form.Item>
+
 
                         <Form.Item
                             name="isActive"

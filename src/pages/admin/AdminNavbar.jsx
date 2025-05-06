@@ -1,5 +1,4 @@
 import {
-    FaChartLine,
     FaClipboardList,
     FaFileAlt,
     FaList,
