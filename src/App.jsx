@@ -25,6 +25,9 @@ import AddProduct from "./pages/admin/AddProduct";
 import NotifyPayment from "./pages/NotifyPayment";
 import ProductEdit from "./pages/admin/ProductEdit";
 import PromotionManagement from "./pages/admin/PromotionManagement";
+import AddPromotion from "./pages/admin/AddPromotion";
+import EditPromotion from "./pages/admin/EditPromotion";
+import DeliveryManagement from "./pages/admin/DeliveryManagement";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -69,6 +72,9 @@ function App() {
           <Route path="/admin/orders" element={<OrderManagement />} />
           <Route path="/admin/orders/:orderId" element={<OrderDetail />} />
           <Route path="/admin/promotions" element={<PromotionManagement />} />
+          <Route path="/admin/promotions/add" element={<AddPromotion />} />
+          <Route path="/admin/promotions/edit/:id" element={<EditPromotion />} />
+          <Route path="/admin/delivery" element={<DeliveryManagement />} />
         </Routes>
         <ToastContainer
           position="top-center"

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Space } from "antd";
+import { Table, Input, Space, Modal } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { getAllPromotions } from "../../services/promotionService";
+import { getAllPromotions, getPromotionById } from "../../services/promotionService";
 import { toast } from "react-toastify";
 const { Search } = Input;
 
@@ -14,8 +14,8 @@ const PromotionManagement = () => {
     const navigate = useNavigate();
     const [promotions, setPromotions] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    // const [selectedPromotion, setSelectedPromotion] = useState(null);
-    // const [modalVisible, setModalVisible] = useState(false);
+    const [selectedPromotion, setSelectedPromotion] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const user = useSelector((state) => state.auth.user);
     useCheckAdminAuth(user);
@@ -35,7 +35,7 @@ const PromotionManagement = () => {
     }, [navigate]);
 
     const handleDelete = async (id) => {
-        if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+        if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
             try {
                 toast.success(`Xóa khuyến mãi ${id} thành công`);
                 // await deleteProduct(id);
@@ -46,11 +46,17 @@ const PromotionManagement = () => {
         }
     };
 
+    const handleViewPromotion = async (id) => {
+        try {
+            const response = await getPromotionById(id);
+            setSelectedPromotion(response.result);
+            setIsModalVisible(true);
+        } catch (error) {
+            toast.error("Không thể tải thông tin khuyến mãi!");
+            console.error(error);
+        }
+    };
 
-    const filtered = promotions.filter(
-        (p) =>
-            p.promotionName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
     const formatDate = (dateString) => {
         const options = {
             year: "numeric",
@@ -61,6 +67,15 @@ const PromotionManagement = () => {
         };
         return new Date(dateString).toLocaleDateString("vi-VN", options);
     };
+
+    const formatCurrency = (amount) => {
+        return amount.toLocaleString() + " đ";
+    };
+
+    const filtered = promotions.filter(
+        (p) =>
+            p.promotionName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const columns = [
         {
@@ -76,7 +91,20 @@ const PromotionManagement = () => {
             key: "couponCode",
             sorter: (a, b) => a.couponCode.localeCompare(b.couponCode),
             align: "right",
-            render: (couponCode) => couponCode,
+            render: (couponCode, record) => (
+                <div
+                    style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        backgroundColor: record.isActive ? '#d4edda' : '#f8d7da',
+                        color: record.isActive ? '#155724' : '#721c24',
+                        display: 'inline-block',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    {couponCode}
+                </div>
+            ),
         },
         {
             title: "Tên khuyến mãi",
@@ -89,8 +117,19 @@ const PromotionManagement = () => {
             dataIndex: "description",
             key: "description",
             sorter: (a, b) => a.description.localeCompare(b.description),
+            render: (description) => (
+                <div style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '200px'
+                }}
+                    title={description}
+                >
+                    {description}
+                </div>
+            ),
         },
-
         {
             title: "Tỷ lệ giảm",
             dataIndex: "discountPercent",
@@ -143,10 +182,18 @@ const PromotionManagement = () => {
             render: (_, record) => (
                 <Space>
                     <Button
+                        variant="secondary"
+                        size="mini"
+                        onClick={() => handleViewPromotion(record.id)}
+                        icon={FaEye}
+                    >
+                        {""}
+                    </Button>
+                    <Button
                         variant="outline"
                         size="mini"
                         icon={FaEdit}
-                        onClick={() => navigate(`/admin/products/edit/${record.id}`)}
+                        onClick={() => navigate(`/admin/promotions/edit/${record.id}`)}
                     >
                         {""}
                     </Button>
@@ -173,7 +220,7 @@ const PromotionManagement = () => {
                         <h1 className="text-3xl font-bold text-gray-800">Quản lý khuyến mãi</h1>
                     </div>
                     <Link
-                        to="/admin/products/add"
+                        to="/admin/promotions/add"
                         className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
                     >
                         <FaPlus className="mr-2" /> Thêm khuyến mãi
@@ -195,14 +242,75 @@ const PromotionManagement = () => {
                     columns={columns}
                     dataSource={filtered}
                     rowKey="id"
-                    pagination={{ pageSize: 7 }}
+                    pagination={{ pageSize: 9 }}
                 />
 
-                {/* <ProductDetailModal
-                    visible={modalVisible}
-                    onClose={() => setModalVisible(false)}
-                    product={selectedProduct}
-                /> */}
+                <Modal
+                    title="🎁 Chi tiết khuyến mãi"
+                    open={isModalVisible}
+                    onCancel={() => setIsModalVisible(false)}
+                    footer={null}
+                    width={700}
+                >
+                    {selectedPromotion && (
+                        <div className="space-y-4 text-sm">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-gray-500 font-medium">Tên khuyến mãi:</p>
+                                    <p className="font-semibold text-base text-blue-600">{selectedPromotion.promotionName}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 font-medium">Mã khuyến mãi:</p>
+                                    <div className={`inline-block px-2 py-1 rounded-full text-xs font-semibold 
+                        ${selectedPromotion.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                        {selectedPromotion.couponCode}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 font-medium">Mô tả:</p>
+                                <p className="whitespace-pre-wrap text-gray-800">{selectedPromotion.description}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-gray-500 font-medium">Tỷ lệ giảm giá:</p>
+                                    <p className="text-blue-700 font-semibold">{selectedPromotion.discountPercent}%</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 font-medium">Số tiền giảm:</p>
+                                    <p className="text-blue-700 font-semibold">{formatCurrency(selectedPromotion.discountAmount)}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 font-medium">Giá trị đơn hàng tối thiểu:</p>
+                                <p className="text-blue-700 font-semibold">{formatCurrency(selectedPromotion.minimumOrderValue)}</p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-gray-500 font-medium">Ngày bắt đầu:</p>
+                                    <p>{formatDate(selectedPromotion.startDate)}</p>
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 font-medium">Ngày kết thúc:</p>
+                                    <p>{formatDate(selectedPromotion.endDate)}</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="text-gray-500 font-medium">Trạng thái:</p>
+                                <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold 
+                    ${selectedPromotion.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                                    {selectedPromotion.isActive ? "✅ Hoạt động" : "❌ Không hoạt động"}
+                                </span>
+                            </div>
+                        </div>
+                    )}
+                </Modal>
+
             </div>
         </div>
     );

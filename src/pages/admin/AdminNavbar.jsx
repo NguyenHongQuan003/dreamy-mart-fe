@@ -4,7 +4,8 @@ import {
     FaShoppingBag,
     FaSignOutAlt,
     FaTachometerAlt,
-    FaTag
+    FaTag,
+    FaTruck
 } from 'react-icons/fa'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { logout } from '../../services/authService';
@@ -26,6 +27,7 @@ const AdminNavbar = () => {
         { to: "/admin/products", label: "Sản phẩm", icon: <FaShoppingBag /> },
         { to: "/admin/promotions", label: "Khuyến mãi", icon: <FaTag /> },
         { to: "/admin/orders", label: "Đơn hàng", icon: <FaClipboardList /> },
+        { to: "/admin/delivery", label: "Giao hàng", icon: <FaTruck /> },
         { to: "/admin/statistics", label: "Thống kê", icon: <FaChartLine /> },
     ];
 
