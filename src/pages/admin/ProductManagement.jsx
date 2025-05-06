@@ -132,6 +132,7 @@ const ProductManagement = () => {
     {
       title: "Hành động",
       key: "actions",
+      align: "center",
       render: (_, record) => (
         <Space>
           <Button

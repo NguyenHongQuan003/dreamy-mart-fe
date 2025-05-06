@@ -23,7 +23,7 @@ import { setupInterceptors } from "./utils/axiosConfig";
 import { loadUserFromToken } from "./services/authService";
 import AddProduct from "./pages/admin/AddProduct";
 import NotifyPayment from "./pages/NotifyPayment";
-import ProductEdit from "./pages/admin/ProductEdit";
+import EditProduct from "./pages/admin/EditProduct";
 import PromotionManagement from "./pages/admin/PromotionManagement";
 import AddPromotion from "./pages/admin/AddPromotion";
 import EditPromotion from "./pages/admin/EditPromotion";
@@ -67,7 +67,7 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/products" element={<ProductManagement />} />
-          <Route path="/admin/products/edit/:id" element={<ProductEdit />} />
+          <Route path="/admin/products/edit/:id" element={<EditProduct />} />
           <Route path="/admin/products/add" element={<AddProduct />} />
           <Route path="/admin/orders" element={<OrderManagement />} />
           <Route path="/admin/orders/:orderId" element={<OrderDetail />} />

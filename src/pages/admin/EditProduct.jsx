@@ -9,10 +9,11 @@ import { useSelector } from "react-redux";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 const { TextArea } = Input;
 
-const ProductEdit = () => {
+const EditProduct = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { id } = useParams();
+    console.log("id", id)
     const [fileList, setFileList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -294,4 +295,4 @@ const ProductEdit = () => {
     );
 };
 
-export default ProductEdit;
+export default EditProduct;
