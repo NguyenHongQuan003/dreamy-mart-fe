@@ -186,14 +186,14 @@ const ChatbotWidget = () => {
                     </div>
 
                     {/* Input */}
-                    <form onSubmit={handleSendMessage} className="p-4 border-t">
+                    <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-300">
                         <div className="flex space-x-2">
                             <input
                                 type="text"
                                 value={inputMessage}
                                 onChange={(e) => setInputMessage(e.target.value)}
                                 placeholder="Nhập tin nhắn..."
-                                className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:border-[#0078E8]"
+                                className="flex-1 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:border-[#0078E8]"
                             />
                             <button
                                 type="submit"

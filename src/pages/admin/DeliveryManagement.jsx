@@ -339,13 +339,14 @@ const DeliveryManagement = () => {
                     <p className="text-gray-600 ml-auto">Tổng số: {filtered.length} đơn giao hàng</p>
                 </div>
 
-                <Table
-                    columns={columns}
-                    dataSource={filtered}
-                    rowKey="id"
-                    pagination={{ pageSize: 9 }}
-                />
-
+                <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+                    <Table
+                        columns={columns}
+                        dataSource={filtered}
+                        rowKey="id"
+                        pagination={{ pageSize: 9 }}
+                    />
+                </div>
                 <Modal
                     title={<span className="text-lg font-bold">📦 Chi tiết đơn giao hàng</span>}
                     open={isModalVisible}

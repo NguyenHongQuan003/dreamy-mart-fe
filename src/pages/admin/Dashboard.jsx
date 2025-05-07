@@ -36,6 +36,22 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+
+  // const generateColors = (count) => {
+  //   return Array.from({ length: count }, (_, i) => `hsl(${(i * 360) / count}, 70%, 60%)`);
+  // };
+  const generateColors = (count) => {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      const hue = Math.floor(Math.random() * 360);     // tông màu ngẫu nhiên
+      const saturation = 60 + Math.random() * 30;       // từ 60% - 90% cho tươi
+      const lightness = 50 + Math.random() * 20;        // từ 50% - 70% cho dễ nhìn
+      colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+    return colors;
+  };
+
+
   const [stats, setStats] = useState({
     users: 0,
     products: 0,
@@ -131,48 +147,26 @@ const Dashboard = () => {
 
         // Lấy dữ liệu doanh thu theo danh mục
         const revenueByCategory = await getRevenueByCategory();
+        const colorsCategory = generateColors(revenueByCategory.length);
         setCategoryRevenueData({
           labels: revenueByCategory.map(item => item.categoryName),
           datasets: [{
             data: revenueByCategory.map(item => item.totalRevenue),
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.8)',
-              'rgba(54, 162, 235, 0.8)',
-              'rgba(255, 206, 86, 0.8)',
-              'rgba(75, 192, 192, 0.8)',
-              'rgba(153, 102, 255, 0.8)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-            ],
+            backgroundColor: colorsCategory,
+            borderColor: colorsCategory.map(color => color.replace('60%', '40%')),
             borderWidth: 1,
           }]
         });
 
         // Lấy dữ liệu đăng ký người dùng theo tháng
         const monthlyRegistrations = await getMonthlyRegistration();
+        const colorsUser = generateColors(monthlyRegistrations.length);
         setUserRegistrationData({
           labels: monthlyRegistrations.map(item => `Tháng ${item.month}/${item.year}`),
           datasets: [{
             data: monthlyRegistrations.map(item => item.count),
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.8)',
-              'rgba(54, 162, 235, 0.8)',
-              'rgba(255, 206, 86, 0.8)',
-              'rgba(75, 192, 192, 0.8)',
-              'rgba(153, 102, 255, 0.8)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-            ],
+            backgroundColor: colorsUser,
+            borderColor: colorsUser.map(color => color.replace('60%', '40%')),
             borderWidth: 1,
           }]
         });
@@ -277,11 +271,11 @@ const Dashboard = () => {
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Revenue Chart */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold">Doanh thu theo thời gian</h2>
+                  <span className="text-sm font-semibold bg-amber-200 px-2 rounded-2xl text-amber-900">Doanh thu theo thời gian</span>
                   <Radio.Group
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value)}
@@ -313,9 +307,9 @@ const Dashboard = () => {
               </div>
 
               {/* Category Revenue Chart */}
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Doanh thu theo danh mục</h2>
-                <div className="h-80">
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
+                <span className="text-sm font-semibold bg-green-200 px-2 rounded-2xl text-green-900">Doanh thu theo danh mục</span>
+                <div className="h-80 mt-6">
                   <Pie
                     data={categoryRevenueData}
                     options={{
@@ -332,72 +326,98 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* User Registration Chart */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <h2 className="text-xl font-semibold mb-4">Người dùng đăng ký theo tháng</h2>
-              <div className="h-80">
-                <Pie
-                  data={userRegistrationData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                      legend: {
-                        position: 'right',
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+
+              </div>
+              {/* User Registration Chart */}
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
+                <span className="text-sm font-semibold bg-blue-200 px-2 rounded-2xl text-blue-900">Người dùng đăng ký theo tháng</span>
+                <div className="h-80">
+                  <Pie
+                    data={userRegistrationData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'right',
+                        },
                       },
-                    },
-                  }}
-                />
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Top Products Table */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold mb-4">Top sản phẩm bán chạy</h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Sản phẩm
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Danh mục
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Số lượng bán
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Doanh thu
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {topProducts.map((product) => (
-                      <tr key={product.productId}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <img
-                              src={product.productImage}
-                              alt={product.productName}
-                              className="h-10 w-10 rounded-full object-cover mr-3"
-                            />
-                            <div className="text-sm font-medium text-gray-900">{product.productName}</div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{product.categoryName}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{product.sold}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{product.revenue.toLocaleString()} đ</div>
-                        </td>
+
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
+                {/* <h2 className="text-xl font-semibold mb-4">Doanh thu theo danh mục</h2>
+                <div className="h-80">
+                  <Pie
+                    data={categoryRevenueData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'right',
+                        },
+                      },
+                    }}
+                  />
+                </div> */}
+              </div>
+              {/* Top Products Table */}
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <span className="text-sm font-semibold bg-purple-200 px-2 rounded-2xl text-purple-900">Top sản phẩm bán chạy</span>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Sản phẩm
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Danh mục
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Số lượng bán
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Doanh thu
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {topProducts.map((product) => (
+                        <tr key={product.productId}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <img
+                                src={product.productImage}
+                                alt={product.productName}
+                                className="h-10 w-10 rounded-full object-cover mr-3"
+                              />
+                              <div className="text-sm font-medium text-gray-900">{product.productName}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">{product.categoryName}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{product.sold}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900">{product.revenue.toLocaleString()} đ</div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

@@ -302,22 +302,22 @@ const OrderManagement = () => {
           />
           <p className="text-gray-600 ml-auto">Tổng số: {totalElements} đơn hàng</p>
         </div>
-
-        <Table
-          columns={columns}
-          dataSource={filtered}
-          rowKey="id"
-          pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            total: totalElements,
-            onChange: (page, pageSize) => {
-              setCurrentPage(page);
-              setPageSize(pageSize);
-            },
-          }}
-        />
-
+        <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+          <Table
+            columns={columns}
+            dataSource={filtered}
+            rowKey="id"
+            pagination={{
+              current: currentPage,
+              pageSize: pageSize,
+              total: totalElements,
+              onChange: (page, pageSize) => {
+                setCurrentPage(page);
+                setPageSize(pageSize);
+              },
+            }}
+          />
+        </div>
         <Modal
           title={<span className="text-lg font-bold">📦 Chi tiết đơn hàng</span>}
           open={isModalVisible}

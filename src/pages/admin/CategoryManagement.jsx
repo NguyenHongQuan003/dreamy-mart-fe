@@ -134,21 +134,22 @@ const CategoryManagement = () => {
                     />
                     <p className="text-gray-600 ml-auto">Tổng số: {totalElements} danh mục</p>
                 </div>
-
-                <Table
-                    columns={columns}
-                    dataSource={filtered}
-                    rowKey="id"
-                    pagination={{
-                        current: currentPage,
-                        pageSize: pageSize,
-                        total: totalElements,
-                        onChange: (page, pageSize) => {
-                            setCurrentPage(page);
-                            setPageSize(pageSize);
-                        },
-                    }}
-                />
+                <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+                    <Table
+                        columns={columns}
+                        dataSource={filtered}
+                        rowKey="id"
+                        pagination={{
+                            current: currentPage,
+                            pageSize: pageSize,
+                            total: totalElements,
+                            onChange: (page, pageSize) => {
+                                setCurrentPage(page);
+                                setPageSize(pageSize);
+                            },
+                        }}
+                    />
+                </div>
 
                 <Modal
                     title={editingCategory ? "Chỉnh sửa danh mục" : "Thêm danh mục mới"}
