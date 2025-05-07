@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import Home from "./pages/Home";
@@ -29,6 +29,7 @@ import AddPromotion from "./pages/admin/AddPromotion";
 import EditPromotion from "./pages/admin/EditPromotion";
 import DeliveryManagement from "./pages/admin/DeliveryManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
+import ChatbotWidget from "./components/chat/ChatbotWidget";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -39,6 +40,13 @@ const AxiosInterceptorSetup = () => {
   }, [navigate]);
 
   return null;
+};
+
+const ChatbotWrapper = () => {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+
+  return !isAdminPage ? <ChatbotWidget /> : null;
 };
 
 function App() {
@@ -74,6 +82,7 @@ function App() {
           <Route path="/admin/delivery" element={<DeliveryManagement />} />
           <Route path="/admin/categories" element={<CategoryManagement />} />
         </Routes>
+        <ChatbotWrapper />
         <ToastContainer
           position="top-center"
           autoClose={3000}

@@ -1,6 +1,6 @@
 import {
     FaClipboardList,
-    FaFileAlt,
+    // FaFileAlt,
     FaList,
     FaShoppingBag,
     FaSignOutAlt,
@@ -30,7 +30,7 @@ const AdminNavbar = () => {
         { to: "/admin/promotions", label: "Khuyến mãi", icon: <FaTag /> },
         { to: "/admin/orders", label: "Đơn hàng", icon: <FaClipboardList /> },
         { to: "/admin/delivery", label: "Giao hàng", icon: <FaTruck /> },
-        { to: "/admin/reports", label: "Báo cáo", icon: <FaFileAlt /> },
+        // { to: "/admin/reports", label: "Báo cáo", icon: <FaFileAlt /> },
     ];
 
     return (
