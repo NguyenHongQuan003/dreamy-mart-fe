@@ -20,7 +20,7 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
-import { getSummary, getRevenueByCategory, getTopSellingProducts, getMonthlyRegistration, getRevenueByTimeRange } from "../../services/summaryService";
+import { getSummary, getRevenueByCategory, getTopSellingProducts, getMonthlyRegistration, getRevenueByTimeRange, getOrderStatusStats, getMonthlyOrderStats } from "../../services/summaryService";
 import { Radio } from 'antd';
 
 // Đăng ký các components cần thiết cho Chart.js
@@ -114,6 +114,57 @@ const Dashboard = () => {
     }]
   });
   const [topProducts, setTopProducts] = useState([]);
+  const [orderStatusData, setOrderStatusData] = useState({
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+      ],
+      borderWidth: 1,
+    }]
+  });
+  const [monthlyOrderData, setMonthlyOrderData] = useState({
+    labels: [],
+    datasets: [{
+      label: 'Số lượng đơn hàng',
+      data: [],
+      borderColor: 'rgb(153, 102, 255)',
+      tension: 0.4,
+      fill: true,
+      backgroundColor: 'rgba(153, 102, 255, 0.1)',
+    }]
+  });
+
+  const deliveryStatusOptions = [
+    { value: 'DELIVERY_COMPLETED', label: 'Giao thành công' },
+    { value: 'DELIVERY_FAILED', label: 'Giao thất bại' },
+    { value: 'DELIVERY_PROCESSING', label: 'Đang giao' },
+    { value: 'INVENTORY_CHECKED', label: 'Đã kiểm kho' },
+    { value: 'INVENTORY_COMPLETED', label: 'Hoàn tất kho' },
+    { value: 'INVENTORY_FAILED', label: 'Lỗi kho' },
+    { value: 'INVENTORY_PROCESSING', label: 'Đang kiểm kho' },
+    { value: 'ORDER_CANCELLED', label: 'Đơn bị hủy' },
+    { value: 'ORDER_COMPLETED', label: 'Hoàn tất đơn' },
+    { value: 'ORDER_CREATED', label: 'Tạo đơn' },
+    { value: 'PAYMENT_COMPLETED', label: 'Thanh toán thành công' },
+    { value: 'PAYMENT_FAILED', label: 'Thanh toán thất bại' },
+    { value: 'PAYMENT_PROCESSING', label: 'Đang thanh toán' },
+    { value: 'PAYMENT_REFUND_COMPLETED', label: 'Hoàn tiền thành công' },
+    { value: 'PAYMENT_REFUND_FAILED', label: 'Hoàn tiền thất bại' },
+    { value: 'PAYMENT_REFUND_PROCESSING', label: 'Đang hoàn tiền' },
+  ];
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
@@ -174,6 +225,37 @@ const Dashboard = () => {
         // Lấy dữ liệu top sản phẩm bán chạy
         const topSellingProducts = await getTopSellingProducts();
         setTopProducts(topSellingProducts);
+
+        // Lấy dữ liệu trạng thái đơn hàng
+        const orderStatusStats = await getOrderStatusStats();
+        const colorsOrderStatus = generateColors(orderStatusStats.length);
+        setOrderStatusData({
+          labels: orderStatusStats.map(item => {
+            const found = deliveryStatusOptions.find(opt => opt.value === item.orderStatus);
+            return found ? found.label : item.orderStatus;
+          }),
+
+          datasets: [{
+            data: orderStatusStats.map(item => item.count),
+            backgroundColor: colorsOrderStatus,
+            borderColor: colorsOrderStatus.map(color => color.replace('60%', '40%')),
+            borderWidth: 1,
+          }]
+        });
+
+        // Lấy dữ liệu đơn hàng theo tháng
+        const monthlyOrderStats = await getMonthlyOrderStats();
+        setMonthlyOrderData({
+          labels: monthlyOrderStats.map(item => `Tháng ${item.month}/${item.year}`),
+          datasets: [{
+            label: 'Số lượng đơn hàng',
+            data: monthlyOrderStats.map(item => item.count),
+            borderColor: 'rgb(153, 102, 255)',
+            tension: 0.4,
+            fill: true,
+            backgroundColor: 'rgba(153, 102, 255, 0.1)',
+          }]
+        });
 
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -328,12 +410,30 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
-
+                <span className="text-sm font-semibold bg-indigo-200 px-2 rounded-2xl text-indigo-900">Số lượng đơn hàng theo tháng</span>
+                <div className="h-80 mt-6">
+                  <Line
+                    data={monthlyOrderData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          position: 'top',
+                        },
+                        title: {
+                          display: true,
+                          text: 'Số lượng đơn hàng theo tháng',
+                        },
+                      },
+                    }}
+                  />
+                </div>
               </div>
               {/* User Registration Chart */}
               <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
                 <span className="text-sm font-semibold bg-blue-200 px-2 rounded-2xl text-blue-900">Người dùng đăng ký theo tháng</span>
-                <div className="h-80">
+                <div className="h-80 mt-6">
                   <Pie
                     data={userRegistrationData}
                     options={{
@@ -350,14 +450,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
-                {/* <h2 className="text-xl font-semibold mb-4">Doanh thu theo danh mục</h2>
-                <div className="h-80">
+                <span className="text-sm font-semibold bg-pink-200 px-2 rounded-2xl text-pink-900">Trạng thái đơn hàng</span>
+                <div className="h-80 mt-6">
                   <Pie
-                    data={categoryRevenueData}
+                    data={orderStatusData}
                     options={{
                       responsive: true,
                       maintainAspectRatio: false,
@@ -368,7 +466,7 @@ const Dashboard = () => {
                       },
                     }}
                   />
-                </div> */}
+                </div>
               </div>
               {/* Top Products Table */}
               <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">

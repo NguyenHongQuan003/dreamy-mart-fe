@@ -1,87 +1,76 @@
 import axiosInstance from "../utils/axiosConfig";
 
-// /admin/summary
-// {
-//     "code": 1000,
-//     "message": "Get summary successfully",
-//     "result": {
-//         "totalUsers": 14,
-//         "totalProducts": 11,
-//         "totalOrders": 37,
-//         "totalRevenue": 56000.00
-//     }
-// }
 export const getSummary = async () => {
     const response = await axiosInstance.get("/admin/summary");
     return response.data.result;
 };
 
-// /admin/revenue-by-category
-// {
-//     "code": 1000,
-//     "message": "Get revenue by category successfully",
-//     "result": [
-//         {
-//             "categoryName": "Baby",
-//             "totalRevenue": 56000.00
-//         }
-//     ]
-// }
 
 export const getRevenueByCategory = async () => {
     const response = await axiosInstance.get("/admin/revenue-by-category");
     return response.data.result;
 }
 
-// /admin/top-selling-products
-// {
-//     "code": 1000,
-//     "message": "Get top selling products successfully",
-//     "result": [
-//         {
-//             "productId": 13,
-//             "productName": "Đồ bộ cho trẻ 6-18 tháng",
-//             "productImage": "https://springboot-ms-product-bucket.s3.amazonaws.com/01f055b3-6237-45b0-87f6-10b2e8924fb6_1745425515207_quanaostrueem.jpg",
-//             "quantity": 9,
-//             "price": 56000.00,
-//             "sold": 1,
-//             "revenue": 56000.00,
-//             "categoryName": "Baby"
-//         }
-//     ]
-// }
+
 export const getTopSellingProducts = async () => {
     const response = await axiosInstance.get("/admin/top-selling-products");
     return response.data.result;
 }
-// /admin/monthly-registration
-// {
-//     "code": 1000,
-//     "message": "Get monthly registration data successfully",
-//     "result": [
-//         {
-//             "month": 4,
-//             "year": 2025,
-//             "count": 14
-//         }
-//     ]
-// }
+
 export const getMonthlyRegistration = async () => {
     const response = await axiosInstance.get("/admin/monthly-registration");
     return response.data.result;
 }
-// /admin/revenue - by - time - range ? timeRange = monthly/daily/weekly
+
+export const getRevenueByTimeRange = async (timeRange) => {
+    const response = await axiosInstance.get(`/admin/revenue-by-time-range?timeRange=${timeRange}`);
+    return response.data.result;
+}
+
+// http://localhost:8080/api/v1/admin/monthly-order-stats
 // {
 //     "code": 1000,
-//     "message": "Get revenue by time range successfully",
+//     "message": "Get monthly order statistics successfully",
 //     "result": [
 //         {
-//             "date": "May 2025",
-//             "revenue": 56000.00
+//             "year": 2025,
+//             "month": 5,
+//             "count": 37
 //         }
 //     ]
 // }
-export const getRevenueByTimeRange = async (timeRange) => {
-    const response = await axiosInstance.get(`/admin/revenue-by-time-range?timeRange=${timeRange}`);
+export const getMonthlyOrderStats = async () => {
+    const response = await axiosInstance.get("/admin/monthly-order-stats");
+    return response.data.result;
+}
+// http://localhost:8080/api/v1/admin/order-status-stats
+// {
+//     "code": 1000,
+//     "message": "Get order status statistics successfully",
+//     "result": [
+//         {
+//             "orderStatus": "PAYMENT_PROCESSING",
+//             "count": 23
+//         },
+//         {
+//             "orderStatus": "DELIVERY_PROCESSING",
+//             "count": 6
+//         },
+//         {
+//             "orderStatus": "ORDER_CREATED",
+//             "count": 6
+//         },
+//         {
+//             "orderStatus": "ORDER_COMPLETED",
+//             "count": 1
+//         },
+//         {
+//             "orderStatus": "PAYMENT_COMPLETED",
+//             "count": 1
+//         }
+//     ]
+// }
+export const getOrderStatusStats = async () => {
+    const response = await axiosInstance.get("/admin/order-status-stats");
     return response.data.result;
 }
