@@ -265,7 +265,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [timeRange]);
+  }, [timeRange, deliveryStatusOptions]);
 
   return (
     <div className="bg-gray-100 flex">
