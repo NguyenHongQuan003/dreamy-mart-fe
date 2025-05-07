@@ -26,7 +26,7 @@ const AdminNavbar = () => {
     const navItems = [
         { to: "/admin", label: "Bảng điều khiển", icon: <FaTachometerAlt /> },
         { to: "/admin/products", label: "Sản phẩm", icon: <FaShoppingBag /> },
-        { to: "/admin/categories", label: "Danh mục", icon: <FaList /> },
+        { to: "/admin/categories", label: "Danh mục sản phẩm", icon: <FaList /> },
         { to: "/admin/promotions", label: "Khuyến mãi", icon: <FaTag /> },
         { to: "/admin/orders", label: "Đơn hàng", icon: <FaClipboardList /> },
         { to: "/admin/delivery", label: "Giao hàng", icon: <FaTruck /> },

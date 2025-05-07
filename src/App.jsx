@@ -28,6 +28,7 @@ import PromotionManagement from "./pages/admin/PromotionManagement";
 import AddPromotion from "./pages/admin/AddPromotion";
 import EditPromotion from "./pages/admin/EditPromotion";
 import DeliveryManagement from "./pages/admin/DeliveryManagement";
+import CategoryManagement from "./pages/admin/CategoryManagement";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -40,8 +41,6 @@ const AxiosInterceptorSetup = () => {
   return null;
 };
 
-
-
 function App() {
   return (
     <Provider store={store}>
@@ -53,9 +52,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cart" element={
-            <Cart />
-          } />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders/:orderId" element={<OrderDetail />} />
           <Route path="/payment/notify" element={<NotifyPayment />} />
@@ -75,6 +72,7 @@ function App() {
           <Route path="/admin/promotions/add" element={<AddPromotion />} />
           <Route path="/admin/promotions/edit/:id" element={<EditPromotion />} />
           <Route path="/admin/delivery" element={<DeliveryManagement />} />
+          <Route path="/admin/categories" element={<CategoryManagement />} />
         </Routes>
         <ToastContainer
           position="top-center"
