@@ -4,8 +4,6 @@ import {
   FaShoppingBag,
   FaClipboardList,
   FaChartLine,
-  FaArrowUp,
-  FaArrowDown,
 } from "react-icons/fa";
 import AdminNavbar from "./AdminNavbar";
 import { useSelector } from "react-redux";
@@ -22,6 +20,8 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
+import { getSummary, getRevenueByCategory, getTopSellingProducts, getMonthlyRegistration, getRevenueByTimeRange } from "../../services/summaryService";
+import { Radio } from 'antd';
 
 // Đăng ký các components cần thiết cho Chart.js
 ChartJS.register(
@@ -43,110 +43,155 @@ const Dashboard = () => {
     revenue: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState('monthly');
+  const [revenueData, setRevenueData] = useState({
+    labels: [],
+    datasets: [{
+      label: 'Doanh thu (triệu đồng)',
+      data: [],
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.4,
+      fill: true,
+      backgroundColor: 'rgba(75, 192, 192, 0.1)',
+    }]
+  });
+  const [categoryRevenueData, setCategoryRevenueData] = useState({
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+      ],
+      borderWidth: 1,
+    }]
+  });
+  const [userRegistrationData, setUserRegistrationData] = useState({
+    labels: [],
+    datasets: [{
+      data: [],
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+      ],
+      borderColor: [
+        'rgba(255, 99, 132, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+      ],
+      borderWidth: 1,
+    }]
+  });
+  const [topProducts, setTopProducts] = useState([]);
+
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
 
-  // Dữ liệu mẫu cho biểu đồ doanh thu theo thời gian
-  const revenueData = {
-    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-    datasets: [
-      {
-        label: 'Doanh thu (triệu đồng)',
-        data: [12, 19, 15, 25, 22, 30, 28, 35, 32, 40, 38, 45],
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.4,
-        fill: true,
-        backgroundColor: 'rgba(75, 192, 192, 0.1)',
-      },
-    ],
-  };
-
-  // Dữ liệu mẫu cho biểu đồ doanh thu theo danh mục
-  const categoryRevenueData = {
-    labels: ['Điện thoại', 'Laptop', 'Máy tính bảng', 'Phụ kiện', 'Khác'],
-    datasets: [
-      {
-        data: [35, 25, 20, 15, 5],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.8)',
-          'rgba(54, 162, 235, 0.8)',
-          'rgba(255, 206, 86, 0.8)',
-          'rgba(75, 192, 192, 0.8)',
-          'rgba(153, 102, 255, 0.8)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Dữ liệu mẫu cho biểu đồ người dùng đăng ký theo tháng
-  const userRegistrationData = {
-    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
-    datasets: [
-      {
-        data: [150, 200, 180, 250, 220, 300, 280, 350, 320, 400, 380, 450],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.8)',
-          'rgba(54, 162, 235, 0.8)',
-          'rgba(255, 206, 86, 0.8)',
-          'rgba(75, 192, 192, 0.8)',
-          'rgba(153, 102, 255, 0.8)',
-          'rgba(255, 159, 64, 0.8)',
-          'rgba(199, 199, 199, 0.8)',
-          'rgba(83, 102, 255, 0.8)',
-          'rgba(40, 159, 64, 0.8)',
-          'rgba(210, 199, 199, 0.8)',
-          'rgba(78, 52, 199, 0.8)',
-          'rgba(255, 99, 132, 0.8)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(199, 199, 199, 1)',
-          'rgba(83, 102, 255, 1)',
-          'rgba(40, 159, 64, 1)',
-          'rgba(210, 199, 199, 1)',
-          'rgba(78, 52, 199, 1)',
-          'rgba(255, 99, 132, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Dữ liệu mẫu cho top sản phẩm bán chạy
-  const topProducts = [
-    { id: 1, name: 'iPhone 14 Pro Max', category: 'Điện thoại', sales: 150, revenue: 1500000000 },
-    { id: 2, name: 'MacBook Pro M2', category: 'Laptop', sales: 120, revenue: 1200000000 },
-    { id: 3, name: 'iPad Pro 12.9', category: 'Máy tính bảng', sales: 100, revenue: 1000000000 },
-    { id: 4, name: 'AirPods Pro 2', category: 'Phụ kiện', sales: 200, revenue: 500000000 },
-    { id: 5, name: 'Samsung Galaxy S23', category: 'Điện thoại', sales: 80, revenue: 800000000 },
-  ];
-
   useEffect(() => {
-    // Dữ liệu mẫu
-    setStats({
-      users: 20,
-      products: 150,
-      orders: 75,
-      revenue: 50000000,
-    });
-    setIsLoading(false);
-  }, []);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        // Lấy dữ liệu tổng quan
+        const summaryData = await getSummary();
+        setStats({
+          users: summaryData.totalUsers,
+          products: summaryData.totalProducts,
+          orders: summaryData.totalOrders,
+          revenue: summaryData.totalRevenue,
+        });
+
+        // Lấy dữ liệu doanh thu theo thời gian
+        const revenueByTime = await getRevenueByTimeRange(timeRange);
+        setRevenueData({
+          labels: revenueByTime.map(item => item.date),
+          datasets: [{
+            label: 'Doanh thu (triệu đồng)',
+            data: revenueByTime.map(item => item.revenue / 1000000), // Chuyển đổi sang triệu đồng
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.4,
+            fill: true,
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+          }]
+        });
+
+        // Lấy dữ liệu doanh thu theo danh mục
+        const revenueByCategory = await getRevenueByCategory();
+        setCategoryRevenueData({
+          labels: revenueByCategory.map(item => item.categoryName),
+          datasets: [{
+            data: revenueByCategory.map(item => item.totalRevenue),
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 206, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+            ],
+            borderWidth: 1,
+          }]
+        });
+
+        // Lấy dữ liệu đăng ký người dùng theo tháng
+        const monthlyRegistrations = await getMonthlyRegistration();
+        setUserRegistrationData({
+          labels: monthlyRegistrations.map(item => `Tháng ${item.month}/${item.year}`),
+          datasets: [{
+            data: monthlyRegistrations.map(item => item.count),
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 206, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)',
+            ],
+            borderColor: [
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+            ],
+            borderWidth: 1,
+          }]
+        });
+
+        // Lấy dữ liệu top sản phẩm bán chạy
+        const topSellingProducts = await getTopSellingProducts();
+        setTopProducts(topSellingProducts);
+
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [timeRange]);
 
   return (
-    // fix chiều cao mặc định
     <div className="bg-gray-100 flex">
       <AdminNavbar />
 
@@ -178,10 +223,6 @@ const Dashboard = () => {
                     <p className="text-2xl font-semibold text-gray-800">
                       {stats.users}
                     </p>
-                    <div className="flex items-center text-green-500 text-sm mt-1">
-                      <FaArrowUp className="mr-1" />
-                      <span>12% so với tháng trước</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -198,10 +239,6 @@ const Dashboard = () => {
                     <p className="text-2xl font-semibold text-gray-800">
                       {stats.products}
                     </p>
-                    <div className="flex items-center text-green-500 text-sm mt-1">
-                      <FaArrowUp className="mr-1" />
-                      <span>8% so với tháng trước</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -218,10 +255,6 @@ const Dashboard = () => {
                     <p className="text-2xl font-semibold text-gray-800">
                       {stats.orders}
                     </p>
-                    <div className="flex items-center text-red-500 text-sm mt-1">
-                      <FaArrowDown className="mr-1" />
-                      <span>3% so với tháng trước</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -238,10 +271,6 @@ const Dashboard = () => {
                     <p className="text-2xl font-semibold text-gray-800">
                       {stats.revenue.toLocaleString()} đ
                     </p>
-                    <div className="flex items-center text-green-500 text-sm mt-1">
-                      <FaArrowUp className="mr-1" />
-                      <span>15% so với tháng trước</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -251,7 +280,18 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Revenue Chart */}
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4">Doanh thu theo thời gian</h2>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Doanh thu theo thời gian</h2>
+                  <Radio.Group
+                    value={timeRange}
+                    onChange={(e) => setTimeRange(e.target.value)}
+                    buttonStyle="solid"
+                  >
+                    <Radio.Button value="daily">Ngày</Radio.Button>
+                    <Radio.Button value="weekly">Tuần</Radio.Button>
+                    <Radio.Button value="monthly">Tháng</Radio.Button>
+                  </Radio.Group>
+                </div>
                 <div className="h-80">
                   <Line
                     data={revenueData}
@@ -264,7 +304,7 @@ const Dashboard = () => {
                         },
                         title: {
                           display: true,
-                          text: 'Doanh thu theo tháng',
+                          text: `Doanh thu theo ${timeRange === 'daily' ? 'ngày' : timeRange === 'weekly' ? 'tuần' : 'tháng'}`,
                         },
                       },
                     }}
@@ -334,15 +374,22 @@ const Dashboard = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {topProducts.map((product) => (
-                      <tr key={product.id}>
+                      <tr key={product.productId}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                          <div className="flex items-center">
+                            <img
+                              src={product.productImage}
+                              alt={product.productName}
+                              className="h-10 w-10 rounded-full object-cover mr-3"
+                            />
+                            <div className="text-sm font-medium text-gray-900">{product.productName}</div>
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{product.category}</div>
+                          <div className="text-sm text-gray-500">{product.categoryName}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{product.sales}</div>
+                          <div className="text-sm text-gray-900">{product.sold}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{product.revenue.toLocaleString()} đ</div>
