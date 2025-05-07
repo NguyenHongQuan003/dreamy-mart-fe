@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Input, InputNumber, Upload, message, Select, Divider } from "antd";
+import { Form, Input, InputNumber, Select, Divider, Upload, message } from "antd";
 import { PlusOutlined, SaveOutlined, RollbackOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductById, updateProduct } from "../../services/productService";
@@ -13,11 +13,12 @@ const EditProduct = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { id } = useParams();
-    console.log("id", id)
     const [fileList, setFileList] = useState([]);
+    const [filesPreview, setFilesPreview] = useState([]);
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const user = useSelector((state) => state.auth.user);
+    const [selectedImageIds, setSelectedImageIds] = useState([]);
     useCheckAdminAuth(user);
 
     useEffect(() => {
@@ -36,7 +37,6 @@ const EditProduct = () => {
         const fetchProduct = async () => {
             try {
                 const product = await getProductById(id);
-                console.log(product);
                 form.setFieldsValue({
                     name: product.name,
                     description: product.description,
@@ -46,20 +46,15 @@ const EditProduct = () => {
                     categoryName: product.category?.name,
                     quantity: product.quantity,
                 });
-                // Hiển thị tất cả hình ảnh hiện có
+
                 if (product.images && product.images.length > 0) {
-                    const existingImages = product.images.map((img, index) => ({
-                        uid: `-${index + 1}`, // Tạo uid âm để phân biệt với ảnh mới
-                        name: img.fileName || `Ảnh ${index + 1}`,
-                        status: 'done',
-                        url: img.fileUri,
-                        thumbUrl: img.fileUri, // Thêm thumbUrl để hiển thị preview
-                        originFileObj: null // Đánh dấu là ảnh cũ
-                    }));
-                    setFileList(existingImages);
+                    setFilesPreview(product.images);
                 }
-            } catch {
-                message.error("Không lấy được thông tin sản phẩm!");
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                form.resetFields();
+                setFilesPreview([]);
+                setSelectedImageIds([]);
             }
         };
         fetchProduct();
@@ -67,12 +62,19 @@ const EditProduct = () => {
 
     const onFinish = async (values) => {
         try {
+            if (selectedImageIds.length === 0) {
+                message.error("Vui lòng chọn ít nhất một hình ảnh để thay đổi!");
+                return;
+            }
+
+            if (fileList.length !== selectedImageIds.length) {
+                message.error(`Số lượng ảnh mới phải bằng với số lượng ảnh đã chọn (${selectedImageIds.length})!`);
+                return;
+            }
+
             setLoading(true);
-            // Lấy file mới upload
-            const files = fileList.filter(f => !f.url).map(f => f.originFileObj);
-            // Lấy id ảnh cũ giữ lại
-            const imageIds = fileList.filter(f => f.url && f.uid).map(f => f.uid);
-            await updateProduct(id, { ...values, imageIds }, files);
+            const files = fileList.map(file => file.originFileObj);
+            await updateProduct(id, { ...values, imageIds: selectedImageIds }, files);
             message.success("Cập nhật thành công!");
             navigate("/admin/products");
         } catch {
@@ -82,11 +84,16 @@ const EditProduct = () => {
         }
     };
 
-    const normFile = (e) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e?.fileList;
+    const handleSelectImage = (id) => {
+        setSelectedImageIds(prev => {
+            if (prev.includes(id)) {
+                return prev.filter(imageId => imageId !== id);
+            } else {
+                return [...prev, id];
+            }
+        });
+        // Reset fileList khi thay đổi số lượng ảnh được chọn
+        setFileList([]);
     };
 
     const handleCategoryChange = (value) => {
@@ -98,6 +105,13 @@ const EditProduct = () => {
                 form.setFieldsValue({ categoryName: newCategoryValue });
             }
         }
+    };
+
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
     };
 
     return (
@@ -115,7 +129,7 @@ const EditProduct = () => {
                     </button>
                 </div>
 
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="bg-white rounded-lg shadow-lg px-6 py-5 h-[calc(100vh-8rem)] overflow-y-auto">
                     <Form
                         form={form}
                         layout="vertical"
@@ -194,7 +208,7 @@ const EditProduct = () => {
                             </div>
                         </div>
 
-                        <div className="border-t border-gray-200 my-6"></div>
+                        <div className="border-t border-gray-200 my-1"></div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <Form.Item
@@ -238,30 +252,65 @@ const EditProduct = () => {
                             </Form.Item>
                         </div>
 
-                        <div className="border-t border-gray-200 my-6"></div>
+                        <div className="border-t border-gray-200 my-1"></div>
 
-                        <Form.Item
-                            name="images"
-                            label={<span className="font-semibold text-gray-700">Hình ảnh sản phẩm</span>}
-                            valuePropName="fileList"
-                            getValueFromEvent={normFile}
-                            rules={[{ required: false }]}
-                        >
-                            <Upload
-                                listType="picture-card"
-                                multiple
-                                beforeUpload={() => false}
-                                fileList={fileList}
-                                onChange={({ fileList }) => setFileList(fileList)}
-                                className="custom-upload"
-                                defaultFileList={[]}
+                        <div className="mb-4">
+                            <label className="font-semibold text-gray-700 block mb-2">
+                                Chọn ảnh muốn thay đổi ({selectedImageIds.length} ảnh đã chọn)
+                            </label>
+                            <div className="flex flex-wrap gap-4">
+                                {filesPreview.map((file) => (
+                                    <div
+                                        key={file.id}
+                                        onClick={() => handleSelectImage(file.id)}
+                                        className={`relative group cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-200 ${selectedImageIds.includes(file.id)
+                                            ? "border-blue-500 shadow-lg"
+                                            : "border-transparent hover:border-gray-300"
+                                            }`}
+                                    >
+                                        <img
+                                            src={file.fileUri}
+                                            alt={file.fileName}
+                                            className="w-24 h-24 object-cover"
+                                        />
+                                        <div className={`absolute inset-0 bg-black/40  flex items-center justify-center transition-opacity duration-200 ${selectedImageIds.includes(file.id) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                                            }`}>
+                                            <span className="text-white font-medium">
+                                                {selectedImageIds.includes(file.id) ? "Đã chọn" : "Chọn"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {selectedImageIds.length > 0 && (
+                            <Form.Item
+                                name="images"
+                                label={<span className="font-semibold text-gray-700">
+                                    Tải lên {selectedImageIds.length} ảnh mới
+                                </span>}
+                                valuePropName="fileList"
+                                getValueFromEvent={normFile}
+                                rules={[{ required: true, message: "Vui lòng tải lên đủ số lượng ảnh!" }]}
                             >
-                                <div className="flex flex-col items-center justify-center">
-                                    <PlusOutlined className="text-xl" />
-                                    <div className="mt-2">Tải lên</div>
-                                </div>
-                            </Upload>
-                        </Form.Item>
+                                <Upload
+                                    listType="picture-card"
+                                    multiple
+                                    beforeUpload={() => false}
+                                    onChange={({ fileList }) => setFileList(fileList)}
+                                    className="custom-upload"
+                                    maxCount={selectedImageIds.length}
+                                >
+                                    {fileList.length < selectedImageIds.length && (
+                                        <div className="flex flex-col items-center justify-center">
+                                            <PlusOutlined className="text-xl" />
+                                            <div className="mt-2">Tải lên</div>
+                                        </div>
+                                    )}
+                                </Upload>
+                            </Form.Item>
+                        )}
 
                         <Form.Item>
                             <div className="flex justify-end gap-4">

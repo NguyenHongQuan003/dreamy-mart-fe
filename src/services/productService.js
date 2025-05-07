@@ -63,7 +63,7 @@ export const deleteProduct = async (id) => {
 // Thêm vào cuối file src/services/productService.js
 
 export const updateProduct = async (id, data,
-    // files
+    files
 ) => {
     const formData = new FormData();
     formData.append("name", data.name);
@@ -73,15 +73,20 @@ export const updateProduct = async (id, data,
     formData.append("costPrice", data.costPrice);
     formData.append("sellingPrice", data.sellingPrice);
     formData.append("categoryName", data.categoryName);
-    // if (data.imageIds) {
-    //     // Nếu imageIds là mảng, join lại, nếu là chuỗi thì giữ nguyên
-    //     formData.append("imageIds", Array.isArray(data.imageIds) ? data.imageIds.join(",") : data.imageIds);
-    // }
-    // if (files) {
-    //     files.forEach((file) => {
-    //         formData.append("files", file);
-    //     });
-    // }
+    if (data.imageIds.length > 0) {
+        data.imageIds.forEach((imageId) => {
+            formData.append("imageIds", imageId);
+        });
+    }
+    if (files) {
+        files.forEach((file) => {
+            formData.append("files", file);
+        });
+    }
+    for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+    }
+
     const response = await axiosInstance.put(`/products/update/${id}`, formData);
     return response.data.result;
 }
