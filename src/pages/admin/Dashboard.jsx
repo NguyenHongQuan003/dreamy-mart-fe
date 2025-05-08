@@ -35,6 +35,26 @@ ChartJS.register(
   ArcElement
 );
 
+
+const deliveryStatusOptions = [
+  { value: 'DELIVERY_COMPLETED', label: 'Giao thành công' },
+  { value: 'DELIVERY_FAILED', label: 'Giao thất bại' },
+  { value: 'DELIVERY_PROCESSING', label: 'Đang giao' },
+  { value: 'INVENTORY_CHECKED', label: 'Đã kiểm kho' },
+  { value: 'INVENTORY_COMPLETED', label: 'Hoàn tất kho' },
+  { value: 'INVENTORY_FAILED', label: 'Lỗi kho' },
+  { value: 'INVENTORY_PROCESSING', label: 'Đang kiểm kho' },
+  { value: 'ORDER_CANCELLED', label: 'Đơn bị hủy' },
+  { value: 'ORDER_COMPLETED', label: 'Hoàn tất đơn' },
+  { value: 'ORDER_CREATED', label: 'Tạo đơn' },
+  { value: 'PAYMENT_COMPLETED', label: 'Thanh toán thành công' },
+  { value: 'PAYMENT_FAILED', label: 'Thanh toán thất bại' },
+  { value: 'PAYMENT_PROCESSING', label: 'Đang thanh toán' },
+  { value: 'PAYMENT_REFUND_COMPLETED', label: 'Hoàn tiền thành công' },
+  { value: 'PAYMENT_REFUND_FAILED', label: 'Hoàn tiền thất bại' },
+  { value: 'PAYMENT_REFUND_PROCESSING', label: 'Đang hoàn tiền' },
+];
+
 const Dashboard = () => {
 
   // const generateColors = (count) => {
@@ -147,24 +167,6 @@ const Dashboard = () => {
     }]
   });
 
-  const deliveryStatusOptions = [
-    { value: 'DELIVERY_COMPLETED', label: 'Giao thành công' },
-    { value: 'DELIVERY_FAILED', label: 'Giao thất bại' },
-    { value: 'DELIVERY_PROCESSING', label: 'Đang giao' },
-    { value: 'INVENTORY_CHECKED', label: 'Đã kiểm kho' },
-    { value: 'INVENTORY_COMPLETED', label: 'Hoàn tất kho' },
-    { value: 'INVENTORY_FAILED', label: 'Lỗi kho' },
-    { value: 'INVENTORY_PROCESSING', label: 'Đang kiểm kho' },
-    { value: 'ORDER_CANCELLED', label: 'Đơn bị hủy' },
-    { value: 'ORDER_COMPLETED', label: 'Hoàn tất đơn' },
-    { value: 'ORDER_CREATED', label: 'Tạo đơn' },
-    { value: 'PAYMENT_COMPLETED', label: 'Thanh toán thành công' },
-    { value: 'PAYMENT_FAILED', label: 'Thanh toán thất bại' },
-    { value: 'PAYMENT_PROCESSING', label: 'Đang thanh toán' },
-    { value: 'PAYMENT_REFUND_COMPLETED', label: 'Hoàn tiền thành công' },
-    { value: 'PAYMENT_REFUND_FAILED', label: 'Hoàn tiền thất bại' },
-    { value: 'PAYMENT_REFUND_PROCESSING', label: 'Đang hoàn tiền' },
-  ];
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
