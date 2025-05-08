@@ -5,7 +5,6 @@ import Header from "../components/layout/Header";
 import {
   FaChevronLeft,
   FaChevronRight,
-  FaStar,
   FaArrowRight,
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
