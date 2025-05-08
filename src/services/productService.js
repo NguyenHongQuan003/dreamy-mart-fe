@@ -28,8 +28,6 @@ export const getProductByBrand = async (brandName) => {
     const products = await axiosInstance.get(`/products/brand?brandName=${brandName}`);
     return products.data.result;
 }
-
-// /products/category/brand?brandName=Apply&categoryName=Apple
 export const getProductByCategoryAndBrand = async (brandName, categoryName) => {
     const products = await axiosInstance.get(`/products/category/brand?brandName=${brandName}&categoryName=${categoryName}`);
     return products.data.result;
@@ -60,8 +58,6 @@ export const deleteProduct = async (id) => {
     return response.data.result;
 }
 
-// Thêm vào cuối file src/services/productService.js
-
 export const updateProduct = async (id, data,
     files
 ) => {
@@ -88,6 +84,31 @@ export const updateProduct = async (id, data,
     }
 
     const response = await axiosInstance.put(`/products/update/${id}`, formData);
+    return response.data.result;
+}
+
+// /products/search?searchTerm=15&size=5&page=1
+export const searchProducts = async (searchTerm, page = null, size = null) => {
+    const params = new URLSearchParams();
+    if (page !== null) params.append("page", page);
+    if (size !== null) params.append("size", size);
+    if (searchTerm) params.append("searchTerm", searchTerm);
+
+    const response = await axiosInstance.get(`/products/search?${params.toString()}`);
+    return response.data.result;
+}
+
+// http://localhost:8080/api/v1/products/filter?brand=Nike&minPrice=0&maxPrice=8000000&page=1&size=10&name=headphone
+export const filterProducts = async (brand, minPrice, maxPrice, page = null, size = null, name = null) => {
+    const params = new URLSearchParams();
+    if (page !== null) params.append("page", page);
+    if (size !== null) params.append("size", size);
+    if (brand) params.append("brand", brand);
+    if (minPrice) params.append("minPrice", minPrice);
+    if (maxPrice) params.append("maxPrice", maxPrice);
+    if (name) params.append("name", name);
+
+    const response = await axiosInstance.get(`/products/filter?${params.toString()}`);
     return response.data.result;
 }
 

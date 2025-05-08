@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { Table, Input, Space, Image } from "antd";
+import { useCallback, useEffect, useState } from "react";
+import { Table, Input, Space, Image, Select, InputNumber, Row, Col } from "antd";
 import Button from "../../components/common/Button";
 import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { deleteProduct, getAllProducts, getProductById } from "../../services/productService";
+import { deleteProduct, getAllProducts, getProductById, searchProducts, filterProducts } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
 import ProductDetailModal from "../../components/ProductDetailModal";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
@@ -16,34 +16,89 @@ const ProductManagement = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(7);
   const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [brands, setBrands] = useState([]);
+  const [filters, setFilters] = useState({
+    brand: null,
+    minPrice: null,
+    maxPrice: null,
+    name: ""
+  });
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await getAllProducts(currentPage, pageSize);
-        setProducts(response.data);
-        setTotalElements(response.totalElements);
-        const uniqueCategories = [
-          ...new Set(response.data.map((p) => p.category.name)),
-        ];
-        setCategories(uniqueCategories);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
-
-    fetchProducts();
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await getAllProducts(currentPage, pageSize);
+      setProducts(response.data);
+      setTotalElements(response.totalElements);
+      const uniqueCategories = [
+        ...new Set(response.data.map((p) => p.category.name)),
+      ];
+      setCategories(uniqueCategories);
+      const uniqueBrands = [...new Set(response.data.map((p) => p.brand))];
+      setBrands(uniqueBrands);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [currentPage, pageSize]);
+
+  const handleSearch = async (value) => {
+    try {
+      setLoading(true);
+      if (value.trim() === "") {
+        await fetchProducts();
+        return;
+      }
+      const response = await searchProducts(value, currentPage, pageSize);
+      setProducts(response.data);
+      setTotalElements(response.totalElements);
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilter = async () => {
+    try {
+      setLoading(true);
+      const response = await filterProducts(
+        filters.brand,
+        filters.minPrice,
+        filters.maxPrice,
+        currentPage,
+        pageSize,
+        filters.name
+      );
+      setProducts(response.data);
+      setTotalElements(response.totalElements);
+    } catch (error) {
+      console.error("Filter error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
@@ -66,12 +121,6 @@ const ProductManagement = () => {
       console.error("Error fetching product details:", error);
     }
   };
-
-  const filtered = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === "" || p.category.name === selectedCategory)
-  );
 
   const columns = [
     {
@@ -182,22 +231,62 @@ const ProductManagement = () => {
           </Link>
         </div>
 
-        <div className="mb-4 flex flex-col md:flex-row gap-4">
-          <Search
-            placeholder="Nhập tên sản phẩm để tìm kiếm"
-            onSearch={(value) => setSearchTerm(value)}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ maxWidth: 300 }}
-            allowClear
-          />
-          <p className="text-gray-600 ml-auto">Tổng số: {totalElements} sản phẩm</p>
+        <div className="mb-4 space-y-4">
+          <Row gutter={[16, 16]}>
+            <Col xs={24} sm={12} md={6}>
+              <Search
+                placeholder="Nhập tên sản phẩm"
+                onSearch={handleSearch}
+                style={{ width: '100%' }}
+                allowClear
+              />
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <Select
+                placeholder="Chọn thương hiệu"
+                style={{ width: '100%' }}
+                allowClear
+                onChange={(value) => handleFilterChange('brand', value)}
+                options={brands.map(brand => ({ label: brand, value: brand }))}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <InputNumber
+                placeholder="Giá tối thiểu"
+                style={{ width: '100%' }}
+                onChange={(value) => handleFilterChange('minPrice', value)}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <InputNumber
+                placeholder="Giá tối đa"
+                style={{ width: '100%' }}
+                onChange={(value) => handleFilterChange('maxPrice', value)}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              />
+            </Col>
+          </Row>
+          <div className="flex justify-between items-center">
+            <Button
+              variant="primary"
+              onClick={handleFilter}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Lọc sản phẩm
+            </Button>
+            <p className="text-gray-600">Tổng số: {totalElements} sản phẩm</p>
+          </div>
         </div>
 
-        <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+        <div className="overflow-y-auto h-[calc(100vh-16rem)]">
           <Table
             columns={columns}
-            dataSource={filtered}
+            dataSource={products}
             rowKey="id"
+            loading={loading}
             pagination={{
               current: currentPage,
               pageSize: pageSize,
