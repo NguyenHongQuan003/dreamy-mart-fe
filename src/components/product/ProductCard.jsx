@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaStar, FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { APP_INFO } from "../../constants/app.constants";
@@ -23,7 +23,7 @@ const ProductCard = ({ product }) => {
   //     : product.price;
 
   // Tính số sao dựa trên thuộc tính rating hoặc giá trị mặc định
-  const rating = product.rating || 4.5;
+  // const rating = product.rating || 4.5;
 
   // const handleFavoriteToggle = (e) => {
   //   e.preventDefault();
@@ -101,7 +101,7 @@ const ProductCard = ({ product }) => {
               {/* Price */}
               <div className="mt-1 space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-red-600 font-bold">
+                  <span className="text-red-600 font-bold ml-auto">
                     {product.sellingPrice.toLocaleString()} đ
                   </span>
                   {/* {discount > 0 && (
@@ -114,7 +114,7 @@ const ProductCard = ({ product }) => {
             </div>
 
             {/* Rating and sold count */}
-            <div className="flex justify-between items-center text-xs mt-2 text-gray-600">
+            {/* <div className="flex justify-between items-center text-xs mt-2 text-gray-600">
               <div className="flex items-center">
                 <div className="flex">
                   {[...Array(5)].map((_, index) => (
@@ -132,7 +132,7 @@ const ProductCard = ({ product }) => {
                 <span className="ml-1">{rating.toFixed(1)}</span>
               </div>
               <span>Đã bán {product.soldCount || "2,3K"}</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </Link>

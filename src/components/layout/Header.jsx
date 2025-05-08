@@ -44,7 +44,7 @@ const Header = () => {
   };
 
   return (
-    <header className="w-full">
+    <header className="w-full bg-[#0078E8] shadow-md sticky top-0 z-50">
       {/* Sale Banner */}
       <div className="w-full">
         <img
