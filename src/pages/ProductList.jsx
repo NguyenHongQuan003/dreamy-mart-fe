@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ProductCard from "../components/product/ProductCard";
@@ -11,56 +11,65 @@ import {
   FaSearch,
   FaTimes,
   FaSlidersH,
+  FaArrowLeft,
+  FaArrowRight,
 } from "react-icons/fa";
-import { getAllProducts, getProductByCategory } from "../services/productService";
+import { filterProductsHome } from "../services/productService";
 import { getCategories } from "../services/categoryService";
 import Filters from "../components/common/Filters";
-import { priceRanges } from "../constants/app.constants";
-
-
-// const ratings = [
-//   { id: "rating-1", name: "5 sao", value: 5 },
-//   { id: "rating-2", name: "4 sao trở lên", value: 4 },
-//   { id: "rating-3", name: "3 sao trở lên", value: 3 },
-// ];
 
 const ProductList = () => {
   const { categoryName } = useParams();
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState({
-    priceRange: "all",
-    rating: 0,
     category: "all",
     search: "",
+    priceRange: {
+      min: 0,
+      max: 999999999
+    }
   });
-  // const [visibleProducts, setVisibleProducts] = useState(10);
-  const fetchProducts = async () => {
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    pageSize: 8,
+    totalPages: 1,
+    totalItems: 0
+  });
+
+  const fetchProducts = useCallback(async (page = 1) => {
     setLoading(true);
     try {
-      const response = await getAllProducts(1, 100);
+      const response = await filterProductsHome(
+        filters.category === "all" ? null : filters.category,
+        filters.search,
+        filters.priceRange.min,
+        filters.priceRange.max,
+        page,
+        pagination.pageSize
+      );
       setProducts(response.data);
-      setFilteredProducts(response.data);
+      setPagination({
+        currentPage: response.currentPage,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        totalItems: response.totalItems
+      });
     } catch (error) {
       console.error("Failed to fetch products", error);
       setProducts([]);
-      setFilteredProducts([]);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, pagination.pageSize]);
 
   const fetchCategories = async () => {
     setLoading(true);
     try {
       const response = await getCategories();
-
-      // Thêm phần tử "Tất cả" vào đầu danh sách
       const allCategory = { id: 0, name: "all" };
       const updatedCategories = [allCategory, ...response];
-
       setCategories(updatedCategories);
     } catch (error) {
       console.error("Failed to fetch categories", error);
@@ -74,60 +83,15 @@ const ProductList = () => {
     fetchCategories();
   }, []);
 
-  const fetchProductByCategory = async (categoryName) => {
-    setLoading(true);
-    try {
-      const response = await getProductByCategory(categoryName);
-      setProducts(response.data);
-      setFilteredProducts(response.data);
-    } catch (error) {
-      console.error("Failed to fetch products category", error);
-      setProducts([]);
-      setFilteredProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
   useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      fetchProducts(1);
+      window.scrollTo(0, 0);
+    }, 800);
 
-    if (categoryName === "all") {
-      fetchProducts();
-    } else {
-      fetchProductByCategory(categoryName);
-    }
-    // Scroll to top when component mounts
-    window.scrollTo(0, 0);
-  }, [categoryName]);
+    return () => clearTimeout(delayDebounce);
+  }, [categoryName, filters, fetchProducts]);
 
-  useEffect(() => {
-    // Apply filters
-    let result = [...products];
-
-    // Filter by search term
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      result = result.filter((product) =>
-        product.name.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Filter by price range
-    if (filters.priceRange !== "all") {
-      const [min, max] = filters.priceRange.split("-").map(Number);
-      result = result.filter(
-        (product) => product.sellingPrice >= min && product.sellingPrice <= max
-      );
-    }
-
-    if (filters.category !== "all") {
-      result = result.filter(
-        (product) =>
-          product.category.name.toLowerCase() === filters.category.toLowerCase()
-      );
-    }
-
-    setFilteredProducts(result);
-  }, [filters, products]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({
@@ -138,28 +102,25 @@ const ProductList = () => {
 
   const clearFilters = () => {
     setFilters({
-      priceRange: "all",
-      rating: 0,
       category: "all",
       search: "",
+      priceRange: {
+        min: 0,
+        max: 999999999
+      }
     });
   };
 
-  // const loadMoreProducts = () => {
-  //   setVisibleProducts((prev) => prev + 10);
-  // };
+  const handlePageChange = (newPage) => {
+    fetchProducts(newPage);
+  };
 
-  // const RatingStars = ({ rating }) => (
-  //   <div className="flex">
-  //     {[...Array(5)].map((_, i) => (
-  //       <FaStar
-  //         key={i}
-  //         className={i < rating ? "text-yellow-400" : "text-gray-300"}
-  //         size={14}
-  //       />
-  //     ))}
-  //   </div>
-  // );
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -196,17 +157,14 @@ const ProductList = () => {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center">
                   <h1 className="text-xl font-bold text-gray-800 mr-3">
-                    {categoryName === "all" ? "TẤT CẢ" : categoryName.toUpperCase()
-                    }
+                    {categoryName === "all" ? "TẤT CẢ" : categoryName.toUpperCase()}
                   </h1>
                   <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                    {filteredProducts.length} sản phẩm
+                    {pagination.totalItems} sản phẩm
                   </div>
                 </div>
 
                 <div className="flex gap-4 items-center flex-wrap">
-
-
                   {/* Sort Combo Box */}
                   <div className="flex items-center">
                     <FaSlidersH className="mr-2 h-4 w-4 text-gray-500" />
@@ -216,91 +174,65 @@ const ProductList = () => {
               </div>
 
               {/* Active filters */}
-              {Object.values(filters).some(
-                (v) => v !== "all" && v !== 0 && v !== ""
-              ) && (
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="text-sm text-gray-700">
-                      Bộ lọc đang áp dụng:
-                    </span>
+              {(filters.search || filters.category !== "all" || filters.priceRange.min > 0 || filters.priceRange.max < 10000000) && (
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <span className="text-sm text-gray-700">
+                    Bộ lọc đang áp dụng:
+                  </span>
 
-                    {filters.category !== "all" && (
-                      <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
-                        <span>
-                          {
-                            categories.find((c) => c.name === filters.category)
-                              ?.name
-                          }
-                        </span>
-                        <button
-                          onClick={() => handleFilterChange("category", "all")}
-                          className="ml-1 inline-flex text-blue-500 focus:outline-none"
-                        >
-                          <FaTimes className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )}
+                  {filters.category !== "all" && (
+                    <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
+                      <span>{filters.category}</span>
+                      <button
+                        onClick={() => handleFilterChange("category", "all")}
+                        className="ml-1 inline-flex text-blue-500 focus:outline-none"
+                      >
+                        <FaTimes className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
 
-                    {filters.priceRange !== "all" && (
-                      <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
-                        <span>
-                          {
-                            priceRanges.find(
-                              (p) => p.value === filters.priceRange
-                            )?.name
-                          }
-                        </span>
-                        <button
-                          onClick={() => handleFilterChange("priceRange", "all")}
-                          className="ml-1 inline-flex text-blue-500 focus:outline-none"
-                        >
-                          <FaTimes className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )}
+                  {(filters.priceRange.min > 0 || filters.priceRange.max < 10000000) && (
+                    <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
+                      <span>
+                        {formatPrice(filters.priceRange.min)} - {formatPrice(filters.priceRange.max)}
+                      </span>
+                      <button
+                        onClick={() => handleFilterChange("priceRange", { min: 0, max: 10000000 })}
+                        className="ml-1 inline-flex text-blue-500 focus:outline-none"
+                      >
+                        <FaTimes className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
 
-                    {/* {filters.rating > 0 && (
-                      <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
-                        <span className="flex items-center">
-                          <RatingStars rating={filters.rating} />
-                          <span className="ml-1">trở lên</span>
-                        </span>
-                        <button
-                          onClick={() => handleFilterChange("rating", 0)}
-                          className="ml-1 inline-flex text-blue-500 focus:outline-none"
-                        >
-                          <FaTimes className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )} */}
+                  {filters.search && (
+                    <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
+                      <span>{filters.search}</span>
+                      <button
+                        onClick={() => handleFilterChange("search", "")}
+                        className="ml-1 inline-flex text-blue-500 focus:outline-none"
+                      >
+                        <FaTimes className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
 
-                    {filters.search && (
-                      <div className="flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700">
-                        <span>{filters.search}</span>
-                        <button
-                          onClick={() => handleFilterChange("search", "")}
-                          className="ml-1 inline-flex text-blue-500 focus:outline-none"
-                        >
-                          <FaTimes className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )}
-
-                    <button
-                      onClick={clearFilters}
-                      className="text-sm text-red-600 underline ml-2"
-                    >
-                      Xóa tất cả
-                    </button>
-                  </div>
-                )}
+                  <button
+                    onClick={clearFilters}
+                    className="text-sm text-red-600 underline ml-2"
+                  >
+                    Xóa tất cả
+                  </button>
+                </div>
+              )}
             </div>
 
             {loading ? (
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            ) : filteredProducts.length === 0 ? (
+            ) : products.length === 0 ? (
               <div className="bg-white rounded-lg shadow p-8 text-center">
                 <div className="text-gray-500 mb-4">
                   <FaSearch className="mx-auto h-12 w-12 text-gray-300" />
@@ -318,11 +250,58 @@ const ProductList = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {filteredProducts.map((item, index) => (
-                  <ProductCard key={index} product={item} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {products.map((item, index) => (
+                    <ProductCard key={index} product={item} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {pagination.totalPages > 1 && (
+                  <div className="mt-8 flex justify-center">
+                    <nav className="inline-flex items-center space-x-1 rounded-lg shadow-sm bg-white px-4 py-2 border border-gray-200">
+                      {/* Nút Trước */}
+                      <button
+                        onClick={() => handlePageChange(pagination.currentPage - 1)}
+                        disabled={pagination.currentPage === 1}
+                        className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md disabled:opacity-40 transition"
+                      >
+                        <FaArrowLeft />
+                      </button>
+
+                      {/* Các số trang */}
+                      {[...Array(pagination.totalPages)].map((_, index) => {
+                        const page = index + 1;
+                        const isCurrent = pagination.currentPage === page;
+
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-200 ${isCurrent
+                              ? "bg-blue-500 text-white shadow"
+                              : "text-gray-600 hover:bg-gray-100"
+                              }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+
+                      {/* Nút Sau */}
+                      <button
+                        onClick={() => handlePageChange(pagination.currentPage + 1)}
+                        disabled={pagination.currentPage === pagination.totalPages}
+                        className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-md disabled:opacity-40 transition"
+                      >
+                        <FaArrowRight />
+                      </button>
+                    </nav>
+                  </div>
+                )}
+
+              </>
             )}
           </div>
         </div>
