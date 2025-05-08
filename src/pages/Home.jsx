@@ -10,11 +10,12 @@ import {
 } from "react-icons/fa";
 import { APP_INFO } from "../constants/app.constants";
 import { useSelector } from "react-redux";
-// import { getLatestProducts } from "../services/apiFunctions";
+import { getTopSellingProducts } from "../services/summaryService";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
 
   const sliderItems = [
@@ -104,95 +105,22 @@ const Home = () => {
   }, [sliderItems.length]);
 
   useEffect(() => {
-    // Lấy sản phẩm mới nhất
-    const fetchLatestProducts = async () => {
+    // Lấy sản phẩm bán chạy nhất
+    const fetchTopSellingProducts = async () => {
+      setLoading(true);
       try {
-        // const products = await getLatestProducts();
-        const products = [
-          {
-            id: 1,
-            productName: "Điện thoại Samsung Galaxy S21",
-            price: 20990000,
-            rating: 4.5,
-            image:
-              "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=2071&auto=format&fit=crop",
-          },
-        ];
-
+        const products = await getTopSellingProducts();
+        console.log("products", products);
         setFeaturedProducts(products);
       } catch (error) {
-        console.error("Failed to fetch latest products:", error);
-        // Dữ liệu mẫu nếu API lỗi
-        setFeaturedProducts([
-          {
-            id: 1,
-            productName: "Điện thoại Samsung Galaxy S21",
-            price: 20990000,
-            rating: 4.5,
-            image:
-              "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?q=80&w=2071&auto=format&fit=crop",
-          },
-          {
-            id: 2,
-            productName: "Laptop Dell XPS 13",
-            price: 32990000,
-            rating: 4.8,
-            image:
-              "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1964&auto=format&fit=crop",
-          },
-          {
-            id: 3,
-            productName: "Apple AirPods Pro",
-            price: 5990000,
-            rating: 4.7,
-            image:
-              "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?q=80&w=2033&auto=format&fit=crop",
-          },
-          {
-            id: 4,
-            productName: "iPad Pro 2021",
-            price: 23990000,
-            rating: 4.9,
-            image:
-              "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=1975&auto=format&fit=crop",
-          },
-          {
-            id: 5,
-            productName: "Xiaomi Mi Band 6",
-            price: 990000,
-            rating: 4.3,
-            image:
-              "https://images.unsplash.com/photo-1617043786394-f977fa12eddf?q=80&w=1780&auto=format&fit=crop",
-          },
-          {
-            id: 6,
-            productName: 'Smart TV LG OLED 55"',
-            price: 28990000,
-            rating: 4.6,
-            image:
-              "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=2070&auto=format&fit=crop",
-          },
-          {
-            id: 7,
-            productName: "Google Nest Mini",
-            price: 1290000,
-            rating: 4.4,
-            image:
-              "https://images.unsplash.com/photo-1639153904113-077cb0e6bb0b?q=80&w=1887&auto=format&fit=crop",
-          },
-          {
-            id: 8,
-            productName: "Máy ảnh Canon EOS R5",
-            price: 89990000,
-            rating: 4.9,
-            image:
-              "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?q=80&w=2070&auto=format&fit=crop",
-          },
-        ]);
+        console.error("Failed to fetch top selling products:", error);
+        setFeaturedProducts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchLatestProducts();
+    fetchTopSellingProducts();
   }, []);
 
   const nextSlide = () => {
@@ -323,7 +251,7 @@ const Home = () => {
         <div className="container mx-auto px-4 py-12 bg-gray-50">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-              Sản phẩm nổi bật
+              Sản phẩm bán chạy
             </h2>
             <Link
               to="/products/category/all"
@@ -333,41 +261,43 @@ const Home = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <Link
-                to={`/products/${product.id}`}
-                key={product.id}
-                className="group"
-              >
-                <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
-                  <div className="h-48 md:h-56 overflow-hidden">
-                    <img
-                      src={product.image || APP_INFO.NO_IAMGE_AVAILABLE}
-                      alt={product.productName}
-                      className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-                      {product.productName}
-                    </h3>
-                    <div className="flex items-center mb-2">
-                      <div className="flex text-yellow-400">
-                        <FaStar />
-                        <span className="ml-1 text-gray-600">
-                          {product.rating}
-                        </span>
-                      </div>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : featuredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">Không có sản phẩm nào</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <Link
+                  to={`/products/${product.productId}`}
+                  key={product.productId}
+                  className="group"
+                >
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
+                    <div className="h-48 md:h-56 overflow-hidden">
+                      <img
+                        src={product.productImage || APP_INFO.NO_IAMGE_AVAILABLE}
+                        alt={product.productName}
+                        className="w-full h-full object-contain group-hover:scale-110 transition duration-500"
+                      />
                     </div>
-                    <p className="text-[#FF3B30] font-bold text-lg">
-                      {product.price.toLocaleString()} đ
-                    </p>
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                        {product.productName}
+                      </h3>
+                      <p className="text-[#FF3B30] font-bold text-lg text-right">
+                        {product.price?.toLocaleString()} đ
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Promotion Banner */}
