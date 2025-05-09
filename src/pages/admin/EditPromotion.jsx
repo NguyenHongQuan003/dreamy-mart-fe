@@ -77,7 +77,7 @@ const EditPromotion = () => {
                     <h1 className="text-3xl font-bold text-gray-800">Chỉnh sửa khuyến mãi</h1>
                 </div>
 
-                <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="bg-white p-6 rounded-lg shadow-md h-[calc(100vh-10rem)]">
                     <Form
                         form={form}
                         layout="vertical"

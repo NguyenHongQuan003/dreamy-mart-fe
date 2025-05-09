@@ -1,36 +1,116 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Space, Modal } from "antd";
+import { Table, Input, Space, Modal, DatePicker, Select, Row, Col } from "antd";
 import Button from "../../components/common/Button";
 import { FaCheckCircle, FaClipboardCheck, FaClipboardList, FaExclamationTriangle, FaEye, FaRedo, FaRegClock, FaShippingFast, FaTimesCircle } from "react-icons/fa";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { getAllOrders } from "../../services/orderService";
+import { getAllOrders, searchOrders, filterOrders } from "../../services/orderService";
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [filterParams, setFilterParams] = useState({
+    orderStatus: null,
+    minTotalPrice: null,
+    maxTotalPrice: null,
+    startDate: null,
+    endDate: null
+  });
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await getAllOrders(currentPage, pageSize);
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllOrders(currentPage, pageSize);
+      if (response.code === 1000) {
         setOrders(response.result.data);
         setTotalElements(response.result.totalElements);
-      } catch (error) {
-        console.error("Fetch error:", error);
       }
-    };
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleSearch = async (value) => {
+    try {
+      setLoading(true);
+      if (value.trim() === "") {
+        await fetchOrders();
+        return;
+      }
+      const response = await searchOrders(value, currentPage, pageSize);
+      if (response.code === 1000) {
+        setOrders(response.result.data);
+        setTotalElements(response.result.totalElements);
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilter = async () => {
+    try {
+      setLoading(true);
+      const response = await filterOrders(
+        null, // customerName
+        null, // customerPhone
+        currentPage,
+        pageSize,
+        filterParams.orderStatus,
+        filterParams.minTotalPrice,
+        filterParams.maxTotalPrice,
+        filterParams.startDate,
+        filterParams.endDate
+      );
+      if (response.code === 1000) {
+        setOrders(response.result.data);
+        setTotalElements(response.result.totalElements);
+      }
+    } catch (error) {
+      console.error("Filter error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilterParams(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleDateRangeChange = (dates) => {
+    if (dates) {
+      setFilterParams(prev => ({
+        ...prev,
+        startDate: dates[0]?.format('YYYY-MM-DD'),
+        endDate: dates[1]?.format('YYYY-MM-DD')
+      }));
+    } else {
+      setFilterParams(prev => ({
+        ...prev,
+        startDate: null,
+        endDate: null
+      }));
+    }
+  };
+
+  useEffect(() => {
     fetchOrders();
   }, [currentPage, pageSize]);
 
@@ -194,30 +274,30 @@ const OrderManagement = () => {
     },
     {
       title: "Tên khách hàng",
-      dataIndex: "user",
+      dataIndex: ["user", "fullName"],
       key: "user",
-      sorter: (a, b) => a.user.localeCompare(b.user),
+      sorter: (a, b) => a.user.fullName.localeCompare(b.user.fullName),
       width: 200,
-      render: (user) => (
+      render: (_, record) => (
         <div style={{
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           maxWidth: '200px'
         }}
-          title={user.fullName}
+          title={record.user.fullName}
         >
-          {user.fullName}
+          {record.user.fullName}
         </div>
       ),
     },
     {
       title: "Số điện thoại",
-      dataIndex: "user",
+      dataIndex: ["user", "phone"],
       key: "phone",
       align: "right",
       sorter: (a, b) => a.user.phone.localeCompare(b.user.phone),
-      render: (user) => user.phone
+      render: (_, record) => record.user.phone
     },
     {
       title: "Địa chỉ giao hàng",
@@ -275,12 +355,6 @@ const OrderManagement = () => {
       ),
     },
   ];
-  const filtered = orders.filter(
-    (order) =>
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.user.phone.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -292,21 +366,74 @@ const OrderManagement = () => {
           </div>
         </div>
 
-        <div className="mb-4 flex flex-col md:flex-row gap-4">
-          <Search
-            placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại"
-            onSearch={(value) => setSearchTerm(value)}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ maxWidth: 500 }}
-            allowClear
-          />
-          <p className="text-gray-600 ml-auto">Tổng số: {totalElements} đơn hàng</p>
+        <div className="mb-4 space-y-4">
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={8}>
+              <Search
+                placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại"
+                onSearch={handleSearch}
+                style={{ width: '100%' }}
+                allowClear
+              />
+            </Col>
+            <Col xs={24} md={4}>
+              <Select
+                placeholder="Trạng thái đơn hàng"
+                value={filterParams.orderStatus}
+                onChange={(value) => handleFilterChange('orderStatus', value)}
+                allowClear
+                style={{ width: '100%' }}
+              >
+                {deliveryStatusOptions.map(option => (
+                  <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+            <Col xs={24} md={4}>
+              <Input
+                placeholder="Giá tối thiểu"
+                type="number"
+                value={filterParams.minTotalPrice}
+                onChange={(e) => handleFilterChange('minTotalPrice', e.target.value)}
+                allowClear
+              />
+            </Col>
+            <Col xs={24} md={4}>
+              <Input
+                placeholder="Giá tối đa"
+                type="number"
+                value={filterParams.maxTotalPrice}
+                onChange={(e) => handleFilterChange('maxTotalPrice', e.target.value)}
+                allowClear
+              />
+            </Col>
+            <Col xs={24} md={4}>
+              <RangePicker
+                onChange={handleDateRangeChange}
+                style={{ width: '100%' }}
+              />
+            </Col>
+          </Row>
+          <div className="flex justify-between items-center">
+            <Button
+              variant="primary"
+              onClick={handleFilter}
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Lọc đơn hàng
+            </Button>
+            <p className="text-gray-600">Tổng số: {totalElements} đơn hàng</p>
+          </div>
         </div>
-        <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+
+        <div className="overflow-y-auto h-[calc(100vh-16rem)]">
           <Table
             columns={columns}
-            dataSource={filtered}
+            dataSource={orders}
             rowKey="id"
+            loading={loading}
             pagination={{
               current: currentPage,
               pageSize: pageSize,
@@ -407,7 +534,6 @@ const OrderManagement = () => {
             </div>
           )}
         </Modal>
-
       </div>
     </div>
   );

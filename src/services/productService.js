@@ -107,7 +107,7 @@ export const filterProducts = async (brand, minPrice, maxPrice, page = null, siz
     if (name) params.append("name", name);
 
     const response = await axiosInstance.get(`/products/filter?${params.toString()}`);
-    return response.data.result;
+    return response.data;
 }
 
 export const filterProductsHome = async (categoryName, searchTerm, minPrice, maxPrice, page = null, size = null) => {
@@ -121,12 +121,5 @@ export const filterProductsHome = async (categoryName, searchTerm, minPrice, max
     console.log("Params:", params.toString());
 
     const response = await axiosInstance.get(`/products/filter/home?${params.toString()}`);
-    return response.data.result;
+    return response.data;
 }
-
-
-
-
-
-
-
