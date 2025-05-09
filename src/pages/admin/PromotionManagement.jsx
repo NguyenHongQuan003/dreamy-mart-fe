@@ -1,40 +1,72 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Space, Modal } from "antd";
+import { Table, Input, Space, Modal, Select } from "antd";
 import Button from "../../components/common/Button";
 import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { deletePromotion, getAllPromotions, getPromotionById } from "../../services/promotionService";
+import { deletePromotion, getAllPromotions, getPromotionById, searchPromotion } from "../../services/promotionService";
 import { toast } from "react-toastify";
 const { Search } = Input;
 
 const PromotionManagement = () => {
     const navigate = useNavigate();
     const [promotions, setPromotions] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(7);
     const [totalElements, setTotalElements] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [filterStatus, setFilterStatus] = useState(null);
 
     const user = useSelector((state) => state.auth.user);
     useCheckAdminAuth(user);
 
-    useEffect(() => {
-        const fetchPromotions = async () => {
-            try {
-                const response = await getAllPromotions(currentPage, pageSize);
+    const fetchPromotions = async () => {
+        try {
+            setLoading(true);
+            const response = await getAllPromotions(currentPage, pageSize);
+            if (response.code === 1000) {
                 setPromotions(response.result.data);
                 setTotalElements(response.result.totalElements);
-            } catch (error) {
-                console.error("Fetch error:", error);
-                setPromotions([]);
             }
-        };
+        } catch (error) {
+            console.error("Fetch error:", error);
+            setPromotions([]);
+            toast.error("Không thể tải danh sách khuyến mãi!");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleSearch = async (value) => {
+        try {
+            setLoading(true);
+            if (value.trim() === "") {
+                await fetchPromotions();
+                return;
+            }
+            const response = await searchPromotion(value, currentPage, pageSize);
+            if (response.code === 1000) {
+                setPromotions(response.result.data);
+                setTotalElements(response.result.totalElements);
+            }
+        } catch (error) {
+            console.error("Search error:", error);
+            toast.error("Tìm kiếm khuyến mãi thất bại!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleStatusChange = (value) => {
+        setFilterStatus(value);
+        setCurrentPage(1);
+    };
+
+    useEffect(() => {
         fetchPromotions();
     }, [currentPage, pageSize]);
 
@@ -75,12 +107,6 @@ const PromotionManagement = () => {
     const formatCurrency = (amount) => {
         return amount.toLocaleString() + " đ";
     };
-
-    const filtered = promotions.filter(
-        (p) =>
-            p.promotionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            p.couponCode?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
     const columns = [
         {
@@ -156,51 +182,38 @@ const PromotionManagement = () => {
             title: "Ngày bắt đầu",
             dataIndex: "startDate",
             key: "startDate",
-            sorter: (a, b) => a.startDate - b.startDate,
+            sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
             render: (startDate) => formatDate(startDate),
         },
         {
             title: "Ngày kết thúc",
             dataIndex: "endDate",
             key: "endDate",
-            sorter: (a, b) => a.endDate - b.endDate,
+            sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
             render: (endDate) => formatDate(endDate),
         },
         {
             title: "Phạm vi áp dụng",
             dataIndex: "isGlobal",
             key: "isGlobal",
-            filters: [
-                {
-                    text: "Toàn bộ",
-                    value: true,
-                },
-                {
-                    text: "Cá nhân",
-                    value: false,
-                },
-            ],
-            onFilter: (value, record) => record.isGlobal === value,
-            render: (isGlobal) => isGlobal ? "Toàn bộ" : isGlobal === false ? "Cá nhân" : "",
+            render: (isGlobal) => (
+                <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold 
+                    ${isGlobal ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
+                    {isGlobal ? "🌍 Toàn bộ" : "👤 Cá nhân"}
+                </span>
+            ),
         },
         {
             title: "Trạng thái",
             dataIndex: "isActive",
             key: "isActive",
-            filters: [
-                {
-                    text: "Hoạt động",
-                    value: true,
-                },
-                {
-                    text: "Không hoạt động",
-                    value: false,
-                },
-            ],
-            onFilter: (value, record) => record.isActive === value,
-            render: (isActive) => isActive ? "Hoạt động" : "Không hoạt động",
+            render: (isActive) => (
+                <span className={`inline-flex items-center min-w-[105px] gap-1 rounded-full px-3 py-1 text-xs font-semibold 
+                    ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+                    {isActive ? "✅ Hoạt động" : "❌ Không hoạt động"}
+                </span>
+            ),
         },
-
         {
             title: "Hành động",
             key: "actions",
@@ -222,7 +235,6 @@ const PromotionManagement = () => {
                     >
                         {""}
                     </Button>
-
                     <Button
                         variant="danger"
                         size="mini"
@@ -235,6 +247,10 @@ const PromotionManagement = () => {
             ),
         },
     ];
+
+    const filteredPromotions = filterStatus !== null
+        ? promotions.filter(p => p.isActive === filterStatus)
+        : promotions;
 
     return (
         <div className="min-h-screen bg-gray-100 flex">
@@ -253,21 +269,33 @@ const PromotionManagement = () => {
                 </div>
 
                 <div className="mb-4 flex flex-col md:flex-row gap-4">
-                    <Search
-                        placeholder="Nhập tên khuyến mãi để tìm kiếm"
-                        onSearch={(value) => setSearchTerm(value)}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ maxWidth: 300 }}
-                        allowClear
-                    />
-                    <p className="text-gray-600 ml-auto">Tổng số: {totalElements} khuyến mãi</p>
+                    <div className="flex gap-4 flex-1">
+                        <Search
+                            placeholder="Tìm kiếm theo tên khuyến mãi hoặc mã khuyến mãi"
+                            onSearch={handleSearch}
+                            style={{ maxWidth: 300 }}
+                            allowClear
+                        />
+                        <Select
+                            placeholder="Lọc theo trạng thái"
+                            style={{ width: 200 }}
+                            allowClear
+                            onChange={handleStatusChange}
+                            options={[
+                                { value: true, label: "Hoạt động" },
+                                { value: false, label: "Không hoạt động" }
+                            ]}
+                        />
+                    </div>
+                    <p className="text-gray-600">Tổng số: {totalElements} khuyến mãi</p>
                 </div>
 
                 <div className="overflow-y-auto h-[calc(100vh-12rem)]">
                     <Table
                         columns={columns}
-                        dataSource={filtered}
+                        dataSource={filteredPromotions}
                         rowKey="id"
+                        loading={loading}
                         pagination={{
                             current: currentPage,
                             pageSize: pageSize,
