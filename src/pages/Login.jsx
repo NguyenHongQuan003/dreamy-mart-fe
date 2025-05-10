@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
 import { toast } from "react-toastify";
-import { login } from "../services/authService";
+import { login, loginWithGoogle } from "../services/authService";
 import Loading from "../components/common/Loading";
 import { useSelector } from "react-redux";
 
@@ -49,6 +49,18 @@ const Login = () => {
     }
     setIsLoading(false);
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const googleAuthUrl = await loginWithGoogle();
+      console.log("googleAuthUrl", googleAuthUrl);
+      window.location.href = googleAuthUrl;
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Có lỗi xảy ra khi đăng nhập bằng Google!");
+    }
+  };
+
   return (
     <>
       <Header />
@@ -124,7 +136,12 @@ const Login = () => {
               <Button variant="facebook" fullWidth icon={FaFacebook}>
                 Facebook
               </Button>
-              <Button variant="google" fullWidth icon={FaGoogle}>
+              <Button
+                variant="google"
+                fullWidth
+                icon={FaGoogle}
+                onClick={handleGoogleLogin}
+              >
                 Google
               </Button>
             </div>

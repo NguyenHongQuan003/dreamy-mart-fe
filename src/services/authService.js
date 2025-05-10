@@ -58,3 +58,36 @@ export const getCurrentUser = async () => {
   const response = await axiosInstance.get("/user-profile/user/profile");
   return response.data.result;
 };
+
+// /api/v1/auth/google/login
+// {
+//   "code": 1000,
+//   "result": "http://localhost:8081/realms/springboot-ms-realm/protocol/openid-connect/auth?client_id=ecommerce_ms_app&redirect_uri=http://localhost:5173/callback&response_type=code&scope=openid%20email%20profile&kc_idp_hint=google"
+// }
+
+export const loginWithGoogle = async () => {
+  const response = await axiosInstance.post("/auth/google/login");
+  return response.data.result;
+};
+// /auth/facebook/login
+// {
+//   "code": 1000,
+//   "result": "http://localhost:8081/realms/springboot-ms-realm/protocol/openid-connect/auth?client_id=ecommerce_ms_app&redirect_uri=http://localhost:5173/callback&response_type=code&scope=openid%20email%20profile&kc_idp_hint=facebook"
+// }
+
+export const loginWithFacebook = async () => {
+  const response = await axiosInstance.post("/auth/facebook/login");
+  return response.data.result;
+};
+
+export const getToken = async (code) => {
+  const response = await axiosInstance.get(`/auth/token?code=${code}`);
+  return response.data.result;
+};
+
+
+
+
+
+
+
