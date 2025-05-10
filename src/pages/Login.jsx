@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Footer from "../components/layout/Footer";
 import { toast } from "react-toastify";
-import { login, loginWithGoogle } from "../services/authService";
+import { login, loginWithGoogle, loginWithFacebook } from "../services/authService";
 import Loading from "../components/common/Loading";
 import { useSelector } from "react-redux";
 
@@ -58,6 +58,17 @@ const Login = () => {
     } catch (error) {
       console.log("error", error);
       toast.error("Có lỗi xảy ra khi đăng nhập bằng Google!");
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    try {
+      const facebookAuthUrl = await loginWithFacebook();
+      console.log("facebookAuthUrl", facebookAuthUrl);
+      window.location.href = facebookAuthUrl;
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Có lỗi xảy ra khi đăng nhập bằng Facebook!");
     }
   };
 
@@ -133,7 +144,12 @@ const Login = () => {
 
             {/* Social Login */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Button variant="facebook" fullWidth icon={FaFacebook}>
+              <Button
+                variant="facebook"
+                fullWidth
+                icon={FaFacebook}
+                onClick={handleFacebookLogin}
+              >
                 Facebook
               </Button>
               <Button
