@@ -36,8 +36,28 @@ export const searchPromotion = async (searchTerm, page, size) => {
 };
 
 // /promotion/filter?promotionName=Tết&page=1&size=10
-export const filterPromotion = async (promotionName, page, size) => {
-    const response = await axiosInstance.get(`/promotions/filter?promotionName=${promotionName}&page=${page}&size=${size}`);
+// /filter?promotionName=SummerSale
+// &promotionCode=SS2025
+// &status=true
+// &startDatePromotionStartDate=2025-06-01
+// &endDatePromotionStartDate=2025-06-30
+// &startDatePromotionEndDate=2025-07-01
+// &endDatePromotionEndDate=2025-07-31
+// &page=1
+// &size=10
+export const filterPromotion = async (promotionName, promotionCode, status = null, startDatePromotionStartDate = null, endDatePromotionStartDate = null, startDatePromotionEndDate = null, endDatePromotionEndDate = null, page = null, size = null) => {
+    const params = new URLSearchParams();
+    if (promotionName) params.append("promotionName", promotionName);
+    if (promotionCode) params.append("promotionCode", promotionCode);
+    if (status !== null) params.append("status", status);
+    if (startDatePromotionStartDate !== null) params.append("startDatePromotionStartDate", startDatePromotionStartDate);
+    if (endDatePromotionStartDate !== null) params.append("endDatePromotionStartDate", endDatePromotionStartDate);
+    if (startDatePromotionEndDate !== null) params.append("startDatePromotionEndDate", startDatePromotionEndDate);
+    if (endDatePromotionEndDate !== null) params.append("endDatePromotionEndDate", endDatePromotionEndDate);
+    if (page !== null) params.append("page", page);
+    if (size !== null) params.append("size", size);
+
+    const response = await axiosInstance.get(`/promotions/filter?${params.toString()}`);
     return response.data;
 };
 

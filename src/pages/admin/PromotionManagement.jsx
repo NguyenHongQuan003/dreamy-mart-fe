@@ -1,25 +1,35 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Space, Modal, Select } from "antd";
+import { Table, Input, Space, Modal, Select, DatePicker, Row, Col } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaFilter, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { deletePromotion, getAllPromotions, getPromotionById, searchPromotion } from "../../services/promotionService";
+import { deletePromotion, getAllPromotions, getPromotionById, searchPromotion, filterPromotion } from "../../services/promotionService";
 import { toast } from "react-toastify";
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 const PromotionManagement = () => {
     const navigate = useNavigate();
     const [promotions, setPromotions] = useState([]);
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [totalElements, setTotalElements] = useState(0);
     const [loading, setLoading] = useState(false);
-    const [filterStatus, setFilterStatus] = useState(null);
+    const [filterParams, setFilterParams] = useState({
+        promotionName: "",
+        promotionCode: "",
+        status: null,
+        startDatePromotionStartDate: null,
+        endDatePromotionStartDate: null,
+        startDatePromotionEndDate: null,
+        endDatePromotionEndDate: null
+    });
 
     const user = useSelector((state) => state.auth.user);
     useCheckAdminAuth(user);
@@ -61,9 +71,70 @@ const PromotionManagement = () => {
         }
     };
 
-    const handleStatusChange = (value) => {
-        setFilterStatus(value);
-        setCurrentPage(1);
+    const handleFilter = async () => {
+        try {
+            setLoading(true);
+            const response = await filterPromotion(
+                filterParams.promotionName,
+                filterParams.promotionCode,
+                filterParams.status,
+                filterParams.startDatePromotionStartDate,
+                filterParams.endDatePromotionStartDate,
+                filterParams.startDatePromotionEndDate,
+                filterParams.endDatePromotionEndDate,
+                currentPage,
+                pageSize
+            );
+            console.log("filter promotion response", response);
+            if (response.code === 1000) {
+                setPromotions(response.result.data);
+                setTotalElements(response.result.totalElements);
+            }
+        } catch (error) {
+            console.error("Filter error:", error);
+            toast.error("Lọc khuyến mãi thất bại!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFilterChange = (key, value) => {
+        setFilterParams(prev => ({
+            ...prev,
+            [key]: value
+        }));
+    };
+
+    const handleDateRangeChange = (dates, type) => {
+        if (dates) {
+            if (type === 'start') {
+                setFilterParams(prev => ({
+                    ...prev,
+                    startDatePromotionStartDate: dates[0]?.format('YYYY-MM-DD'),
+                    endDatePromotionStartDate: dates[1]?.format('YYYY-MM-DD')
+                }));
+            } else {
+                setFilterParams(prev => ({
+                    ...prev,
+                    startDatePromotionEndDate: dates[0]?.format('YYYY-MM-DD'),
+                    endDatePromotionEndDate: dates[1]?.format('YYYY-MM-DD')
+                }));
+            }
+        } else {
+            if (type === 'start') {
+                setFilterParams(prev => ({
+                    ...prev,
+                    startDatePromotionStartDate: null,
+                    endDatePromotionStartDate: null
+                }));
+            } else {
+                setFilterParams(prev => ({
+                    ...prev,
+                    startDatePromotionEndDate: null,
+                    endDatePromotionEndDate: null
+                }));
+            }
+        }
     };
 
     useEffect(() => {
@@ -230,10 +301,6 @@ const PromotionManagement = () => {
         },
     ];
 
-    const filteredPromotions = filterStatus !== null
-        ? promotions.filter(p => p.isActive === filterStatus)
-        : promotions;
-
     return (
         <div className="min-h-screen flex">
             <AdminNavbar />
@@ -248,31 +315,37 @@ const PromotionManagement = () => {
                     </Link>
                 </div>
 
-                <div className="mb-4 flex flex-col md:flex-row gap-4">
-                    <div className="flex flex-col md:flex-row gap-4 flex-1">
-                        <Search
-                            placeholder="Tìm kiếm theo tên khuyến mãi hoặc mã khuyến mãi"
-                            onSearch={handleSearch}
-                            style={{ width: '100%', maxWidth: '300px' }}
-                            allowClear
-                        />
-                        <Select
-                            placeholder="Lọc theo trạng thái"
-                            style={{ width: '100%', maxWidth: '200px' }}
-                            allowClear
-                            onChange={handleStatusChange}
-                            options={[
-                                { value: true, label: "Hoạt động" },
-                                { value: false, label: "Không hoạt động" }
-                            ]}
-                        />
-                    </div>
-                    <p className="text-gray-600 text-sm md:text-base">Tổng số: {totalElements} khuyến mãi</p>
+                <div className="mb-4">
+                    <Row gutter={[16, 16]} align="middle" justify="space-between">
+                        <Col xs={24} sm={12} md={12}>
+                            <div className="flex items-center gap-2">
+                                <Search
+                                    placeholder="Tìm kiếm theo tên khuyến mãi hoặc mã khuyến mãi"
+                                    onSearch={handleSearch}
+                                    className="flex-1"
+                                    allowClear
+                                />
+                                <Button
+                                    size="small"
+                                    variant="outline"
+                                    onClick={() => setIsFilterModalVisible(true)}
+                                    className="flex items-center"
+                                >
+                                    <FaFilter className="mr-2" /> Lọc
+                                </Button>
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} className="text-right">
+                            <p className="text-gray-600 text-sm sm:text-base">
+                                Tổng số: {totalElements} khuyến mãi
+                            </p>
+                        </Col>
+                    </Row>
                 </div>
 
                 <Table
                     columns={columns}
-                    dataSource={filteredPromotions}
+                    dataSource={promotions}
                     rowKey="id"
                     loading={loading}
                     pagination={{
@@ -356,6 +429,117 @@ const PromotionManagement = () => {
                     )}
                 </Modal>
 
+                <Modal
+                    title={<span className="text-lg font-bold">Lọc khuyến mãi</span>}
+                    open={isFilterModalVisible}
+                    onCancel={() => setIsFilterModalVisible(false)}
+                    footer={[
+                        <>
+                            <div className="flex justify-end gap-1">
+                                <Button
+                                    key="reset"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setFilterParams({
+                                            promotionName: "",
+                                            promotionCode: "",
+                                            status: null,
+                                            startDatePromotionStartDate: null,
+                                            endDatePromotionStartDate: null,
+                                            startDatePromotionEndDate: null,
+                                            endDatePromotionEndDate: null
+                                        });
+                                    }}
+                                >
+                                    Đặt lại
+                                </Button>
+                                <Button
+                                    key="cancel"
+                                    variant="outline"
+                                    onClick={() => setIsFilterModalVisible(false)}
+                                >
+                                    Hủy
+                                </Button>
+                                <Button
+                                    key="submit"
+                                    variant="primary"
+                                    onClick={() => {
+                                        handleFilter();
+                                        setIsFilterModalVisible(false);
+                                    }}
+                                    className="bg-blue-600 text-white"
+                                >
+                                    Áp dụng
+                                </Button>
+                            </div>
+                        </>
+                    ]}
+                    width="90%"
+                    style={{ maxWidth: '600px' }}
+                >
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Tên khuyến mãi
+                            </label>
+                            <Input
+                                placeholder="Nhập tên khuyến mãi"
+                                value={filterParams.promotionName}
+                                onChange={(e) => handleFilterChange('promotionName', e.target.value)}
+                                allowClear
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Mã khuyến mãi
+                            </label>
+                            <Input
+                                placeholder="Nhập mã khuyến mãi"
+                                value={filterParams.promotionCode}
+                                onChange={(e) => handleFilterChange('promotionCode', e.target.value)}
+                                allowClear
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Trạng thái
+                            </label>
+                            <Select
+                                placeholder="Chọn trạng thái"
+                                style={{ width: '100%' }}
+                                allowClear
+                                value={filterParams.status}
+                                onChange={(value) => handleFilterChange('status', value)}
+                                options={[
+                                    { value: true, label: "Hoạt động" },
+                                    { value: false, label: "Không hoạt động" }
+                                ]}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Khoảng thời gian bắt đầu
+                            </label>
+                            <RangePicker
+                                onChange={(dates) => handleDateRangeChange(dates, 'start')}
+                                style={{ width: '100%' }}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Khoảng thời gian kết thúc
+                            </label>
+                            <RangePicker
+                                onChange={(dates) => handleDateRangeChange(dates, 'end')}
+                                style={{ width: '100%' }}
+                            />
+                        </div>
+                    </div>
+                </Modal>
             </div>
         </div>
     );

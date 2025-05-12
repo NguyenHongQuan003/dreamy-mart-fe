@@ -47,11 +47,11 @@ export const filterOrders = async (customerName, customerPhone, page = null, siz
     if (size !== null) params.append("size", size);
     if (customerName) params.append("customerName", customerName);
     if (customerPhone) params.append("customerPhone", customerPhone);
-    if (orderStatus) params.append("orderStatus", orderStatus);
-    if (minTotalPrice) params.append("minTotalPrice", minTotalPrice);
-    if (maxTotalPrice) params.append("maxTotalPrice", maxTotalPrice);
-    if (startDate) params.append("startDate", startDate);
-    if (endDate) params.append("endDate", endDate);
+    if (orderStatus !== null) params.append("orderStatus", orderStatus);
+    if (minTotalPrice !== null) params.append("minTotalPrice", minTotalPrice);
+    if (maxTotalPrice !== null) params.append("maxTotalPrice", maxTotalPrice);
+    if (startDate !== null) params.append("startDate", startDate);
+    if (endDate !== null) params.append("endDate", endDate);
 
     const response = await axiosInstance.get(`/orders/filter?${params.toString()}`);
     return response.data;
