@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table, Input, Space, Modal, DatePicker, Select, Row, Col } from "antd";
+import { Table, Input, Space, Modal, DatePicker, Select, Row, Col, InputNumber } from "antd";
 import Button from "../../components/common/Button";
-import { FaCheckCircle, FaClipboardCheck, FaClipboardList, FaExclamationTriangle, FaEye, FaRedo, FaRegClock, FaShippingFast, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle, FaClipboardCheck, FaClipboardList, FaExclamationTriangle, FaEye, FaFilter, FaRedo, FaRegClock, FaShippingFast, FaTimesCircle } from "react-icons/fa";
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
@@ -13,8 +13,9 @@ const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [filterParams, setFilterParams] = useState({
@@ -32,6 +33,7 @@ const OrderManagement = () => {
     try {
       setLoading(true);
       const response = await getAllOrders(currentPage, pageSize);
+      console.log(response);
       if (response.code === 1000) {
         setOrders(response.result.data);
         setTotalElements(response.result.totalElements);
@@ -76,6 +78,7 @@ const OrderManagement = () => {
         filterParams.startDate,
         filterParams.endDate
       );
+      console.log("filter response", response);
       if (response.code === 1000) {
         setOrders(response.result.data);
         setTotalElements(response.result.totalElements);
@@ -357,78 +360,46 @@ const OrderManagement = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex">
       <AdminNavbar />
-      <div className="flex-1 p-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="flex-1 p-2">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Quản lý đơn hàng</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Quản lý đơn hàng</h1>
           </div>
         </div>
 
         <div className="mb-4 space-y-4">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} md={8}>
-              <Search
-                placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại"
-                onSearch={handleSearch}
-                style={{ width: '100%' }}
-                allowClear
-              />
+          <Row gutter={[16, 16]} align="middle" justify="space-between">
+            <Col xs={24} md={12}>
+              <div className="flex items-center gap-2">
+                <Search
+                  placeholder="Tìm kiếm theo mã đơn hàng, tên khách hàng, số điện thoại"
+                  onSearch={handleSearch}
+                  className="flex-1"
+                  allowClear
+                />
+                <Button
+                  size="small"
+                  variant="outline"
+                  onClick={() => setIsFilterModalVisible(true)}
+                  className="flex items-center"
+                >
+                  <FaFilter className="mr-2" /> Lọc
+                </Button>
+              </div>
             </Col>
-            <Col xs={24} md={4}>
-              <Select
-                placeholder="Trạng thái đơn hàng"
-                value={filterParams.orderStatus}
-                onChange={(value) => handleFilterChange('orderStatus', value)}
-                allowClear
-                style={{ width: '100%' }}
-              >
-                {deliveryStatusOptions.map(option => (
-                  <Select.Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-            <Col xs={24} md={4}>
-              <Input
-                placeholder="Giá tối thiểu"
-                type="number"
-                value={filterParams.minTotalPrice}
-                onChange={(e) => handleFilterChange('minTotalPrice', e.target.value)}
-                allowClear
-              />
-            </Col>
-            <Col xs={24} md={4}>
-              <Input
-                placeholder="Giá tối đa"
-                type="number"
-                value={filterParams.maxTotalPrice}
-                onChange={(e) => handleFilterChange('maxTotalPrice', e.target.value)}
-                allowClear
-              />
-            </Col>
-            <Col xs={24} md={4}>
-              <RangePicker
-                onChange={handleDateRangeChange}
-                style={{ width: '100%' }}
-              />
+
+            <Col xs={24} md={12} className="text-right">
+              <p className="text-gray-600 text-sm sm:text-base">
+                Tổng số: {totalElements} đơn hàng
+              </p>
             </Col>
           </Row>
-          <div className="flex justify-between items-center">
-            <Button
-              variant="primary"
-              onClick={handleFilter}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Lọc đơn hàng
-            </Button>
-            <p className="text-gray-600">Tổng số: {totalElements} đơn hàng</p>
-          </div>
+
         </div>
 
-        <div className="overflow-y-auto h-[calc(100vh-16rem)]">
+        <div className="overflow-auto h-[calc(100vh-12rem)]">
           <Table
             columns={columns}
             dataSource={orders}
@@ -442,20 +413,25 @@ const OrderManagement = () => {
                 setCurrentPage(page);
                 setPageSize(pageSize);
               },
+              showSizeChanger: true,
+              showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} đơn hàng`,
+              responsive: true,
             }}
           />
         </div>
+
         <Modal
-          title={<span className="text-lg font-bold">📦 Chi tiết đơn hàng</span>}
+          title={<span className="text-lg font-bold">Chi tiết đơn hàng</span>}
           open={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
-          width={800}
+          width="90%"
+          style={{ maxWidth: '800px' }}
         >
           {selectedOrder && (
             <div className="space-y-6 text-sm text-gray-700">
               {/* Thông tin đơn hàng */}
-              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
                 <div>
                   <p className="text-gray-500 font-medium">Mã đơn hàng:</p>
                   <p className="font-semibold text-gray-800">{selectedOrder.id}</p>
@@ -467,7 +443,7 @@ const OrderManagement = () => {
               </div>
 
               {/* Thông tin người đặt */}
-              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
                 <div>
                   <p className="text-gray-500 font-medium">Tên khách hàng:</p>
                   <p className="font-semibold text-gray-800">{selectedOrder.user.fullName}</p>
@@ -499,7 +475,7 @@ const OrderManagement = () => {
                 <p className="text-gray-500 font-medium mb-2">Sản phẩm:</p>
                 <div className="space-y-3">
                   {selectedOrder.items.map((item) => (
-                    <div key={item.id} className="flex gap-4 items-center border-b pb-2">
+                    <div key={item.id} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center border-b pb-2">
                       <img
                         src={item.product.images[0]?.fileUri}
                         alt={item.product.name}
@@ -519,7 +495,7 @@ const OrderManagement = () => {
               </div>
 
               {/* Tổng tiền & Trạng thái */}
-              <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
                 <div>
                   <p className="text-gray-500 font-medium">Tổng tiền:</p>
                   <p className="font-semibold text-gray-800">
@@ -533,6 +509,105 @@ const OrderManagement = () => {
               </div>
             </div>
           )}
+        </Modal>
+
+        <Modal
+          title={<span className="text-lg font-bold">Lọc đơn hàng</span>}
+          open={isFilterModalVisible}
+          onCancel={() => setIsFilterModalVisible(false)}
+          footer={[
+            <>
+              <div className="flex justify-end gap-1">
+                <Button
+                  key="reset"
+                  variant="outline"
+                  onClick={() => {
+                    setFilterParams({
+                      orderStatus: null,
+                      minTotalPrice: null,
+                      maxTotalPrice: null,
+                      startDate: null,
+                      endDate: null
+                    });
+                  }}
+                >
+                  Đặt lại
+                </Button>
+                <Button
+                  key="cancel"
+                  variant="outline"
+                  onClick={() => setIsFilterModalVisible(false)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  key="submit"
+                  variant="primary"
+                  onClick={() => {
+                    handleFilter();
+                    setIsFilterModalVisible(false);
+                  }}
+                  className="bg-blue-600 text-white"
+                >
+                  Áp dụng
+                </Button>
+              </div>
+            </>
+          ]}
+          width="90%"
+          style={{ maxWidth: '600px' }}
+        >
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Trạng thái đơn hàng
+              </label>
+              <Select
+                placeholder="Chọn trạng thái"
+                style={{ width: '100%' }}
+                allowClear
+                value={filterParams.orderStatus}
+                onChange={(value) => handleFilterChange('orderStatus', value)}
+                options={deliveryStatusOptions.map(option => ({ label: option.label, value: option.value }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Khoảng giá
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <InputNumber
+                  placeholder="Giá tối thiểu"
+                  style={{ width: '100%' }}
+                  value={filterParams.minTotalPrice}
+                  onChange={(value) => handleFilterChange('minTotalPrice', value)}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  allowClear
+                />
+                <InputNumber
+                  placeholder="Giá tối đa"
+                  style={{ width: '100%' }}
+                  value={filterParams.maxTotalPrice}
+                  onChange={(value) => handleFilterChange('maxTotalPrice', value)}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  allowClear
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Khoảng thời gian
+              </label>
+              <RangePicker
+                onChange={handleDateRangeChange}
+                style={{ width: '100%' }}
+              />
+            </div>
+          </div>
         </Modal>
       </div>
     </div>

@@ -14,7 +14,7 @@ const CategoryManagement = () => {
     const [categories, setCategories] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(15);
+    const [pageSize, setPageSize] = useState(8);
     const [totalElements, setTotalElements] = useState(0);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
@@ -108,17 +108,16 @@ const CategoryManagement = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100 flex">
+        <div className="min-h-screen flex">
             <AdminNavbar />
-            <div className="flex-1 p-8">
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Quản lý danh mục sản phẩm</h1>
-                    </div>
+            <div className="flex-1 p-2">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Quản lý danh mục sản phẩm</h1>
                     <Button
                         variant="primary"
                         onClick={handleAdd}
                         icon={FaPlus}
+                        className="w-full md:w-auto"
                     >
                         Thêm danh mục
                     </Button>
@@ -129,12 +128,12 @@ const CategoryManagement = () => {
                         placeholder="Nhập tên danh mục để tìm kiếm"
                         onSearch={(value) => setSearchTerm(value)}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{ maxWidth: 300 }}
+                        style={{ width: '100%', maxWidth: '300px' }}
                         allowClear
                     />
-                    <p className="text-gray-600 ml-auto">Tổng số: {totalElements} danh mục</p>
+                    <p className="text-gray-600 text-sm sm:text-base ml-auto">Tổng số: {totalElements} danh mục</p>
                 </div>
-                <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+                <div className="overflow-auto h-[calc(100vh-10rem)]">
                     <Table
                         columns={columns}
                         dataSource={filtered}
@@ -147,6 +146,9 @@ const CategoryManagement = () => {
                                 setCurrentPage(page);
                                 setPageSize(pageSize);
                             },
+                            showSizeChanger: true,
+                            showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} danh mục`,
+                            responsive: true,
                         }}
                     />
                 </div>
@@ -156,11 +158,14 @@ const CategoryManagement = () => {
                     open={isModalVisible}
                     onOk={handleModalOk}
                     onCancel={() => setIsModalVisible(false)}
+                    width="90%"
+                    style={{ maxWidth: '500px' }}
                 >
                     <Input
                         placeholder="Nhập tên danh mục"
                         value={formName}
                         onChange={(e) => setFormName(e.target.value)}
+                        size="large"
                     />
                 </Modal>
             </div>

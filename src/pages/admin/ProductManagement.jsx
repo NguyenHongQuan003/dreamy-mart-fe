@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { Table, Input, Space, Image, Select, InputNumber, Row, Col } from "antd";
+import { Table, Input, Space, Image, Select, InputNumber, Row, Col, Modal } from "antd";
 import Button from "../../components/common/Button";
-import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrash, FaFilter } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteProduct, getAllProducts, getProductById, searchProducts, filterProducts } from "../../services/productService";
 import AdminNavbar from "./AdminNavbar";
@@ -19,7 +19,7 @@ const ProductManagement = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(7);
+  const [pageSize, setPageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState([]);
@@ -29,6 +29,7 @@ const ProductManagement = () => {
     maxPrice: null,
     name: ""
   });
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
@@ -80,8 +81,9 @@ const ProductManagement = () => {
         pageSize,
         filters.name
       );
-      setProducts(response.data);
-      setTotalElements(response.totalElements);
+      console.log(response.result.data);
+      setProducts(response.result.data);
+      setTotalElements(response.result.totalElements);
     } catch (error) {
       console.error("Filter error:", error);
     } finally {
@@ -216,72 +218,55 @@ const ProductManagement = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex">
       <AdminNavbar />
-      <div className="flex-1 p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Quản lý sản phẩm</h1>
+      <div className="flex-1 p-2">
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-3xl font-bold text-gray-800">Quản lý sản phẩm</h1>
+          <div className="flex gap-4">
+            <Link
+              to="/admin/products/add"
+              className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
+            >
+              <FaPlus className="mr-2" /> Thêm sản phẩm
+            </Link>
           </div>
-          <Link
-            to="/admin/products/add"
-            className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
-          >
-            <FaPlus className="mr-2" /> Thêm sản phẩm
-          </Link>
         </div>
 
-        <div className="mb-4 space-y-4">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} sm={12} md={6}>
-              <Search
-                placeholder="Nhập tên sản phẩm"
-                onSearch={handleSearch}
-                style={{ width: '100%' }}
-                allowClear
-              />
+        <div className="mb-4">
+          <Row gutter={[16, 16]} align="middle" justify="space-between">
+            {/* Cột Search + Lọc bên trái */}
+            <Col xs={24} sm={12} md={12}>
+              <div className="flex items-center gap-2">
+                <Search
+                  placeholder="Nhập tên sản phẩm"
+                  onSearch={handleSearch}
+                  allowClear
+                  className="flex-1"
+                />
+                <Button
+                  size="small"
+                  variant="outline"
+                  onClick={() => setIsFilterModalVisible(true)}
+                  className="flex items-center"
+                >
+                  <FaFilter className="mr-2" /> Lọc
+                </Button>
+              </div>
             </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Select
-                placeholder="Chọn thương hiệu"
-                style={{ width: '100%' }}
-                allowClear
-                onChange={(value) => handleFilterChange('brand', value)}
-                options={brands.map(brand => ({ label: brand, value: brand }))}
-              />
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <InputNumber
-                placeholder="Giá tối thiểu"
-                style={{ width: '100%' }}
-                onChange={(value) => handleFilterChange('minPrice', value)}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              />
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <InputNumber
-                placeholder="Giá tối đa"
-                style={{ width: '100%' }}
-                onChange={(value) => handleFilterChange('maxPrice', value)}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              />
+
+            {/* Cột tổng sản phẩm bên phải */}
+            <Col xs={24} sm={12} md={12} className="text-right">
+              <p className="text-gray-600 text-sm sm:text-base">
+                Tổng số: {totalElements} sản phẩm
+              </p>
             </Col>
           </Row>
-          <div className="flex justify-between items-center">
-            <Button
-              variant="primary"
-              onClick={handleFilter}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Lọc sản phẩm
-            </Button>
-            <p className="text-gray-600">Tổng số: {totalElements} sản phẩm</p>
-          </div>
+
         </div>
 
-        <div className="overflow-y-auto h-[calc(100vh-16rem)]">
+
+        <div className="overflow-auto h-[calc(100vh-10rem)]">
           <Table
             columns={columns}
             dataSource={products}
@@ -295,15 +280,105 @@ const ProductManagement = () => {
                 setCurrentPage(page);
                 setPageSize(pageSize);
               },
+              showSizeChanger: true,
+              showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} sản phẩm`,
+              responsive: true,
             }}
           />
         </div>
+
 
         <ProductDetailModal
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
           product={selectedProduct}
         />
+
+        <Modal
+          title={<span className="text-lg font-bold">Lọc sản phẩm</span>}
+          open={isFilterModalVisible}
+          onCancel={() => setIsFilterModalVisible(false)}
+          footer={[
+            <>
+              <div className="flex justify-end gap-1">
+                <Button
+                  key="reset"
+                  variant="outline"
+                  onClick={() => {
+                    setFilters({
+                      brand: null,
+                      minPrice: null,
+                      maxPrice: null,
+                      name: ""
+                    });
+                  }}
+                >
+                  Đặt lại
+                </Button>
+                <Button
+                  key="cancel"
+                  variant="outline"
+                  onClick={() => setIsFilterModalVisible(false)}
+                >
+                  Hủy
+                </Button>
+                <Button
+                  key="submit"
+                  variant="primary"
+                  onClick={() => {
+                    handleFilter();
+                    setIsFilterModalVisible(false);
+                  }}
+                  className="bg-blue-600 text-white"
+                >
+                  Áp dụng
+                </Button>
+              </div>
+            </>
+          ]}
+          width="90%"
+          style={{ maxWidth: '600px' }}
+        >
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Thương hiệu
+              </label>
+              <Select
+                placeholder="Chọn thương hiệu"
+                style={{ width: '100%' }}
+                allowClear
+                value={filters.brand}
+                onChange={(value) => handleFilterChange('brand', value)}
+                options={brands.map(brand => ({ label: brand, value: brand }))}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Khoảng giá
+              </label>
+              <div className="grid grid-cols-2 gap-4">
+                <InputNumber
+                  placeholder="Giá tối thiểu"
+                  style={{ width: '100%' }}
+                  value={filters.minPrice}
+                  onChange={(value) => handleFilterChange('minPrice', value)}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                />
+                <InputNumber
+                  placeholder="Giá tối đa"
+                  style={{ width: '100%' }}
+                  value={filters.maxPrice}
+                  onChange={(value) => handleFilterChange('maxPrice', value)}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                />
+              </div>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );

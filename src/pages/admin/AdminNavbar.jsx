@@ -34,7 +34,7 @@ const AdminNavbar = () => {
     ];
 
     return (
-        <div className="w-64 bg-[#1e293b] text-white h-screen flex flex-col">
+        <div className="w-64 max-w-64 min-w-64 bg-[#1e293b] text-white min-h-screen flex flex-col">
             <div className="px-4 py-2">
                 <h1 className="text-2xl font-bold">DreamyMart Admin</h1>
             </div>

@@ -16,7 +16,7 @@ const PromotionManagement = () => {
     const [selectedPromotion, setSelectedPromotion] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(7);
+    const [pageSize, setPageSize] = useState(5);
     const [totalElements, setTotalElements] = useState(0);
     const [loading, setLoading] = useState(false);
     const [filterStatus, setFilterStatus] = useState(null);
@@ -137,24 +137,6 @@ const PromotionManagement = () => {
             sorter: (a, b) => a.promotionName.localeCompare(b.promotionName),
         },
         {
-            title: "Mô tả",
-            dataIndex: "description",
-            key: "description",
-            sorter: (a, b) => a.description.localeCompare(b.description),
-            render: (description) => (
-                <div style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    maxWidth: '200px'
-                }}
-                    title={description}
-                >
-                    {description}
-                </div>
-            ),
-        },
-        {
             title: "Tỷ lệ giảm",
             dataIndex: "discountPercent",
             key: "discountPercent",
@@ -171,7 +153,7 @@ const PromotionManagement = () => {
             render: (discountAmount) => `${discountAmount.toLocaleString()} đ`,
         },
         {
-            title: "Giá trị đơn hàng tối thiểu",
+            title: "Giá tối thiểu",
             dataIndex: "minimumOrderValue",
             key: "minimumOrderValue",
             align: "right",
@@ -197,7 +179,7 @@ const PromotionManagement = () => {
             dataIndex: "isGlobal",
             key: "isGlobal",
             render: (isGlobal) => (
-                <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold 
+                <span className={`inline-flex items-center gap-1 rounded-full  px-3 py-1 text-xs font-semibold 
                     ${isGlobal ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
                     {isGlobal ? "🌍 Toàn bộ" : "👤 Cá nhân"}
                 </span>
@@ -208,7 +190,7 @@ const PromotionManagement = () => {
             dataIndex: "isActive",
             key: "isActive",
             render: (isActive) => (
-                <span className={`inline-flex items-center min-w-[105px] gap-1 rounded-full px-3 py-1 text-xs font-semibold 
+                <span className={`inline-flex items-center  gap-1 rounded-full px-3 py-1 text-xs font-semibold 
                     ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
                     {isActive ? "✅ Hoạt động" : "❌ Không hoạt động"}
                 </span>
@@ -253,32 +235,30 @@ const PromotionManagement = () => {
         : promotions;
 
     return (
-        <div className="min-h-screen bg-gray-100 flex">
+        <div className="min-h-screen flex">
             <AdminNavbar />
-            <div className="flex-1 p-8">
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Quản lý khuyến mãi</h1>
-                    </div>
+            <div className="flex-1 p-2">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Quản lý khuyến mãi</h1>
                     <Link
                         to="/admin/promotions/add"
-                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center"
+                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center w-full md:w-auto"
                     >
                         <FaPlus className="mr-2" /> Thêm khuyến mãi
                     </Link>
                 </div>
 
                 <div className="mb-4 flex flex-col md:flex-row gap-4">
-                    <div className="flex gap-4 flex-1">
+                    <div className="flex flex-col md:flex-row gap-4 flex-1">
                         <Search
                             placeholder="Tìm kiếm theo tên khuyến mãi hoặc mã khuyến mãi"
                             onSearch={handleSearch}
-                            style={{ maxWidth: 300 }}
+                            style={{ width: '100%', maxWidth: '300px' }}
                             allowClear
                         />
                         <Select
                             placeholder="Lọc theo trạng thái"
-                            style={{ width: 200 }}
+                            style={{ width: '100%', maxWidth: '200px' }}
                             allowClear
                             onChange={handleStatusChange}
                             options={[
@@ -287,36 +267,39 @@ const PromotionManagement = () => {
                             ]}
                         />
                     </div>
-                    <p className="text-gray-600">Tổng số: {totalElements} khuyến mãi</p>
+                    <p className="text-gray-600 text-sm md:text-base">Tổng số: {totalElements} khuyến mãi</p>
                 </div>
 
-                <div className="overflow-y-auto h-[calc(100vh-12rem)]">
-                    <Table
-                        columns={columns}
-                        dataSource={filteredPromotions}
-                        rowKey="id"
-                        loading={loading}
-                        pagination={{
-                            current: currentPage,
-                            pageSize: pageSize,
-                            total: totalElements,
-                            onChange: (page, pageSize) => {
-                                setCurrentPage(page);
-                                setPageSize(pageSize);
-                            },
-                        }}
-                    />
-                </div>
+                <Table
+                    columns={columns}
+                    dataSource={filteredPromotions}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        current: currentPage,
+                        pageSize: pageSize,
+                        total: totalElements,
+                        onChange: (page, pageSize) => {
+                            setCurrentPage(page);
+                            setPageSize(pageSize);
+                        },
+                        showSizeChanger: true,
+                        showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} khuyến mãi`,
+                        responsive: true,
+                    }}
+                />
+
                 <Modal
-                    title="🎁 Chi tiết khuyến mãi"
+                    title={<span className="text-lg font-bold">🎁 Chi tiết khuyến mãi</span>}
                     open={isModalVisible}
                     onCancel={() => setIsModalVisible(false)}
                     footer={null}
-                    width={700}
+                    width="90%"
+                    style={{ maxWidth: '700px' }}
                 >
                     {selectedPromotion && (
                         <div className="space-y-4 text-sm">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-gray-500 font-medium">Tên khuyến mãi:</p>
                                     <p className="font-semibold text-base text-blue-600">{selectedPromotion.promotionName}</p>
@@ -335,7 +318,7 @@ const PromotionManagement = () => {
                                 <p className="whitespace-pre-wrap text-gray-800">{selectedPromotion.description}</p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-gray-500 font-medium">Tỷ lệ giảm giá:</p>
                                     <p className="text-blue-700 font-semibold">{selectedPromotion.discountPercent}%</p>
@@ -351,7 +334,7 @@ const PromotionManagement = () => {
                                 <p className="text-blue-700 font-semibold">{formatCurrency(selectedPromotion.minimumOrderValue)}</p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-gray-500 font-medium">Ngày bắt đầu:</p>
                                     <p>{formatDate(selectedPromotion.startDate)}</p>

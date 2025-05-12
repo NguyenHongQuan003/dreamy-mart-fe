@@ -288,65 +288,65 @@ const Dashboard = () => {
         ) : (
           <div className="overflow-y-auto h-[calc(100vh-10rem)]">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+              <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
                 <div className="flex items-center">
-                  <div className="bg-blue-100 p-3 rounded-full">
-                    <FaUsers className="text-blue-600 text-xl" />
+                  <div className="bg-blue-100 p-2 md:p-3 rounded-full">
+                    <FaUsers className="text-blue-600 text-lg md:text-xl" />
                   </div>
-                  <div className="ml-4">
-                    <h2 className="text-sm font-medium text-gray-500">
+                  <div className="ml-3 md:ml-4">
+                    <h2 className="text-xs md:text-sm font-medium text-gray-500">
                       Người dùng
                     </h2>
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-lg md:text-2xl font-semibold text-gray-800">
                       {stats.users}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
                 <div className="flex items-center">
-                  <div className="bg-green-100 p-3 rounded-full">
-                    <FaShoppingBag className="text-green-600 text-xl" />
+                  <div className="bg-green-100 p-2 md:p-3 rounded-full">
+                    <FaShoppingBag className="text-green-600 text-lg md:text-xl" />
                   </div>
-                  <div className="ml-4">
-                    <h2 className="text-sm font-medium text-gray-500">
+                  <div className="ml-3 md:ml-4">
+                    <h2 className="text-xs md:text-sm font-medium text-gray-500">
                       Sản phẩm
                     </h2>
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-lg md:text-2xl font-semibold text-gray-800">
                       {stats.products}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
                 <div className="flex items-center">
-                  <div className="bg-purple-100 p-3 rounded-full">
-                    <FaClipboardList className="text-purple-600 text-xl" />
+                  <div className="bg-purple-100 p-2 md:p-3 rounded-full">
+                    <FaClipboardList className="text-purple-600 text-lg md:text-xl" />
                   </div>
-                  <div className="ml-4">
-                    <h2 className="text-sm font-medium text-gray-500">
+                  <div className="ml-3 md:ml-4">
+                    <h2 className="text-xs md:text-sm font-medium text-gray-500">
                       Đơn hàng
                     </h2>
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-lg md:text-2xl font-semibold text-gray-800">
                       {stats.orders}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
                 <div className="flex items-center">
-                  <div className="bg-red-100 p-3 rounded-full">
-                    <FaChartLine className="text-red-600 text-xl" />
+                  <div className="bg-red-100 p-2 md:p-3 rounded-full">
+                    <FaChartLine className="text-red-600 text-lg md:text-xl" />
                   </div>
-                  <div className="ml-4">
-                    <h2 className="text-sm font-medium text-gray-500">
+                  <div className="ml-3 md:ml-4">
+                    <h2 className="text-xs md:text-sm font-medium text-gray-500">
                       Doanh thu
                     </h2>
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-lg md:text-2xl font-semibold text-gray-800">
                       {stats.revenue.toLocaleString()} đ
                     </p>
                   </div>
@@ -355,22 +355,23 @@ const Dashboard = () => {
             </div>
 
             {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
               {/* Revenue Chart */}
-              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm font-semibold bg-amber-200 px-2 rounded-2xl text-amber-900">Doanh thu theo thời gian</span>
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
+                  <span className="text-xs md:text-sm font-semibold bg-amber-200 px-2 rounded-2xl text-amber-900">Doanh thu theo thời gian</span>
                   <Radio.Group
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value)}
                     buttonStyle="solid"
+                    size="small"
                   >
                     <Radio.Button value="daily">Ngày</Radio.Button>
                     <Radio.Button value="weekly">Tuần</Radio.Button>
                     <Radio.Button value="monthly">Tháng</Radio.Button>
                   </Radio.Group>
                 </div>
-                <div className="h-80">
+                <div className="h-60 md:h-80">
                   <Line
                     data={revenueData}
                     options={{
@@ -391,9 +392,9 @@ const Dashboard = () => {
               </div>
 
               {/* Category Revenue Chart */}
-              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
-                <span className="text-sm font-semibold bg-green-200 px-2 rounded-2xl text-green-900">Doanh thu theo danh mục</span>
-                <div className="h-80 mt-6">
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <span className="text-xs md:text-sm font-semibold bg-green-200 px-2 rounded-2xl text-green-900">Doanh thu theo danh mục</span>
+                <div className="h-60 md:h-80 mt-4 md:mt-6">
                   <Pie
                     data={categoryRevenueData}
                     options={{
@@ -410,10 +411,10 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <span className="text-sm font-semibold bg-indigo-200 px-2 rounded-2xl text-indigo-900">Số lượng đơn hàng theo tháng</span>
-                <div className="h-80 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <span className="text-xs md:text-sm font-semibold bg-indigo-200 px-2 rounded-2xl text-indigo-900">Số lượng đơn hàng theo tháng</span>
+                <div className="h-60 md:h-80 mt-4 md:mt-6">
                   <Line
                     data={monthlyOrderData}
                     options={{
@@ -433,9 +434,9 @@ const Dashboard = () => {
                 </div>
               </div>
               {/* User Registration Chart */}
-              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
-                <span className="text-sm font-semibold bg-blue-200 px-2 rounded-2xl text-blue-900">Người dùng đăng ký theo tháng</span>
-                <div className="h-80 mt-6">
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <span className="text-xs md:text-sm font-semibold bg-blue-200 px-2 rounded-2xl text-blue-900">Người dùng đăng ký theo tháng</span>
+                <div className="h-60 md:h-80 mt-4 md:mt-6">
                   <Pie
                     data={userRegistrationData}
                     options={{
@@ -452,10 +453,10 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="col-span-1 bg-white rounded-lg shadow-md p-6">
-                <span className="text-sm font-semibold bg-pink-200 px-2 rounded-2xl text-pink-900">Trạng thái đơn hàng</span>
-                <div className="h-80 mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+              <div className="col-span-1 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <span className="text-xs md:text-sm font-semibold bg-pink-200 px-2 rounded-2xl text-pink-900">Trạng thái đơn hàng</span>
+                <div className="h-60 md:h-80 mt-4 md:mt-6">
                   <Pie
                     data={orderStatusData}
                     options={{
@@ -471,22 +472,22 @@ const Dashboard = () => {
                 </div>
               </div>
               {/* Top Products Table */}
-              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-6">
-                <span className="text-sm font-semibold bg-purple-200 px-2 rounded-2xl text-purple-900">Top sản phẩm bán chạy</span>
-                <div className="overflow-x-auto">
+              <div className="col-span-1 lg:col-span-2 bg-white rounded-lg shadow-md p-4 md:p-6">
+                <span className="text-xs md:text-sm font-semibold bg-purple-200 px-2 rounded-2xl text-purple-900">Top sản phẩm bán chạy</span>
+                <div className="overflow-x-auto mt-4 md:mt-6">
                   <table className="min-w-full">
                     <thead>
                       <tr className="bg-gray-50">
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Sản phẩm
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Danh mục
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Số lượng bán
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Doanh thu
                         </th>
                       </tr>
@@ -494,24 +495,24 @@ const Dashboard = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                       {topProducts.map((product) => (
                         <tr key={product.productId}>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 md:px-6 py-2 md:py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <img
                                 src={product.productImage}
                                 alt={product.productName}
-                                className="h-10 w-10 rounded-full object-cover mr-3"
+                                className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover mr-2 md:mr-3"
                               />
-                              <div className="text-sm font-medium text-gray-900">{product.productName}</div>
+                              <div className="text-xs md:text-sm font-medium text-gray-900">{product.productName}</div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-500">{product.categoryName}</div>
+                          <td className="px-3 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                            <div className="text-xs md:text-sm text-gray-500">{product.categoryName}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{product.sold}</div>
+                          <td className="px-3 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                            <div className="text-xs md:text-sm text-gray-900">{product.sold}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{product.revenue.toLocaleString()} đ</div>
+                          <td className="px-3 md:px-6 py-2 md:py-4 whitespace-nowrap">
+                            <div className="text-xs md:text-sm text-gray-900">{product.revenue.toLocaleString()} đ</div>
                           </td>
                         </tr>
                       ))}

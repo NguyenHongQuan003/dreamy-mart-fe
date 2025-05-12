@@ -264,7 +264,7 @@ const DeliveryManagement = () => {
             ),
         },
         {
-            title: "Phương thức giao hàng",
+            title: "Phương thức",
             dataIndex: "shippingMethod",
             key: "shippingMethod",
             filters: [
@@ -319,13 +319,13 @@ const DeliveryManagement = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-100 flex">
+        <div className="min-h-screen flex">
             <AdminNavbar />
-            <div className="flex-1 p-8">
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Quản lý giao hàng</h1>
-                    </div>
+            <div className="flex-1 p-2">
+                <div className="flex justify-between items-center mb-2">
+
+                    <h1 className="text-3xl font-bold text-gray-800">Quản lý giao hàng</h1>
+
                 </div>
 
                 <div className="mb-4 flex flex-col md:flex-row gap-4">
@@ -336,15 +336,20 @@ const DeliveryManagement = () => {
                         style={{ maxWidth: 300 }}
                         allowClear
                     />
-                    <p className="text-gray-600 ml-auto">Tổng số: {filtered.length} đơn giao hàng</p>
+                    <p className="text-gray-600 text-sm sm:text-base ml-auto">Tổng số: {filtered.length} đơn giao hàng</p>
                 </div>
 
-                <div className="overflow-y-auto h-[calc(100vh-12rem)]">
+                <div className="overflow-y-auto h-[calc(100vh-10rem)]">
                     <Table
                         columns={columns}
                         dataSource={filtered}
                         rowKey="id"
-                        pagination={{ pageSize: 9 }}
+                        pagination={{
+                            pageSize: 10,
+                            showSizeChanger: true,
+                            showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} đơn giao hàng`,
+                            responsive: true,
+                        }}
                     />
                 </div>
                 <Modal
