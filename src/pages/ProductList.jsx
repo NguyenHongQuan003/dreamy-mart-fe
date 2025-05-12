@@ -41,6 +41,7 @@ const ProductList = () => {
   const fetchProducts = useCallback(async (page = 1) => {
     setLoading(true);
     try {
+      console.log(filters);
       const response = await filterProductsHome(
         filters.category === "all" ? null : filters.category,
         filters.search,
@@ -49,12 +50,12 @@ const ProductList = () => {
         page,
         pagination.pageSize
       );
-      setProducts(response.data);
+      setProducts(response.result.data);
       setPagination({
-        currentPage: response.currentPage,
-        pageSize: response.pageSize,
-        totalPages: response.totalPages,
-        totalItems: response.totalItems
+        currentPage: response.result.currentPage,
+        pageSize: response.result.pageSize,
+        totalPages: response.result.totalPages,
+        totalItems: response.result.totalItems
       });
     } catch (error) {
       console.error("Failed to fetch products", error);
@@ -92,6 +93,18 @@ const ProductList = () => {
     return () => clearTimeout(delayDebounce);
   }, [categoryName, filters, fetchProducts]);
 
+  useEffect(() => {
+    setFilters({
+      category: categoryName,
+      search: "",
+      priceRange: {
+        min: 0,
+        max: 999999999
+      }
+    })
+  }, [
+    categoryName
+  ])
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({
