@@ -10,10 +10,13 @@ import {
 import { APP_INFO } from "../constants/app.constants";
 import { useSelector } from "react-redux";
 import { getTopSellingProducts } from "../services/summaryService";
+import { getRecentlyProducts } from "../services/productService";
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [recentlyProducts, setRecentlyProducts] = useState([]);
+  const [showTotalRecentlyProducts, setShowTotalRecentlyProducts] = useState(4);
   const [loading, setLoading] = useState(true);
   const user = useSelector((state) => state.auth.user);
 
@@ -119,7 +122,21 @@ const Home = () => {
       }
     };
 
+    const fetchRecentlyViewedProducts = async () => {
+      setLoading(true);
+      try {
+        const products = await getRecentlyProducts();
+        setRecentlyProducts(products.result);
+      } catch (error) {
+        console.error("Failed to fetch recently viewed products:", error);
+        setRecentlyProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchTopSellingProducts();
+    fetchRecentlyViewedProducts();
   }, []);
 
   const nextSlide = () => {
@@ -157,12 +174,12 @@ const Home = () => {
                       {item.title}
                     </h1>
                     <p className="text-xl mb-6">{item.description}</p>
-                    <Link
+                    {/* <Link
                       to={item.buttonLink}
                       className="inline-block bg-[#0078E8] hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-md transition duration-300"
                     >
                       {item.buttonText}
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </div>
@@ -299,6 +316,76 @@ const Home = () => {
           )}
         </div>
 
+        {/* Recently Viewed Products */}
+        {recentlyProducts.length > 0 && (
+          <>
+            <div className="container mx-auto px-4 py-12 bg-gray-50">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                  Sản phẩm xem gần đây
+                </h2>
+              </div>
+
+              {loading ? (
+                <div className="flex justify-center items-center py-20">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>
+              ) : recentlyProducts.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-500">Không có sản phẩm nào</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-auto max-h-[680px]">
+                  {recentlyProducts.slice(0, showTotalRecentlyProducts).map((product) => (
+                    <Link
+                      to={`/products/${product.id}`}
+                      key={product.id}
+                      className="group"
+                    >
+                      <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
+                        <div className="h-48 md:h-56 overflow-hidden">
+                          <img
+                            src={product.images[0].fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
+                            alt={product.name}
+                            className="w-full h-full object-contain group-hover:scale-110 transition duration-500"
+                          />
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
+                            {product.name}
+                          </h3>
+                          <p className="text-[#FF3B30] font-bold text-lg text-right">
+                            {product.sellingPrice?.toLocaleString()} đ
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            {recentlyProducts.length > showTotalRecentlyProducts ? (
+              <div className="text-center py-4">
+                <button
+                  className="text-[#0078E8] hover:underline"
+                  onClick={() => setShowTotalRecentlyProducts(recentlyProducts.length)}
+                >
+                  Xem tất cả
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <button
+                  className="text-[#0078E8] hover:underline"
+                  onClick={() => setShowTotalRecentlyProducts(4)}
+                >
+                  Ẩn bớt
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
         {/* Promotion Banner */}
         <div className="container mx-auto px-4 py-12">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-800 rounded-lg overflow-hidden shadow-lg">
@@ -311,12 +398,12 @@ const Home = () => {
                   Giảm tới 30% cho các sản phẩm công nghệ. Ưu đãi có hạn, nhanh
                   tay kẻo lỡ!
                 </p>
-                <Link
+                {/* <Link
                   to="/promotions"
                   className="inline-block bg-white text-blue-600 font-semibold px-6 py-3 rounded-md transition duration-300 hover:bg-blue-50 self-start"
                 >
                   Xem ưu đãi
-                </Link>
+                </Link> */}
               </div>
               <div className="md:w-1/2">
                 <img

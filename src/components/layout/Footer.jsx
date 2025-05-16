@@ -73,7 +73,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/products/electronics/all"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Điện tử
@@ -81,7 +81,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/products/fashion/all"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Thời trang
@@ -89,7 +89,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/products/home-appliances/all"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Đồ gia dụng
@@ -97,7 +97,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/products/books/all"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Sách
@@ -105,7 +105,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/products/beauty/all"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Làm đẹp
@@ -127,7 +127,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/contact"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Liên hệ
@@ -135,7 +135,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/faq"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Câu hỏi thường gặp
@@ -143,7 +143,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/shipping-policy"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Chính sách vận chuyển
@@ -151,7 +151,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/return-policy"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Chính sách đổi trả
@@ -159,7 +159,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/warranty"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Bảo hành
@@ -167,7 +167,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/payment-methods"
+                  to="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
                   Phương thức thanh toán
@@ -218,19 +218,19 @@ const Footer = () => {
             </p>
             <div className="flex justify-center md:justify-end space-x-4">
               <Link
-                to="/terms"
+                to="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Điều khoản
               </Link>
               <Link
-                to="/privacy"
+                to="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Chính sách bảo mật
               </Link>
               <Link
-                to="/cookies"
+                to="#"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Cookies

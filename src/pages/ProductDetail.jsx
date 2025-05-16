@@ -23,7 +23,7 @@ import {
   // FaShareAlt,
   FaInfoCircle,
 } from "react-icons/fa";
-import { getProductById } from "../services/productService";
+import { addRecentlyProduct, getProductById } from "../services/productService";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -34,7 +34,6 @@ const ProductDetail = () => {
   const [imagePreview, setImagePreview] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
-  // const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,33 +46,8 @@ const ProductDetail = () => {
         setProductInfo(response);
         setImageList(response.images || []);
 
-        // const fakeRelatedProducts = [
-        //   {
-        //     id: 101,
-        //     productName: "Sản phẩm tương tự 1",
-        //     price: 249000,
-        //     image: "https://via.placeholder.com/150",
-        //   },
-        //   {
-        //     id: 102,
-        //     productName: "Sản phẩm tương tự 2",
-        //     price: 299000,
-        //     image: "https://via.placeholder.com/150",
-        //   },
-        //   {
-        //     id: 103,
-        //     productName: "Sản phẩm tương tự 3",
-        //     price: 349000,
-        //     image: "https://via.placeholder.com/150",
-        //   },
-        //   {
-        //     id: 104,
-        //     productName: "Sản phẩm tương tự 4",
-        //     price: 199000,
-        //     image: "https://via.placeholder.com/150",
-        //   },
-        // ];
-        // setRelatedProducts(fakeRelatedProducts);
+        // Add product to recently viewed
+        await addRecentlyProduct(id);
       } catch (error) {
         console.error("Failed to fetch data", error);
       } finally {
@@ -126,31 +100,6 @@ const ProductDetail = () => {
     return stars;
   };
 
-  // Hiển thị một sản phẩm liên quan
-  // const RelatedProductCard = ({ product }) => (
-  //   <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
-  //     <Link to={`/product/${product.id}`}>
-  //       <img
-  //         src={product.image}
-  //         alt={product.productName}
-  //         className="w-full h-40 object-cover"
-  //       />
-  //       <div className="p-3">
-  //         <h3 className="text-sm font-medium line-clamp-2 h-10 mb-2">
-  //           {product.productName}
-  //         </h3>
-  //         <p className="text-red-600 font-bold">
-  //           {product.price?.toLocaleString()} đ
-  //         </p>
-  //         <div className="flex items-center mt-1">
-  //           {renderRatingStars(4)}
-  //           <span className="text-xs text-gray-500 ml-1">(12)</span>
-  //         </div>
-  //       </div>
-  //     </Link>
-  //   </div>
-  // );
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -189,22 +138,6 @@ const ProductDetail = () => {
             <div className="md:w-2/5">
               <div className="sticky top-20">
                 <div className="relative mb-4 border border-gray-100 rounded-lg overflow-hidden">
-                  <div className="absolute top-4 left-4 z-10 flex gap-2">
-                    {/* <span className="bg-red-500 text-white text-xs font-bold py-1 px-2 rounded">
-                      -15%
-                    </span> */}
-                    {/* <span className="bg-blue-500 text-white text-xs font-bold py-1 px-2 rounded">
-                      Mới
-                    </span> */}
-                  </div>
-                  {/* <div className="absolute top-4 right-4 z-10 flex gap-2">
-                    <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors">
-                      <FaHeart className="text-gray-400 hover:text-red-500" />
-                    </button>
-                    <button className="bg-white p-2 rounded-full shadow-md hover:bg-gray-50 transition-colors">
-                      <FaShareAlt className="text-gray-400 hover:text-blue-500" />
-                    </button>
-                  </div> */}
                   <img
                     src={imagePreview || APP_INFO.NO_IAMGE_AVAILABLE}
                     alt={productInfo.name}
@@ -263,26 +196,11 @@ const ProductDetail = () => {
                   <div className="text-3xl font-bold text-red-600">
                     {productInfo.sellingPrice?.toLocaleString()} đ
                   </div>
-                  <div className="text-lg text-gray-500 line-through">
-                    {/* {((productInfo.price || 0) * 1.15).toLocaleString()} đ */}
-                  </div>
-                  {/* <div className="text-red-600 text-sm font-medium">-15%</div> */}
                 </div>
-                {/* <p className="text-sm text-green-600 mt-1">
-                  <FaBolt className="inline mr-1" />
-                  Giảm thêm 5% cho đơn hàng từ 500K
-                </p> */}
+
               </div>
 
               <div className="border-t border-b border-gray-100 py-4 mb-6">
-                {/* <div className="flex items-center mb-4">
-                  <span className="w-24 text-gray-600">Màu sắc:</span>
-                  <div className="flex gap-2">
-                    <button className="w-10 h-10 rounded-full bg-black border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
-                    <button className="w-10 h-10 rounded-full bg-white border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
-                    <button className="w-10 h-10 rounded-full bg-blue-600 border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"></button>
-                  </div>
-                </div> */}
 
                 <div className="flex items-center">
                   <span className="w-24 text-gray-600">Số lượng:</span>
@@ -301,7 +219,6 @@ const ProductDetail = () => {
                       min="1"
                       max="99"
                       value={quantity}
-                      // disabled={productInfo.quantity <= 0}
                       onChange={(e) =>
                         setQuantity(
                           Math.max(

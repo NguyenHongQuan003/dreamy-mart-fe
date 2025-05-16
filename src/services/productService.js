@@ -123,3 +123,22 @@ export const filterProductsHome = async (categoryName, searchTerm, minPrice, max
     const response = await axiosInstance.get(`/products/filter/home?${params.toString()}`);
     return response.data;
 }
+
+
+// @PostMapping("/recently/add/{id}")
+export const addRecentlyProduct = async (id) => {
+    const response = await axiosInstance.post(`/products/recently/add/${id}`);
+    return response.data;
+}
+
+// http://localhost:8080/api/v1/products/recently/get
+// {
+//     "code": 1000,
+//     "message": "Recently viewed products retrieved successfully",
+//     "result": []
+// }
+export const getRecentlyProducts = async () => {
+    const response = await axiosInstance.get("/products/recently/get");
+    return response.data;
+}
+
