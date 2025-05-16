@@ -19,7 +19,7 @@ const ProductManagement = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(2);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState([]);
@@ -31,64 +31,59 @@ const ProductManagement = () => {
   });
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
 
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
+
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
 
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getAllProducts(currentPage, pageSize);
-      setProducts(response.data);
-      setTotalElements(response.totalElements);
-      const uniqueCategories = [
-        ...new Set(response.data.map((p) => p.category.name)),
-      ];
+      let response;
+
+      if (isSearching) {
+        response = await searchProducts(searchKeyword, currentPage, pageSize);
+      } else if (isFiltering) {
+        response = await filterProducts(
+          filters.brand,
+          filters.minPrice,
+          filters.maxPrice,
+          currentPage,
+          pageSize,
+          filters.name
+        );
+      } else {
+        response = await getAllProducts(currentPage, pageSize);
+      }
+
+      setProducts(response.data || response.result?.data || []);
+      setTotalElements(response.totalElements || response.result?.totalElements || 0);
+
+      const uniqueCategories = [...new Set((response.data || response.result?.data || []).map((p) => p.category.name))];
       setCategories(uniqueCategories);
-      const uniqueBrands = [...new Set(response.data.map((p) => p.brand))];
+      const uniqueBrands = [...new Set((response.data || response.result?.data || []).map((p) => p.brand))];
       setBrands(uniqueBrands);
+
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
       setLoading(false);
     }
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, filters, isFiltering, isSearching, searchKeyword]);
 
   const handleSearch = async (value) => {
-    try {
-      setLoading(true);
-      if (value.trim() === "") {
-        await fetchProducts();
-        return;
-      }
-      const response = await searchProducts(value, currentPage, pageSize);
-      setProducts(response.data);
-      setTotalElements(response.totalElements);
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setLoading(false);
-    }
+    setSearchKeyword(value);
+    setIsSearching(!!value);
+    setIsFiltering(false);
+    setCurrentPage(1);
   };
 
   const handleFilter = async () => {
-    try {
-      setLoading(true);
-      const response = await filterProducts(
-        filters.brand,
-        filters.minPrice,
-        filters.maxPrice,
-        currentPage,
-        pageSize,
-        filters.name
-      );
-      console.log(response.result.data);
-      setProducts(response.result.data);
-      setTotalElements(response.result.totalElements);
-    } catch (error) {
-      console.error("Filter error:", error);
-    } finally {
-      setLoading(false);
-    }
+    setIsFiltering(true);
+    setIsSearching(false);
+    setCurrentPage(1);
   };
 
   const handleFilterChange = (key, value) => {
