@@ -269,12 +269,12 @@ const Home = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
               Sản phẩm bán chạy
             </h2>
-            <Link
+            {/* <Link
               to="/products/category/all"
               className="text-[#0078E8] hover:underline flex items-center"
             >
               Xem tất cả <FaArrowRight className="ml-2" />
-            </Link>
+            </Link> */}
           </div>
 
           {loading ? (
@@ -364,7 +364,7 @@ const Home = () => {
                 </div>
               )}
             </div>
-            {recentlyProducts.length > showTotalRecentlyProducts ? (
+            {recentlyProducts.length > showTotalRecentlyProducts && (
               <div className="text-center py-4">
                 <button
                   className="text-[#0078E8] hover:underline"
@@ -373,7 +373,8 @@ const Home = () => {
                   Xem tất cả
                 </button>
               </div>
-            ) : (
+            )}
+            {showTotalRecentlyProducts === recentlyProducts.length && (
               <div className="text-center py-4">
                 <button
                   className="text-[#0078E8] hover:underline"

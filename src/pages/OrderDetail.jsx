@@ -121,7 +121,7 @@ const OrderDetail = () => {
     );
   }
 
-  const getOrderStatusBadge = (status) => {
+  const getOrderStatusBadge = (status, size = "xs") => {
     const statusMap = {
       // Payment
       PAYMENT_COMPLETED: {
@@ -220,7 +220,7 @@ const OrderDetail = () => {
 
     return (
       <span
-        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${color}`}
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full ${size === "lg" ? "text-lg" : "text-xs"} font-medium ${color}`}
       >
         {icon}
         {label}
@@ -266,14 +266,14 @@ const OrderDetail = () => {
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                  {/* <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-3">
                     <FaCheckCircle />
-                  </div>
+                  </div> */}
                   <div>
-                    <h2 className="text-lg font-semibold">Đơn hàng hoàn tất</h2>
-                    <p className="text-sm text-gray-500">
+                    <h2 className="text-lg font-semibold">{getOrderStatusBadge(order.status, "lg")}</h2>
+                    {/* <p className="text-sm text-gray-500">
                       Cảm ơn bạn đã mua hàng!
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               </div>
@@ -317,8 +317,14 @@ const OrderDetail = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <h3 className="font-medium text-gray-800 mb-2">
-                  Phương thức thanh toán
+                  Phương thức thanh toán <span className="text-pink-500 font-medium mr-2">momo</span>
                 </h3>
+                {order.cancelReason !== null && (
+                  <div className="mt-2 text-sm text-red-600 flex items-center">
+                    <span className="font-medium mr-2">Lý do hủy đơn: </span>
+                    {getOrderStatusBadge(order.cancelReason)}
+                  </div>
+                )}
                 <div className="text-sm">
                   {/* <p className="mb-1">
                     {order.payment.method === "cod" &&
@@ -328,10 +334,10 @@ const OrderDetail = () => {
                     {order.payment.method === "card" &&
                       "Thanh toán thẻ tín dụng/ghi nợ"}
                   </p> */}
-                  <p>
+                  {/* <p>
                     <span className="font-medium">Trạng thái:</span>{" "}
                     {getOrderStatusBadge(order.status)}
-                  </p>
+                  </p> */}
                 </div>
               </div>
               <div>
@@ -447,7 +453,7 @@ const OrderDetail = () => {
           </div>
 
           <div className="flex justify-between print:hidden">
-            <Link to="/profile">
+            <Link to="/profile" state={{ tab: "orders" }}>
               <Button variant="outline" icon={FaArrowLeft}>
                 Quay lại
               </Button>

@@ -31,6 +31,8 @@ import { toast } from "react-toastify";
 import Loading from "../components/common/Loading";
 import Address from "../components/layout/Address";
 import { getOrderDetail } from "../services/orderService";
+import { useLocation } from "react-router-dom";
+
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -41,6 +43,14 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [orders, setOrders] = useState([]);
   const [isLoadingOrder, setIsLoadingOrder] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.tab === "orders") {
+      setActiveTab("orders");
+    }
+  }, [location.state]);
+
 
   const [formData, setFormData] = useState({
     avatar: user?.avatar || null,
@@ -322,7 +332,7 @@ const Profile = () => {
 
               <div className="flex items-center space-x-2">
                 {getOrderStatusBadge(order.status)}
-                <Link to={`/orders/${order.id}`}>
+                <Link to={`/orders/${order.id}`} state={{ fromOrdersTab: true }}>
                   <Button
                     variant="outline"
                     size="small"
@@ -421,6 +431,13 @@ const Profile = () => {
               </div>
 
               <div className="mt-4 flex flex-wrap justify-between items-center border-t pt-4">
+                {order.cancelReason !== null && (
+                  <div className="mt-2 text-sm text-red-600 flex items-center">
+                    <span className="font-medium mr-2">Lý do hủy đơn: </span>
+                    {getOrderStatusBadge(order.cancelReason)}
+                  </div>
+                )}
+
                 <div className="flex items-center">
                   <span className="text-gray-600 font-medium mr-2">
                     Phương thức thanh toán:
