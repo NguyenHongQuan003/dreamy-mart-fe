@@ -294,43 +294,42 @@ const ProductManagement = () => {
           open={isFilterModalVisible}
           onCancel={() => setIsFilterModalVisible(false)}
           footer={[
-            <>
-              <div className="flex justify-end gap-1">
-                <Button
-                  key="reset"
-                  variant="outline"
-                  onClick={() => {
-                    setFilters({
-                      brand: null,
-                      minPrice: null,
-                      maxPrice: null,
-                      name: ""
-                    });
-                  }}
-                >
-                  Đặt lại
-                </Button>
-                <Button
-                  key="cancel"
-                  variant="outline"
-                  onClick={() => setIsFilterModalVisible(false)}
-                >
-                  Hủy
-                </Button>
-                <Button
-                  key="submit"
-                  variant="primary"
-                  onClick={() => {
-                    handleFilter();
-                    setIsFilterModalVisible(false);
-                  }}
-                  className="bg-blue-600 text-white"
-                >
-                  Áp dụng
-                </Button>
-              </div>
-            </>
+            <div key="footer-buttons" className="flex justify-end gap-1">
+              <Button
+                key="reset"
+                variant="outline"
+                onClick={() => {
+                  setFilters({
+                    brand: null,
+                    minPrice: null,
+                    maxPrice: null,
+                    name: ""
+                  });
+                }}
+              >
+                Đặt lại
+              </Button>
+              <Button
+                key="cancel"
+                variant="outline"
+                onClick={() => setIsFilterModalVisible(false)}
+              >
+                Hủy
+              </Button>
+              <Button
+                key="submit"
+                variant="primary"
+                onClick={() => {
+                  handleFilter();
+                  setIsFilterModalVisible(false);
+                }}
+                className="bg-blue-600 text-white"
+              >
+                Áp dụng
+              </Button>
+            </div>
           ]}
+
           width="90%"
           style={{ maxWidth: '600px' }}
         >

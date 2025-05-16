@@ -492,7 +492,7 @@ const PromotionManagement = () => {
                     open={isFilterModalVisible}
                     onCancel={() => setIsFilterModalVisible(false)}
                     footer={[
-                        <>
+                        <div key="footer-buttons" className="flex justify-end gap-1">
                             <div className="flex justify-end gap-1">
                                 <Button
                                     key="reset"
@@ -530,7 +530,7 @@ const PromotionManagement = () => {
                                     Áp dụng
                                 </Button>
                             </div>
-                        </>
+                        </div>
                     ]}
                     width="90%"
                     style={{ maxWidth: '600px' }}

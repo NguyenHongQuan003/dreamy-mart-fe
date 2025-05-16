@@ -135,12 +135,12 @@ const OrderDetail = () => {
         color: "bg-red-100 text-red-800",
       },
       PAYMENT_PROCESSING: {
-        label: "Đang xử lý thanh toán",
+        label: "Đang thanh toán",
         icon: <FaRegClock className="mr-1" />,
         color: "bg-yellow-100 text-yellow-800",
       },
       PAYMENT_REFUND_COMPLETED: {
-        label: "Hoàn tiền thành công",
+        label: "Đã hoàn tiền",
         icon: <FaRedo className="mr-1" />,
         color: "bg-blue-100 text-blue-800",
       },
@@ -162,34 +162,34 @@ const OrderDetail = () => {
         color: "bg-green-100 text-green-800",
       },
       INVENTORY_COMPLETED: {
-        label: "Xuất kho hoàn tất",
+        label: "Đã xuất kho",
         icon: <FaClipboardList className="mr-1" />,
         color: "bg-blue-100 text-blue-800",
       },
       INVENTORY_FAILED: {
-        label: "Lỗi kiểm kho",
+        label: "Lỗi xuất kho",
         icon: <FaExclamationTriangle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },
       INVENTORY_PROCESSING: {
-        label: "Đang xử lý kho",
+        label: "Đang xuất kho",
         icon: <FaRegClock className="mr-1" />,
         color: "bg-gray-100 text-gray-800",
       },
 
       // Delivery
       DELIVERY_PROCESSING: {
-        label: "Đang giao hàng",
+        label: "Đang giao",
         icon: <FaShippingFast className="mr-1" />,
         color: "bg-yellow-100 text-yellow-800",
       },
       DELIVERY_COMPLETED: {
-        label: "Giao hàng thành công",
+        label: "Giao thành công",
         icon: <FaCheckCircle className="mr-1" />,
         color: "bg-green-100 text-green-800",
       },
       DELIVERY_FAILED: {
-        label: "Giao hàng thất bại",
+        label: "Giao thất bại",
         icon: <FaTimesCircle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },
@@ -201,12 +201,12 @@ const OrderDetail = () => {
         color: "bg-blue-100 text-blue-800",
       },
       ORDER_COMPLETED: {
-        label: "Hoàn tất đơn hàng",
+        label: "Đơn hoàn tất",
         icon: <FaCheckCircle className="mr-1" />,
         color: "bg-green-100 text-green-800",
       },
       ORDER_CANCELLED: {
-        label: "Đã hủy đơn hàng",
+        label: "Đơn bị hủy",
         icon: <FaTimesCircle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },

@@ -15,16 +15,24 @@ const OrderManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(false);
   const [filterParams, setFilterParams] = useState({
+    customerName: null,
+    customerPhone: null,
+    customerEmail: null,
     orderStatus: null,
     minTotalPrice: null,
     maxTotalPrice: null,
     startDate: null,
     endDate: null
   });
+
+  const [isSearching, setIsSearching] = useState(false);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState(""); // nếu có ô tìm kiếm
+
 
   const user = useSelector((state) => state.auth.user);
   useCheckAdminAuth(user);
@@ -33,7 +41,7 @@ const OrderManagement = () => {
     try {
       setLoading(true);
       const response = await getAllOrders(currentPage, pageSize);
-      console.log(response);
+      // console.log(response);
       if (response.code === 1000) {
         setOrders(response.result.data);
         setTotalElements(response.result.totalElements);
@@ -48,10 +56,16 @@ const OrderManagement = () => {
   const handleSearch = async (value) => {
     try {
       setLoading(true);
+      setIsSearching(true);
+      setIsFiltering(false);
+      setSearchKeyword(value);
+
       if (value.trim() === "") {
+        setIsSearching(false);
         await fetchOrders();
         return;
       }
+
       const response = await searchOrders(value, currentPage, pageSize);
       if (response.code === 1000) {
         setOrders(response.result.data);
@@ -67,9 +81,14 @@ const OrderManagement = () => {
   const handleFilter = async () => {
     try {
       setLoading(true);
+      setIsFiltering(true);
+      setIsSearching(false);
+      setSearchKeyword(""); // reset nếu cần
+
       const response = await filterOrders(
-        null, // customerName
-        null, // customerPhone
+        filterParams.customerName,
+        filterParams.customerPhone,
+        filterParams.customerEmail,
         currentPage,
         pageSize,
         filterParams.orderStatus,
@@ -78,7 +97,7 @@ const OrderManagement = () => {
         filterParams.startDate,
         filterParams.endDate
       );
-      console.log("filter response", response);
+
       if (response.code === 1000) {
         setOrders(response.result.data);
         setTotalElements(response.result.totalElements);
@@ -89,6 +108,16 @@ const OrderManagement = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isSearching) {
+      handleSearch(searchKeyword);
+    } else if (isFiltering) {
+      handleFilter();
+    } else {
+      fetchOrders();
+    }
+  }, [currentPage, pageSize]);
 
   const handleFilterChange = (key, value) => {
     setFilterParams(prev => ({
@@ -113,9 +142,6 @@ const OrderManagement = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOrders();
-  }, [currentPage, pageSize]);
 
   const handleViewOrder = (order) => {
     setSelectedOrder(order);
@@ -138,16 +164,16 @@ const OrderManagement = () => {
     { value: 'DELIVERY_FAILED', label: 'Giao thất bại' },
     { value: 'DELIVERY_PROCESSING', label: 'Đang giao' },
     { value: 'INVENTORY_CHECKED', label: 'Đã kiểm kho' },
-    { value: 'INVENTORY_COMPLETED', label: 'Hoàn tất kho' },
-    { value: 'INVENTORY_FAILED', label: 'Lỗi kho' },
-    { value: 'INVENTORY_PROCESSING', label: 'Đang kiểm kho' },
+    { value: 'INVENTORY_COMPLETED', label: 'Đã xuất kho' },
+    { value: 'INVENTORY_FAILED', label: 'Lỗi xuất kho' },
+    { value: 'INVENTORY_PROCESSING', label: 'Đang xuất kho' },
     { value: 'ORDER_CANCELLED', label: 'Đơn bị hủy' },
-    { value: 'ORDER_COMPLETED', label: 'Hoàn tất đơn' },
-    { value: 'ORDER_CREATED', label: 'Tạo đơn' },
-    { value: 'PAYMENT_COMPLETED', label: 'Thanh toán thành công' },
+    { value: 'ORDER_COMPLETED', label: 'Đơn hoàn tất' },
+    { value: 'ORDER_CREATED', label: 'Đơn mới' },
+    { value: 'PAYMENT_COMPLETED', label: 'Đã thanh toán' },
     { value: 'PAYMENT_FAILED', label: 'Thanh toán thất bại' },
     { value: 'PAYMENT_PROCESSING', label: 'Đang thanh toán' },
-    { value: 'PAYMENT_REFUND_COMPLETED', label: 'Hoàn tiền thành công' },
+    { value: 'PAYMENT_REFUND_COMPLETED', label: 'Đã hoàn tiền' },
     { value: 'PAYMENT_REFUND_FAILED', label: 'Hoàn tiền thất bại' },
     { value: 'PAYMENT_REFUND_PROCESSING', label: 'Đang hoàn tiền' },
   ];
@@ -166,12 +192,12 @@ const OrderManagement = () => {
         color: "bg-red-100 text-red-800",
       },
       PAYMENT_PROCESSING: {
-        label: "Đang xử lý thanh toán",
+        label: "Đang thanh toán",
         icon: <FaRegClock className="mr-1" />,
         color: "bg-yellow-100 text-yellow-800",
       },
       PAYMENT_REFUND_COMPLETED: {
-        label: "Hoàn tiền thành công",
+        label: "Đã hoàn tiền",
         icon: <FaRedo className="mr-1" />,
         color: "bg-blue-100 text-blue-800",
       },
@@ -193,34 +219,34 @@ const OrderManagement = () => {
         color: "bg-green-100 text-green-800",
       },
       INVENTORY_COMPLETED: {
-        label: "Xuất kho hoàn tất",
+        label: "Đã xuất kho",
         icon: <FaClipboardList className="mr-1" />,
         color: "bg-blue-100 text-blue-800",
       },
       INVENTORY_FAILED: {
-        label: "Lỗi kiểm kho",
+        label: "Lỗi xuất kho",
         icon: <FaExclamationTriangle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },
       INVENTORY_PROCESSING: {
-        label: "Đang xử lý kho",
+        label: "Đang kiểm kho",
         icon: <FaRegClock className="mr-1" />,
         color: "bg-gray-100 text-gray-800",
       },
 
       // Delivery
       DELIVERY_PROCESSING: {
-        label: "Đang giao hàng",
+        label: "Đang giao",
         icon: <FaShippingFast className="mr-1" />,
         color: "bg-yellow-100 text-yellow-800",
       },
       DELIVERY_COMPLETED: {
-        label: "Giao hàng thành công",
+        label: "Giao thành công",
         icon: <FaCheckCircle className="mr-1" />,
         color: "bg-green-100 text-green-800",
       },
       DELIVERY_FAILED: {
-        label: "Giao hàng thất bại",
+        label: "Giao thất bại",
         icon: <FaTimesCircle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },
@@ -232,12 +258,12 @@ const OrderManagement = () => {
         color: "bg-blue-100 text-blue-800",
       },
       ORDER_COMPLETED: {
-        label: "Hoàn tất đơn hàng",
+        label: "Đơn hoàn tất",
         icon: <FaCheckCircle className="mr-1" />,
         color: "bg-green-100 text-green-800",
       },
       ORDER_CANCELLED: {
-        label: "Đã hủy đơn hàng",
+        label: "Đơn bị hủy",
         icon: <FaTimesCircle className="mr-1" />,
         color: "bg-red-100 text-red-800",
       },
@@ -280,7 +306,6 @@ const OrderManagement = () => {
       dataIndex: ["user", "fullName"],
       key: "user",
       sorter: (a, b) => a.user.fullName.localeCompare(b.user.fullName),
-      width: 200,
       render: (_, record) => (
         <div style={{
           whiteSpace: 'nowrap',
@@ -303,11 +328,18 @@ const OrderManagement = () => {
       render: (_, record) => record.user.phone
     },
     {
+      title: "Email",
+      dataIndex: ["user", "email"],
+      key: "email",
+      align: "right",
+      sorter: (a, b) => a.user.email.localeCompare(b.user.email),
+      render: (_, record) => record.user.email
+    },
+    {
       title: "Địa chỉ giao hàng",
       dataIndex: "shippingAddress",
       key: "shippingAddress",
       sorter: (a, b) => a.shippingAddress.localeCompare(b.shippingAddress),
-      width: 350,
       render: (address) => (
         <div style={{
           whiteSpace: 'nowrap',
@@ -523,6 +555,9 @@ const OrderManagement = () => {
                   variant="outline"
                   onClick={() => {
                     setFilterParams({
+                      customerName: null,
+                      customerPhone: null,
+                      customerEmail: null,
                       orderStatus: null,
                       minTotalPrice: null,
                       maxTotalPrice: null,
@@ -558,6 +593,39 @@ const OrderManagement = () => {
           style={{ maxWidth: '600px' }}
         >
           <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tên khách hàng
+              </label>
+              <Input
+                placeholder="Tìm kiếm theo tên khách hàng"
+                value={filterParams.customerName}
+                onChange={(e) => handleFilterChange('customerName', e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Số điện thoại
+              </label>
+              <Input
+                placeholder="Tìm kiếm theo số điện thoại"
+                value={filterParams.customerPhone}
+                onChange={(e) => handleFilterChange('customerPhone', e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <Input
+                placeholder="Tìm kiếm theo email"
+                value={filterParams.customerEmail}
+                onChange={(e) => handleFilterChange('customerEmail', e.target.value)}
+              />
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Trạng thái đơn hàng
