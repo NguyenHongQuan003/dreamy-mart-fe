@@ -340,6 +340,19 @@ const ProductManagement = () => {
           style={{ maxWidth: '600px' }}
         >
           <div className="space-y-6">
+            {/* Tên sản phẩm */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tên sản phẩm
+              </label>
+              <Input
+                placeholder="Nhập tên sản phẩm"
+                value={filters.name}
+                onChange={(e) => handleFilterChange('name', e.target.value)}
+              />
+            </div>
+
+            {/* Thương hiệu */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Thương hiệu
