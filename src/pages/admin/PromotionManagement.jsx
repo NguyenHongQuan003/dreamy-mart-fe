@@ -18,7 +18,7 @@ const PromotionManagement = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState(0);
     const [loading, setLoading] = useState(false);
     const [filterParams, setFilterParams] = useState({
@@ -30,73 +30,131 @@ const PromotionManagement = () => {
         startDatePromotionEndDate: null,
         endDatePromotionEndDate: null
     });
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [mode, setMode] = useState("default"); // default | search | filter
 
     const user = useSelector((state) => state.auth.user);
     useCheckAdminAuth(user);
 
-    const fetchPromotions = async () => {
-        try {
+    useEffect(() => {
+        const fetchData = async () => {
             setLoading(true);
-            const response = await getAllPromotions(currentPage, pageSize);
-            if (response.code === 1000) {
-                setPromotions(response.result.data);
-                setTotalElements(response.result.totalElements);
+            try {
+                let response;
+
+                if (mode === "search") {
+                    response = await searchPromotion(searchKeyword, currentPage, pageSize);
+                } else if (mode === "filter") {
+                    response = await filterPromotion(
+                        filterParams.promotionName,
+                        filterParams.promotionCode,
+                        filterParams.status,
+                        filterParams.startDatePromotionStartDate,
+                        filterParams.endDatePromotionStartDate,
+                        filterParams.startDatePromotionEndDate,
+                        filterParams.endDatePromotionEndDate,
+                        currentPage,
+                        pageSize
+                    );
+                } else {
+                    response = await getAllPromotions(currentPage, pageSize);
+                }
+
+                if (response.code === 1000) {
+                    setPromotions(response.result.data);
+                    setTotalElements(response.result.totalElements);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                setPromotions([]);
+                toast.error("Không thể tải danh sách khuyến mãi!");
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Fetch error:", error);
-            setPromotions([]);
-            toast.error("Không thể tải danh sách khuyến mãi!");
-        } finally {
-            setLoading(false);
+        };
+
+        fetchData();
+    }, [mode, currentPage, pageSize, searchKeyword, filterParams]);
+
+    const handleSearch = (value) => {
+        if (!value.trim()) {
+            setMode("default");
+        } else {
+            setSearchKeyword(value);
+            setMode("search");
         }
+        setCurrentPage(1);
     };
 
-    const handleSearch = async (value) => {
-        try {
-            setLoading(true);
-            if (value.trim() === "") {
-                await fetchPromotions();
-                return;
-            }
-            const response = await searchPromotion(value, currentPage, pageSize);
-            if (response.code === 1000) {
-                setPromotions(response.result.data);
-                setTotalElements(response.result.totalElements);
-            }
-        } catch (error) {
-            console.error("Search error:", error);
-            toast.error("Tìm kiếm khuyến mãi thất bại!");
-        } finally {
-            setLoading(false);
-        }
+    const handleFilter = () => {
+        setMode("filter");
+        setCurrentPage(1);
     };
 
-    const handleFilter = async () => {
-        try {
-            setLoading(true);
-            const response = await filterPromotion(
-                filterParams.promotionName,
-                filterParams.promotionCode,
-                filterParams.status,
-                filterParams.startDatePromotionStartDate,
-                filterParams.endDatePromotionStartDate,
-                filterParams.startDatePromotionEndDate,
-                filterParams.endDatePromotionEndDate,
-                currentPage,
-                pageSize
-            );
-            console.log("filter promotion response", response);
-            if (response.code === 1000) {
-                setPromotions(response.result.data);
-                setTotalElements(response.result.totalElements);
-            }
-        } catch (error) {
-            console.error("Filter error:", error);
-            toast.error("Lọc khuyến mãi thất bại!");
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const fetchPromotions = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await getAllPromotions(currentPage, pageSize);
+    //         if (response.code === 1000) {
+    //             setPromotions(response.result.data);
+    //             setTotalElements(response.result.totalElements);
+    //         }
+    //     } catch (error) {
+    //         console.error("Fetch error:", error);
+    //         setPromotions([]);
+    //         toast.error("Không thể tải danh sách khuyến mãi!");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
+    // const handleSearch = async (value) => {
+    //     try {
+    //         setLoading(true);
+    //         if (value.trim() === "") {
+    //             await fetchPromotions();
+    //             return;
+    //         }
+    //         const response = await searchPromotion(value, currentPage, pageSize);
+    //         if (response.code === 1000) {
+    //             setPromotions(response.result.data);
+    //             setTotalElements(response.result.totalElements);
+    //         }
+    //     } catch (error) {
+    //         console.error("Search error:", error);
+    //         toast.error("Tìm kiếm khuyến mãi thất bại!");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    // const handleFilter = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await filterPromotion(
+    //             filterParams.promotionName,
+    //             filterParams.promotionCode,
+    //             filterParams.status,
+    //             filterParams.startDatePromotionStartDate,
+    //             filterParams.endDatePromotionStartDate,
+    //             filterParams.startDatePromotionEndDate,
+    //             filterParams.endDatePromotionEndDate,
+    //             currentPage,
+    //             pageSize
+    //         );
+    //         console.log("filter promotion response", response);
+    //         if (response.code === 1000) {
+    //             setPromotions(response.result.data);
+    //             setTotalElements(response.result.totalElements);
+    //         }
+    //     } catch (error) {
+    //         console.error("Filter error:", error);
+    //         toast.error("Lọc khuyến mãi thất bại!");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const handleFilterChange = (key, value) => {
         setFilterParams(prev => ({
@@ -137,9 +195,9 @@ const PromotionManagement = () => {
         }
     };
 
-    useEffect(() => {
-        fetchPromotions();
-    }, [currentPage, pageSize]);
+    // useEffect(() => {
+    //     fetchPromotions();
+    // }, [currentPage, pageSize]);
 
     const handleDelete = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
