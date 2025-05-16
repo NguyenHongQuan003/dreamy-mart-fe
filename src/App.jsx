@@ -31,6 +31,7 @@ import DeliveryManagement from "./pages/admin/DeliveryManagement";
 import CategoryManagement from "./pages/admin/CategoryManagement";
 import ChatbotWidget from "./components/chat/ChatbotWidget";
 import Callback from "./pages/Callback";
+import InventoryError from "./pages/InventoryError";
 
 const AxiosInterceptorSetup = () => {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ function App() {
           <Route path="/payment/notify" element={<NotifyPayment />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/callback" element={<Callback />} />
+          <Route path="/inventory-error" element={<InventoryError />} />
           <Route
             path="/products/category/:categoryName"
             element={<ProductList />}

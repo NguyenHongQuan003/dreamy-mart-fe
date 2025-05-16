@@ -147,6 +147,8 @@ const Checkout = () => {
       const response = await checkToOrder(orderId);
       console.log("response check inventory ", response)
       if (!response.result) {
+        console.log("số lượng sản phẩm không đủ")
+        navigate("/inventory-error")
         throw new Error("Số lượng sản phẩm không đủ");
       }
     } catch (error) {
