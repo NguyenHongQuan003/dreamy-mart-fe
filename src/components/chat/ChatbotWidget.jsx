@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa';
 import { createNewSession, sendMessage } from '../../services/chatbotService';
 
-const SESSION_EXPIRY_TIME = 30 * 60 * 1000; // 30 phút tính bằng milliseconds
+const SESSION_EXPIRY_TIME = 30 * 60 * 1000; // 30 phút
 
 const ChatbotWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,16 +10,19 @@ const ChatbotWidget = () => {
     const [inputMessage, setInputMessage] = useState('');
     const [sessionId, setSessionId] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
     const messagesEndRef = useRef(null);
     const sessionTimeoutRef = useRef(null);
 
     const clearSession = () => {
         setSessionId(null);
         setMessages([]);
+        setTimeLeft(null);
         if (sessionTimeoutRef.current) {
             clearTimeout(sessionTimeoutRef.current);
             sessionTimeoutRef.current = null;
         }
+        localStorage.removeItem('chatbotSession');
     };
 
     const initializeSession = async () => {
@@ -29,7 +32,8 @@ const ChatbotWidget = () => {
             if (session.messages) {
                 setMessages(session.messages);
             }
-            // Đặt timeout để xóa session sau 30 phút
+            const expiryTime = Date.now() + SESSION_EXPIRY_TIME;
+            localStorage.setItem('chatbotSession', JSON.stringify({ sessionId: session.sessionId, expiryTime }));
             sessionTimeoutRef.current = setTimeout(clearSession, SESSION_EXPIRY_TIME);
         } catch (error) {
             console.error('Error initializing chat session:', error);
@@ -37,22 +41,16 @@ const ChatbotWidget = () => {
     };
 
     useEffect(() => {
-        // Kiểm tra session trong localStorage
-        const savedSession = localStorage.getItem('chatbotSession');
-        if (savedSession) {
-            const { sessionId: savedSessionId, expiryTime } = JSON.parse(savedSession);
+        const saved = localStorage.getItem('chatbotSession');
+        if (saved) {
+            const { sessionId: savedId, expiryTime } = JSON.parse(saved);
             if (Date.now() < expiryTime) {
-                // Session còn hạn
-                setSessionId(savedSessionId);
-                sessionTimeoutRef.current = setTimeout(clearSession, expiryTime - Date.now());
+                setSessionId(savedId);
+                const remaining = expiryTime - Date.now();
+                sessionTimeoutRef.current = setTimeout(clearSession, remaining);
             } else {
-                // Session hết hạn
                 localStorage.removeItem('chatbotSession');
-                initializeSession();
             }
-        } else {
-            // Không có session, tạo mới
-            initializeSession();
         }
 
         return () => {
@@ -63,31 +61,57 @@ const ChatbotWidget = () => {
     }, []);
 
     useEffect(() => {
-        // Lưu session vào localStorage khi sessionId thay đổi
+        const setupSessionIfNeeded = async () => {
+            if (isOpen && !sessionId) {
+                await initializeSession();
+            }
+        };
+        setupSessionIfNeeded();
+    }, [isOpen, sessionId]);
+
+    // Cập nhật thời gian còn lại mỗi giây
+    useEffect(() => {
+        let intervalId;
+
+        const updateTimeLeft = () => {
+            const saved = localStorage.getItem('chatbotSession');
+            if (!saved) {
+                setTimeLeft(null);
+                return;
+            }
+
+            const { expiryTime } = JSON.parse(saved);
+            const remaining = Math.max(0, expiryTime - Date.now());
+            setTimeLeft(remaining);
+        };
+
         if (sessionId) {
-            const expiryTime = Date.now() + SESSION_EXPIRY_TIME;
-            localStorage.setItem('chatbotSession', JSON.stringify({
-                sessionId,
-                expiryTime
-            }));
-        } else {
-            localStorage.removeItem('chatbotSession');
+            updateTimeLeft(); // cập nhật lần đầu
+            intervalId = setInterval(updateTimeLeft, 1000);
         }
+
+        return () => clearInterval(intervalId);
     }, [sessionId]);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
+    const formatTimeLeft = (ms) => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes} phút ${seconds < 10 ? '0' : ''}${seconds} giây`;
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!inputMessage.trim()) return;
 
-        // Kiểm tra session
         if (!sessionId) {
             await initializeSession();
         }
@@ -112,7 +136,6 @@ const ChatbotWidget = () => {
             setMessages(prev => [...prev, botMessage]);
         } catch (error) {
             console.error('Error sending message:', error);
-            // Nếu lỗi là do session hết hạn, tạo session mới
             if (error.response?.status === 401) {
                 clearSession();
                 await initializeSession();
@@ -145,11 +168,11 @@ const ChatbotWidget = () => {
                     <div className="bg-[#0078E8] text-white p-4 rounded-t-lg flex items-center justify-between">
                         <div className="flex items-center">
                             <FaRobot className="mr-2" />
-                            <h3 className="font-semibold">DreamyMart Assistant</h3>
+                            <h3 className="font-semibold">Assistant</h3>
                         </div>
-                        {sessionId && (
-                            <span className="text-xs  bg-opacity-20 px-2 py-1 rounded">
-                                Phiên chat còn {Math.ceil((JSON.parse(localStorage.getItem('chatbotSession'))?.expiryTime - Date.now()) / 60000)} phút
+                        {sessionId && timeLeft !== null && (
+                            <span className="text-xs bg-opacity-20 px-2 py-1 rounded">
+                                Làm mới sau: {formatTimeLeft(timeLeft)}
                             </span>
                         )}
                     </div>
@@ -210,4 +233,4 @@ const ChatbotWidget = () => {
     );
 };
 
-export default ChatbotWidget; 
+export default ChatbotWidget;

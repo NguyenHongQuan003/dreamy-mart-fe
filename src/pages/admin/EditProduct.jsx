@@ -62,10 +62,10 @@ const EditProduct = () => {
 
     const onFinish = async (values) => {
         try {
-            if (selectedImageIds.length === 0) {
-                message.error("Vui lòng chọn ít nhất một hình ảnh để thay đổi!");
-                return;
-            }
+            // if (selectedImageIds.length === 0) {
+            //     message.error("Vui lòng chọn ít nhất một hình ảnh để thay đổi!");
+            //     return;
+            // }
 
             if (fileList.length !== selectedImageIds.length) {
                 message.error(`Số lượng ảnh mới phải bằng với số lượng ảnh đã chọn (${selectedImageIds.length})!`);
