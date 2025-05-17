@@ -17,7 +17,8 @@ const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [recentlyProducts, setRecentlyProducts] = useState([]);
   const [showTotalRecentlyProducts, setShowTotalRecentlyProducts] = useState(4);
-  const [loading, setLoading] = useState(true);
+  const [loadingFeatured, setLoadingFeatured] = useState(true);
+  const [loadingRecently, setLoadingRecently] = useState(true);
   const user = useSelector((state) => state.auth.user);
 
   const sliderItems = [
@@ -109,21 +110,20 @@ const Home = () => {
   useEffect(() => {
     // Lấy sản phẩm bán chạy nhất
     const fetchTopSellingProducts = async () => {
-      setLoading(true);
+      setLoadingFeatured(true);
       try {
         const products = await getTopSellingProducts();
-        console.log("products", products);
         setFeaturedProducts(products);
       } catch (error) {
         console.error("Failed to fetch top selling products:", error);
         setFeaturedProducts([]);
       } finally {
-        setLoading(false);
+        setLoadingFeatured(false);
       }
     };
 
     const fetchRecentlyViewedProducts = async () => {
-      setLoading(true);
+      setLoadingRecently(true);
       try {
         const products = await getRecentlyProducts();
         setRecentlyProducts(products.result);
@@ -131,7 +131,7 @@ const Home = () => {
         console.error("Failed to fetch recently viewed products:", error);
         setRecentlyProducts([]);
       } finally {
-        setLoading(false);
+        setLoadingRecently(false);
       }
     };
 
@@ -269,15 +269,9 @@ const Home = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
               Sản phẩm bán chạy
             </h2>
-            {/* <Link
-              to="/products/category/all"
-              className="text-[#0078E8] hover:underline flex items-center"
-            >
-              Xem tất cả <FaArrowRight className="ml-2" />
-            </Link> */}
           </div>
 
-          {loading ? (
+          {loadingFeatured ? (
             <div className="flex justify-center items-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
             </div>
@@ -294,20 +288,35 @@ const Home = () => {
                   className="group"
                 >
                   <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
-                    <div className="h-48 md:h-56 overflow-hidden">
+                    <div className="aspect-square overflow-hidden">
                       <img
                         src={product.productImage || APP_INFO.NO_IAMGE_AVAILABLE}
                         alt={product.productName}
-                        className="w-full h-full object-contain group-hover:scale-110 transition duration-500"
+                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition duration-500"
                       />
                     </div>
-                    <div className="p-4">
+                    {/* <div className="p-4">
                       <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
                         {product.productName}
                       </h3>
                       <p className="text-[#FF3B30] font-bold text-lg text-right">
                         {product.price?.toLocaleString()} đ
                       </p>
+                    </div> */}
+                    {/* Product info */}
+                    <div className="px-3 py-3 flex-grow flex flex-col justify-between">
+                      <div>
+                        <h2 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] text-gray-800 mb-1">
+                          {product.name}
+                        </h2>
+                        <div className="mt-1 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-red-600 font-bold ml-auto">
+                              {product.sellingPrice.toLocaleString()} đ
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Link>
@@ -318,73 +327,70 @@ const Home = () => {
 
         {/* Recently Viewed Products */}
         {recentlyProducts.length > 0 && (
-          <>
-            <div className="container mx-auto px-4 py-12 bg-gray-50">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
-                  Sản phẩm xem gần đây
-                </h2>
-              </div>
-
-              {loading ? (
-                <div className="flex justify-center items-center py-20">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
-              ) : recentlyProducts.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">Không có sản phẩm nào</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 overflow-y-auto max-h-[680px]">
-                  {recentlyProducts.slice(0, showTotalRecentlyProducts).map((product) => (
-                    <Link
-                      to={`/products/${product.id}`}
-                      key={product.id}
-                      className="group"
-                    >
-                      <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
-                        <div className="h-48 md:h-56 overflow-hidden">
-                          <img
-                            src={product.images[0].fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
-                            alt={product.name}
-                            className="w-full h-full object-contain group-hover:scale-110 transition duration-500"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
-                            {product.name}
-                          </h3>
-                          <p className="text-[#FF3B30] font-bold text-lg text-right">
-                            {product.sellingPrice?.toLocaleString()} đ
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            {recentlyProducts.length > showTotalRecentlyProducts && (
-              <div className="text-center py-4">
+          <div className="container mx-auto px-4 py-12 bg-gray-50">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                Sản phẩm xem gần đây
+              </h2>
+              {recentlyProducts.length > showTotalRecentlyProducts && (
                 <button
-                  className="text-[#0078E8] hover:underline"
+                  className="text-[#0078E8] hover:underline flex items-center"
                   onClick={() => setShowTotalRecentlyProducts(recentlyProducts.length)}
                 >
-                  Xem tất cả
+                  Xem tất cả <FaArrowRight className="ml-2" />
                 </button>
-              </div>
-            )}
-            {showTotalRecentlyProducts === recentlyProducts.length && (
-              <div className="text-center py-4">
+              )}
+              {showTotalRecentlyProducts === recentlyProducts.length && (
                 <button
-                  className="text-[#0078E8] hover:underline"
+                  className="text-[#0078E8] hover:underline flex items-center"
                   onClick={() => setShowTotalRecentlyProducts(4)}
                 >
-                  Ẩn bớt
+                  Ẩn bớt <FaArrowRight className="ml-2" />
                 </button>
+              )}
+            </div>
+
+            {loadingRecently ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {recentlyProducts.slice(0, showTotalRecentlyProducts).map((product) => (
+                  <Link
+                    to={`/products/${product.id}`}
+                    key={product.id}
+                    className="group"
+                  >
+                    <div className="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-xl">
+                      <div className="aspect-square overflow-hidden">
+                        <img
+                          src={product.images[0].fileUri || APP_INFO.NO_IAMGE_AVAILABLE}
+                          alt={product.name}
+                          className="w-full h-full object-contain p-4 group-hover:scale-110 transition duration-500"
+                        />
+                      </div>
+                      {/* Product info */}
+                      <div className="px-3 py-3 flex-grow flex flex-col justify-between">
+                        <div>
+                          <h2 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] text-gray-800 mb-1">
+                            {product.name}
+                          </h2>
+                          <div className="mt-1 space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-red-600 font-bold ml-auto">
+                                {product.sellingPrice.toLocaleString()} đ
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
             )}
-          </>
+          </div>
         )}
 
         {/* Promotion Banner */}

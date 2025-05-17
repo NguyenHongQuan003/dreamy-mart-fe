@@ -33,7 +33,7 @@ const ProductList = () => {
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,
-    pageSize: 8,
+    pageSize: 25,
     totalPages: 1,
     totalItems: 0
   });
@@ -55,7 +55,7 @@ const ProductList = () => {
         currentPage: response.result.currentPage,
         pageSize: response.result.pageSize,
         totalPages: response.result.totalPages,
-        totalItems: response.result.totalItems
+        totalItems: response.result.totalElements
       });
     } catch (error) {
       console.error("Failed to fetch products", error);
@@ -170,7 +170,7 @@ const ProductList = () => {
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center">
                   <h1 className="text-xl font-bold text-gray-800 mr-3">
-                    {categoryName === "all" ? "TẤT CẢ" : categoryName.toUpperCase()}
+                    {filters.category === "all" ? "TẤT CẢ" : filters.category.toUpperCase()}
                   </h1>
                   <div className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
                     {pagination.totalItems} sản phẩm

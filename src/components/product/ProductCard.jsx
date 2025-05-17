@@ -104,35 +104,9 @@ const ProductCard = ({ product }) => {
                   <span className="text-red-600 font-bold ml-auto">
                     {product.sellingPrice.toLocaleString()} đ
                   </span>
-                  {/* {discount > 0 && (
-                    <span className="text-gray-400 text-xs line-through">
-                      {formatPrice(originalPrice)} đ
-                    </span>
-                  )} */}
                 </div>
               </div>
             </div>
-
-            {/* Rating and sold count */}
-            {/* <div className="flex justify-between items-center text-xs mt-2 text-gray-600">
-              <div className="flex items-center">
-                <div className="flex">
-                  {[...Array(5)].map((_, index) => (
-                    <FaStar
-                      key={index}
-                      className={
-                        index < Math.floor(rating)
-                          ? "text-yellow-400"
-                          : "text-gray-300"
-                      }
-                      size={12}
-                    />
-                  ))}
-                </div>
-                <span className="ml-1">{rating.toFixed(1)}</span>
-              </div>
-              <span>Đã bán {product.soldCount || "2,3K"}</span>
-            </div> */}
           </div>
         </div>
       </Link>
