@@ -5,7 +5,8 @@ import { FaCheckCircle, FaClipboardCheck, FaClipboardList, FaExclamationTriangle
 import AdminNavbar from "./AdminNavbar";
 import useCheckAdminAuth from "../../hook/useCheckAdminAuth";
 import { useSelector } from "react-redux";
-import { getAllDelivery, getDeliveryById, updateDeliveryStatus } from "../../services/deliveryService";
+import { getAllDelivery, getDeliveryById, updateDeliveryStatus, refundPayment } from "../../services/deliveryService";
+import { getOrderDetailById } from "../../services/orderService";
 import { toast } from "react-toastify";
 const { Search } = Input;
 
@@ -46,6 +47,26 @@ const DeliveryManagement = () => {
         try {
             if (window.confirm("Bạn có chắc chắn muốn cập nhật trạng thái giao hàng?")) {
                 await updateDeliveryStatus(id, newStatus, orderId);
+
+                // Nếu trạng thái là giao thất bại, thực hiện hoàn tiền
+                if (newStatus === 'DELIVERY_FAILED') {
+                    try {
+                        // Lấy thông tin đơn hàng để hoàn tiền
+                        const orderInfo = await getOrderDetailById(orderId);
+                        const { user, transId, totalAmount } = orderInfo.result;
+
+                        if (user?.userId && transId && totalAmount) {
+                            await refundPayment(orderId, user.userId, transId, totalAmount);
+                            toast.success("Hoàn tiền thành công");
+                        } else {
+                            toast.warning("Không thể hoàn tiền do thiếu thông tin thanh toán");
+                        }
+                    } catch (refundError) {
+                        console.error("Refund error:", refundError);
+                        toast.error("Không thể hoàn tiền!");
+                    }
+                }
+
                 toast.success("Cập nhật trạng thái thành công");
                 setDeliveries(deliveries.map(d =>
                     d.id === id ? { ...d, shippingStatus: newStatus } : d
@@ -53,9 +74,18 @@ const DeliveryManagement = () => {
             }
         } catch (error) {
             console.error("Update status error:", error);
-            toast.error("Không thể cập nhật trạng thái!");
+
+            const status = error?.response?.status;
+            const serverMessage = error?.response?.data?.message;
+            let friendlyMessage = "Không thể cập nhật trạng thái!";
+
+            if (status === 404 && serverMessage === "Order not found") {
+                friendlyMessage = "Đơn hàng có thể đã được cập nhật nhưng phản hồi không hợp lệ. Vui lòng tải lại trang để xem trạng thái mới.";
+            }
+            toast.error(friendlyMessage);
         }
     };
+
 
     const formatDateFull = (dateString) => {
         const options = {

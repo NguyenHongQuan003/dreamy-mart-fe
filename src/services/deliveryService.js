@@ -24,4 +24,8 @@ export const updateDeliveryStatus = async (deliveryId, status, orderId) => {
     return response.data;
 };
 
+export const refundPayment = async (orderId, userId, transId, totalAmount) => {
+    const response = await axiosInstance.post("/payment/refund", { orderId, userId, transId, totalAmount });
+    return response.data;
+};
 

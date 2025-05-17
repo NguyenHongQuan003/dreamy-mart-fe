@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FaRobot, FaTimes, FaPaperPlane } from 'react-icons/fa';
 import { createNewSession, sendMessage } from '../../services/chatbotService';
+import Button from '../common/Button';
 
 const SESSION_EXPIRY_TIME = 30 * 60 * 1000; // 30 phút
 
@@ -218,13 +219,14 @@ const ChatbotWidget = () => {
                                 placeholder="Nhập tin nhắn..."
                                 className="flex-1 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:border-[#0078E8]"
                             />
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={!inputMessage.trim() || isLoading}
                                 className="bg-[#0078E8] text-white p-2 rounded-lg disabled:opacity-50"
+                                icon={FaPaperPlane}
                             >
-                                <FaPaperPlane />
-                            </button>
+
+                            </Button>
                         </div>
                     </form>
                 </div>
