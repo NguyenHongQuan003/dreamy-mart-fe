@@ -312,7 +312,7 @@ const Home = () => {
                         <div className="mt-1 space-y-1">
                           <div className="flex items-center justify-between">
                             <span className="text-red-600 font-bold ml-auto">
-                              {product.price.toLocaleString()} đ
+                              {product.price?.toLocaleString()} đ
                             </span>
                           </div>
                         </div>
