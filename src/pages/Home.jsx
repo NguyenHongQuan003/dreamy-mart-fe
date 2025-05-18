@@ -307,12 +307,12 @@ const Home = () => {
                     <div className="px-3 py-3 flex-grow flex flex-col justify-between">
                       <div>
                         <h2 className="text-sm font-medium line-clamp-2 min-h-[2.5rem] text-gray-800 mb-1">
-                          {product.name}
+                          {product.productName}
                         </h2>
                         <div className="mt-1 space-y-1">
                           <div className="flex items-center justify-between">
                             <span className="text-red-600 font-bold ml-auto">
-                              {product.sellingPrice.toLocaleString()} đ
+                              {product.price.toLocaleString()} đ
                             </span>
                           </div>
                         </div>
